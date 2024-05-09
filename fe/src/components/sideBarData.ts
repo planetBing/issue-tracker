@@ -17,6 +17,7 @@ interface Milestone {
 export const label: Label[] = [
   { name: "fix", backgroundColor: "blue", textColor: "white" },
   { name: "error", backgroundColor: "red", textColor: "black" },
+  { name: "bingsoo", backgroundColor: "yellow", textColor: "black" },
 ];
 
 export const milestone: Milestone[] = [
@@ -30,7 +31,7 @@ export const milestone: Milestone[] = [
     close_issue: 7,
   },
   {
-    title: "이슈트래커 마일스톤",
+    title: "스프링부트 마일스톤",
     description: null,
     end_date: "2024-05-09",
     is_open: true,

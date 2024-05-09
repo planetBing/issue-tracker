@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label } from "./sideBarData";
+import { label, milestone } from "./sideBarData";
 
 interface PopupState {
   assignee: boolean;
@@ -69,6 +69,25 @@ export default function SideBar() {
                 id={item.name}
                 name="label"
                 value={item.name}
+              />
+            </DropdownOption>
+          ))}
+        </DropdownPanel>
+      )}
+
+      {popupState.milestone && (
+        <DropdownPanel>
+          <DropdownHeader>마일스톤 설정</DropdownHeader>
+          {milestone.map((item) => (
+            <DropdownOption>
+              <LabelInfo>
+                <span>{item.title}</span>
+              </LabelInfo>
+              <input
+                type="radio"
+                id={item.title}
+                name="label"
+                value={item.title}
               />
             </DropdownOption>
           ))}
@@ -155,5 +174,11 @@ const LabelInfo = styled.div`
 
   & div {
     margin-right: 8px;
+  }
+
+  & span {
+    font-weight: 500;
+    font-size: 16px;
+    color: rgba(78, 75, 102, 1);
   }
 `;
