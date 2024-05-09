@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { loggedInUserImageSrc } from "../constants/constants";
+import SideBar from "../components/SideBar";
 
 const SpaceBetween = styled.div`
   display: flex;
@@ -80,37 +82,6 @@ const TextArea = styled(ColumnFlex)`
   }
 `;
 
-const SideBar = styled.div`
-  width: 288px;
-  height: 227px;
-  border-radius: 16px;
-  border: 1px solid rgba(217, 219, 233, 1);
-  overflow: hidden;
-`;
-
-const SideBarItem = styled.div`
-  height: 75px;
-  width: 100%;
-  line-height: 75px;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  border-bottom: 1px solid rgba(217, 219, 233, 1);
-  cursor: pointer;
-
-  & div {
-    width: 224px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  & span {
-    color: rgba(78, 75, 102, 1);
-    font-size: 16px;
-    font-weight: 500;
-  }
-`;
-
 const ButtonArea = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -159,23 +130,7 @@ export default function IssueCreationPage() {
               placeholder="코멘트를 입력하세요"
             ></textarea>
           </TextArea>
-          <SideBar>
-            <SideBarItem>
-              <div>
-                <span>담당자</span> <span>+</span>
-              </div>
-            </SideBarItem>
-            <SideBarItem>
-              <div>
-                <span>레이블</span> <span>+</span>
-              </div>
-            </SideBarItem>
-            <SideBarItem>
-              <div>
-                <span>마일스톤</span> <span>+</span>
-              </div>
-            </SideBarItem>
-          </SideBar>
+          <SideBar />
         </Main>
         <ButtonArea>
           <span>x 작성취소</span>
