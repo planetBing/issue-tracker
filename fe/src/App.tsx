@@ -1,10 +1,10 @@
 import React from "react";
-import IssueCreator from "./pages/IssueCreator";
+import IssueCreationPage from "./pages/IssueCreationPage";
 
 function App() {
   return (
     <div>
-      <IssueCreator />
+      <IssueCreationPage />
     </div>
   );
 }
