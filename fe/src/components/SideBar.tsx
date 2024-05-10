@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer } from "react";
 import { styled } from "styled-components";
 import { label, milestone } from "./sideBarData";
 
@@ -64,7 +64,7 @@ export default function SideBar() {
         <DropdownPanel>
           <DropdownHeader>레이블 설정</DropdownHeader>
           {label.map((item) => (
-            <DropdownOption>
+            <DropdownOption key={`label-${item.name}`}>
               <LabelInfo>
                 <LabelColorCircle
                   color={item.backgroundColor}
@@ -86,7 +86,7 @@ export default function SideBar() {
         <DropdownPanel>
           <DropdownHeader>마일스톤 설정</DropdownHeader>
           {milestone.map((item) => (
-            <DropdownOption>
+            <DropdownOption key={`milestone-${item.id}`}>
               <LabelInfo>
                 <span>{item.title}</span>
               </LabelInfo>

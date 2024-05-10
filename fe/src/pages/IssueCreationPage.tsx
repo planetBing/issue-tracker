@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { styled } from "styled-components";
 import { loggedInUserImageSrc } from "../constants/constants";
 import SideBar from "../components/SideBar";

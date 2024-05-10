@@ -5,6 +5,7 @@ interface Label {
 }
 
 interface Milestone {
+  id: number;
   title: string;
   description: string | null;
   end_date: string;
@@ -22,6 +23,7 @@ export const label: Label[] = [
 
 export const milestone: Milestone[] = [
   {
+    id: 1243567654,
     title: "이슈트래커 마일스톤",
     description: "빙수~ 너무 귀여워",
     end_date: "2024-05-09",
@@ -31,6 +33,7 @@ export const milestone: Milestone[] = [
     close_issue: 7,
   },
   {
+    id: 238579,
     title: "스프링부트 마일스톤",
     description: null,
     end_date: "2024-05-09",
