@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import { loggedInUserImageSrc } from "../constants/constants";
 import SideBar from "../components/SideBar";
+import paperclipSvg from "../assets/paperclip.svg";
 
 export default function IssueCreationPage() {
   return (
@@ -17,11 +18,24 @@ export default function IssueCreationPage() {
             alt="loggedInUserImage"
           />
           <TextArea>
-            <input type="text" name="issueTitle" placeholder="제목"></input>
+            <IssueTitle
+              type="text"
+              name="issueTitle"
+              placeholder="제목"
+            ></IssueTitle>
             <textarea
               name="comment"
               placeholder="코멘트를 입력하세요"
             ></textarea>
+            <FileAttach>
+              <label htmlFor="file">
+                <FileAttachBtn>
+                  <img src={paperclipSvg} alt="paperclip" />
+                  <div>파일 첨부하기</div>
+                </FileAttachBtn>
+              </label>
+              <input type="file" id="file" />
+            </FileAttach>
           </TextArea>
           <SideBar />
         </Main>
@@ -86,30 +100,60 @@ const TextArea = styled(ColumnFlex)`
   flex-direction: column;
   width: 912px;
 
-  & input {
-    height: 56px;
-    border: none;
-    padding: 0 16px;
-    background-color: rgba(239, 240, 246, 1);
-    border-radius: 16px;
-    margin-bottom: 7px;
-  }
-
-  & input:focus {
-    outline: none;
-  }
-
   & textarea {
-    height: 400px;
+    height: 350px;
     border: none;
     padding: 16px;
     background-color: rgba(239, 240, 246, 1);
-    border-radius: 16px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom: 1px dashed rgba(217, 219, 233, 1);
   }
 
   & textarea:focus {
     outline-color: black;
     background-color: white;
+  }
+`;
+
+const IssueTitle = styled.input`
+  height: 56px;
+  border: none;
+  padding: 0 16px;
+  background-color: rgba(239, 240, 246, 1);
+  border-radius: 16px;
+  margin-bottom: 7px;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const FileAttach = styled.div`
+  display: flex;
+  align-items: center;
+  height: 52px;
+  border: none;
+  padding: 0 16px;
+  background-color: rgba(239, 240, 246, 1);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+
+  & input {
+    display: none;
+  }
+`;
+
+const FileAttachBtn = styled.div`
+  display: flex;
+  cursor: pointer;
+
+  & div {
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(78, 75, 102, 1);
+    line-height: 16px;
   }
 `;
 
