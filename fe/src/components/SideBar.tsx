@@ -2,6 +2,10 @@ import { useReducer } from "react";
 import { styled } from "styled-components";
 import { label, milestone } from "./sideBarData";
 
+interface SideBarProps {
+  handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 interface PopupState {
   assignee: boolean;
   label: boolean;
@@ -35,7 +39,7 @@ const popupReducer = (state: PopupState, action: ActionType) => {
   }
 };
 
-export default function SideBar() {
+export default function SideBar({ handleInputLabel }: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
 
   return (
@@ -76,6 +80,7 @@ export default function SideBar() {
                 id={item.name}
                 name="label"
                 value={item.name}
+                onChange={handleInputLabel}
               />
             </DropdownOption>
           ))}
@@ -94,7 +99,7 @@ export default function SideBar() {
                 type="radio"
                 id={item.title}
                 name="label"
-                value={item.title}
+                value={item.id}
               />
             </DropdownOption>
           ))}

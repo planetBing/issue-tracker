@@ -1,9 +1,38 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { loggedInUserImageSrc } from "../constants/constants";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 
 export default function IssueCreationPage() {
+  const [issueTitle, setIssueTitle] = useState<string>("");
+  const [comment, setComment] = useState<string | null>(null);
+  const [label, setLabel] = useState<string | null>(null);
+
+  const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIssueTitle(e.target.value);
+  };
+
+  const handleInputComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLabel(e.target.value);
+  };
+
+  const postIssue = () => {
+    const issueCreationData = {
+      reporter: "bingsoo",
+      assignee: null,
+      title: issueTitle,
+      comment: comment,
+      label: label,
+    };
+
+    console.log(issueCreationData);
+  };
+
   return (
     <>
       <Header>
@@ -22,10 +51,12 @@ export default function IssueCreationPage() {
               type="text"
               name="issueTitle"
               placeholder="제목"
+              onChange={handleInputIssueTitle}
             ></IssueTitle>
             <textarea
               name="comment"
               placeholder="코멘트를 입력하세요"
+              onChange={handleInputComment}
             ></textarea>
             <FileAttach>
               <label htmlFor="file">
@@ -37,11 +68,11 @@ export default function IssueCreationPage() {
               <input type="file" id="file" />
             </FileAttach>
           </TextArea>
-          <SideBar />
+          <SideBar handleInputLabel={handleInputLabel} />
         </Main>
         <ButtonArea>
           <span>x 작성취소</span>
-          <DoneBtn>완료</DoneBtn>
+          <DoneBtn onClick={postIssue}>완료</DoneBtn>
         </ButtonArea>
       </Wrapper>
     </>
