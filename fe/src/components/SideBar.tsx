@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import { styled } from "styled-components";
 import { label, milestone } from "./sideBarData";
 
@@ -11,7 +11,8 @@ interface PopupState {
 type ActionType =
   | { type: "openAssigneePopup" }
   | { type: "openLabelPopup" }
-  | { type: "openMilestonePopup" };
+  | { type: "openMilestonePopup" }
+  | { type: "closePopup" };
 
 const initialpopupState = {
   assignee: false,
@@ -27,6 +28,8 @@ const popupReducer = (state: PopupState, action: ActionType) => {
       return { ...state, label: true };
     case "openMilestonePopup":
       return { ...state, milestone: true };
+    case "closePopup":
+      return initialpopupState;
     default:
       return state;
   }
@@ -52,6 +55,10 @@ export default function SideBar() {
           <span>마일스톤</span> <span>+</span>
         </div>
       </LastSideBarItem>
+
+      {(popupState.label || popupState.milestone) && (
+        <Overlay onClick={() => dispatch({ type: "closePopup" })} />
+      )}
 
       {popupState.label && (
         <DropdownPanel>
@@ -134,12 +141,14 @@ const LastSideBarItem = styled(SideBarItem)`
 `;
 
 const DropdownPanel = styled.div`
+  position: relative;
   width: 240px;
   min-height: 67.5px;
   max-height: 211.5px;
   border-radius: 16px;
   border: 1px solid rgba(217, 219, 233, 1);
   overflow: hidden;
+  z-index: 1100;
 `;
 
 const DropdownHeader = styled.div`
@@ -181,4 +190,13 @@ const LabelInfo = styled.div`
     font-size: 16px;
     color: rgba(78, 75, 102, 1);
   }
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
 `;
