@@ -1,11 +1,14 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label, milestone, assignee } from "./sideBarData";
+import { label, milestone, userList } from "./sideBarData";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  assigneeList: string[];
+  selectedLabel: string | null;
+  selectedMilestone: number | null;
 }
 
 interface PopupState {
@@ -42,9 +45,12 @@ const popupReducer = (state: PopupState, action: ActionType) => {
 };
 
 export default function SideBar({
+  handleInputAssignee,
   handleInputLabel,
   handleInputMilestone,
-  handleInputAssignee,
+  assigneeList,
+  selectedLabel,
+  selectedMilestone,
 }: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
 
@@ -54,83 +60,124 @@ export default function SideBar({
         <div>
           <span>담당자</span> <span>+</span>
         </div>
+        {assigneeList &&
+          assigneeList.map((assignee) => {
+            const selectedUser = userList.find(
+              (userObj) => userObj.user_id === assignee
+            );
+            return (
+              <LabelInfo key={`selectedAssignee-${assignee}`}>
+                <AssigneeImg src={selectedUser?.image_path} />
+                <span>{selectedUser?.user_id}</span>
+              </LabelInfo>
+            );
+          })}
       </FirstSideBarItem>
+      {popupState.assignee && (
+        <DropdownPanel>
+          <DropdownHeader>담당자 설정</DropdownHeader>
+          {userList.map((item) => {
+            const { user_id, image_path } = item;
+            return (
+              <DropdownOption key={`assignee-${user_id}`}>
+                <LabelInfo>
+                  <AssigneeImg src={image_path} />
+                  <span>{user_id}</span>
+                </LabelInfo>
+                <input
+                  type="checkbox"
+                  id={user_id}
+                  name="label"
+                  value={user_id}
+                  checked={assigneeList.includes(user_id)}
+                  onChange={(e) => {
+                    handleInputAssignee(e);
+                    dispatch({ type: "closePopup" });
+                  }}
+                />
+              </DropdownOption>
+            );
+          })}
+        </DropdownPanel>
+      )}
+
       <SideBarItem onClick={() => dispatch({ type: "openLabelPopup" })}>
         <div>
           <span>레이블</span> <span>+</span>
         </div>
+        {selectedLabel &&
+          label.map((item) => {
+            const { backgroundColor, textColor, name } = item;
+            return (
+              item.name === selectedLabel && (
+                <LabelDiv
+                  key={`selectedLabel-${name}`}
+                  $backgroundColor={backgroundColor}
+                  $textColor={textColor}
+                >
+                  {name}
+                </LabelDiv>
+              )
+            );
+          })}
       </SideBarItem>
+      {popupState.label && (
+        <DropdownPanel>
+          <DropdownHeader>레이블 설정</DropdownHeader>
+          {label.map((item) => {
+            const { name, backgroundColor } = item;
+            return (
+              <DropdownOption key={`label-${name}`}>
+                <LabelInfo>
+                  <LabelColorCircle color={backgroundColor} />
+                  <span>{name}</span>
+                </LabelInfo>
+                <input
+                  type="radio"
+                  id={name}
+                  name="label"
+                  value={name}
+                  onChange={(e) => {
+                    handleInputLabel(e);
+                    dispatch({ type: "closePopup" });
+                  }}
+                />
+              </DropdownOption>
+            );
+          })}
+        </DropdownPanel>
+      )}
+
       <LastSideBarItem onClick={() => dispatch({ type: "openMilestonePopup" })}>
         <div>
           <span>마일스톤</span> <span>+</span>
         </div>
       </LastSideBarItem>
-
-      {(popupState.label || popupState.milestone || popupState.assignee) && (
-        <Overlay onClick={() => dispatch({ type: "closePopup" })} />
-      )}
-
-      {popupState.assignee && (
-        <DropdownPanel>
-          <DropdownHeader>담당자 설정</DropdownHeader>
-          {assignee.map((item) => (
-            <DropdownOption key={`assignee-${item.user_id}`}>
-              <LabelInfo>
-                <span>{item.user_id}</span>
-              </LabelInfo>
-              <input
-                type="radio"
-                id={item.user_id}
-                name="label"
-                value={item.user_id}
-                onChange={handleInputAssignee}
-              />
-            </DropdownOption>
-          ))}
-        </DropdownPanel>
-      )}
-
-      {popupState.label && (
-        <DropdownPanel>
-          <DropdownHeader>레이블 설정</DropdownHeader>
-          {label.map((item) => (
-            <DropdownOption key={`label-${item.name}`}>
-              <LabelInfo>
-                <LabelColorCircle
-                  color={item.backgroundColor}
-                ></LabelColorCircle>
-                <span>{item.name}</span>
-              </LabelInfo>
-              <input
-                type="radio"
-                id={item.name}
-                name="label"
-                value={item.name}
-                onChange={handleInputLabel}
-              />
-            </DropdownOption>
-          ))}
-        </DropdownPanel>
-      )}
-
       {popupState.milestone && (
         <DropdownPanel>
           <DropdownHeader>마일스톤 설정</DropdownHeader>
-          {milestone.map((item) => (
-            <DropdownOption key={`milestone-${item.id}`}>
-              <LabelInfo>
-                <span>{item.title}</span>
-              </LabelInfo>
-              <input
-                type="radio"
-                id={item.title}
-                name="label"
-                value={item.id}
-                onChange={handleInputMilestone}
-              />
-            </DropdownOption>
-          ))}
+          {milestone.map((item) => {
+            const { id, title } = item;
+            return (
+              <DropdownOption key={`milestone-${id}`}>
+                <LabelInfo>
+                  <span>{title}</span>
+                </LabelInfo>
+                <input
+                  type="radio"
+                  id={title}
+                  name="label"
+                  value={id}
+                  onChange={handleInputMilestone}
+                />
+              </DropdownOption>
+            );
+          })}
         </DropdownPanel>
+      )}
+
+      {(popupState.label || popupState.milestone || popupState.assignee) && (
+        <Overlay onClick={() => dispatch({ type: "closePopup" })} />
       )}
     </div>
   );
@@ -141,6 +188,7 @@ const SideBarItem = styled.div`
   width: 288px;
   background-color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid rgba(217, 219, 233, 1);
@@ -148,10 +196,20 @@ const SideBarItem = styled.div`
   border-right: 1px solid rgba(217, 219, 233, 1);
   cursor: pointer;
 
-  & div {
+  & div:first-child {
     width: 224px;
     display: flex;
     justify-content: space-between;
+    margin: 32px 0 16px 0;
+  }
+
+  & div {
+    width: 224px;
+    margin-bottom: 16px;
+  }
+
+  & div:last-child {
+    margin-bottom: 32px;
   }
 
   & span {
@@ -172,8 +230,13 @@ const LastSideBarItem = styled(SideBarItem)`
   border-bottom-right-radius: 16px;
 `;
 
+const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
+  background-color: ${(props) => props.$backgroundColor};
+  color: ${(props) => props.$textColor};
+`;
+
 const DropdownPanel = styled.div`
-  position: relative;
+  position: absolute;
   width: 240px;
   min-height: 67.5px;
   max-height: 211.5px;
@@ -191,11 +254,19 @@ const DropdownHeader = styled.div`
   font-size: 12px;
 `;
 
+const AssigneeImg = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+`;
+
 const LabelColorCircle = styled.div`
   width: 20px;
   height: 20px;
   background-color: ${(props) => props.color};
   border-radius: 50%;
+  margin-right: 8px;
 `;
 
 const DropdownOption = styled.div`
@@ -212,10 +283,6 @@ const DropdownOption = styled.div`
 
 const LabelInfo = styled.div`
   display: flex;
-
-  & div {
-    margin-right: 8px;
-  }
 
   & span {
     font-weight: 500;

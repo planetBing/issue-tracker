@@ -4,16 +4,14 @@ import { loggedInUserImageSrc } from "../constants/constants";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 
-interface Assignee {
-  user_id: string;
-}
-
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
-  const [assignee, setAssignee] = useState<Assignee[]>([]);
-  const [label, setLabel] = useState<string | null>(null);
-  const [milestone, setMilestone] = useState<number | null>(null);
+  const [assigneeList, setAssigneeList] = useState<string[]>([]);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
+  const [selectedMilestone, setSelectedMilestone] = useState<number | null>(
+    null
+  );
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIssueTitle(e.target.value);
@@ -24,16 +22,24 @@ export default function IssueCreationPage() {
   };
 
   const handleInputAssignee = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAssignee([...assignee, { user_id: e.target.value }]);
+    const value = e.target.value;
+    if (assigneeList.includes(value)) {
+      const newAssigneeList = assigneeList.filter(
+        (assignee) => assignee !== value
+      );
+      setAssigneeList(newAssigneeList);
+    } else {
+      setAssigneeList([...assigneeList, e.target.value]);
+    }
   };
 
   const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLabel(e.target.value);
+    setSelectedLabel(e.target.value);
   };
 
   const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    setMilestone(isNaN(value) ? null : value);
+    setSelectedMilestone(isNaN(value) ? null : value);
   };
 
   const postIssue = () => {
@@ -41,9 +47,9 @@ export default function IssueCreationPage() {
       reporter: "bingsoo",
       title: issueTitle,
       comment: comment,
-      assignee: assignee.length ? assignee : null,
-      label: label,
-      milestone: milestone,
+      assignee: assigneeList.length ? assigneeList : null,
+      label: selectedLabel,
+      milestone: selectedMilestone,
     };
     console.log(issueCreationData);
   };
@@ -87,6 +93,9 @@ export default function IssueCreationPage() {
             handleInputLabel={handleInputLabel}
             handleInputMilestone={handleInputMilestone}
             handleInputAssignee={handleInputAssignee}
+            assigneeList={assigneeList}
+            selectedLabel={selectedLabel}
+            selectedMilestone={selectedMilestone}
           />
         </Main>
         <ButtonArea>
