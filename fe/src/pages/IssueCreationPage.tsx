@@ -4,10 +4,16 @@ import { loggedInUserImageSrc } from "../constants/constants";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 
+interface Assignee {
+  user_id: string;
+}
+
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
+  const [assignee, setAssignee] = useState<Assignee[]>([]);
   const [label, setLabel] = useState<string | null>(null);
+  const [milestone, setMilestone] = useState<number | null>(null);
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIssueTitle(e.target.value);
@@ -17,19 +23,28 @@ export default function IssueCreationPage() {
     setComment(e.target.value);
   };
 
+  const handleInputAssignee = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAssignee([...assignee, { user_id: e.target.value }]);
+  };
+
   const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLabel(e.target.value);
+  };
+
+  const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setMilestone(isNaN(value) ? null : value);
   };
 
   const postIssue = () => {
     const issueCreationData = {
       reporter: "bingsoo",
-      assignee: null,
       title: issueTitle,
       comment: comment,
+      assignee: assignee.length ? assignee : null,
       label: label,
+      milestone: milestone,
     };
-
     console.log(issueCreationData);
   };
 
@@ -68,7 +83,11 @@ export default function IssueCreationPage() {
               <input type="file" id="file" />
             </FileAttach>
           </TextArea>
-          <SideBar handleInputLabel={handleInputLabel} />
+          <SideBar
+            handleInputLabel={handleInputLabel}
+            handleInputMilestone={handleInputMilestone}
+            handleInputAssignee={handleInputAssignee}
+          />
         </Main>
         <ButtonArea>
           <span>x 작성취소</span>

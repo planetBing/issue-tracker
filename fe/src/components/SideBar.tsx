@@ -1,9 +1,11 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label, milestone } from "./sideBarData";
+import { label, milestone, assignee } from "./sideBarData";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface PopupState {
@@ -39,7 +41,11 @@ const popupReducer = (state: PopupState, action: ActionType) => {
   }
 };
 
-export default function SideBar({ handleInputLabel }: SideBarProps) {
+export default function SideBar({
+  handleInputLabel,
+  handleInputMilestone,
+  handleInputAssignee,
+}: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
 
   return (
@@ -60,8 +66,28 @@ export default function SideBar({ handleInputLabel }: SideBarProps) {
         </div>
       </LastSideBarItem>
 
-      {(popupState.label || popupState.milestone) && (
+      {(popupState.label || popupState.milestone || popupState.assignee) && (
         <Overlay onClick={() => dispatch({ type: "closePopup" })} />
+      )}
+
+      {popupState.assignee && (
+        <DropdownPanel>
+          <DropdownHeader>담당자 설정</DropdownHeader>
+          {assignee.map((item) => (
+            <DropdownOption key={`assignee-${item.user_id}`}>
+              <LabelInfo>
+                <span>{item.user_id}</span>
+              </LabelInfo>
+              <input
+                type="radio"
+                id={item.user_id}
+                name="label"
+                value={item.user_id}
+                onChange={handleInputAssignee}
+              />
+            </DropdownOption>
+          ))}
+        </DropdownPanel>
       )}
 
       {popupState.label && (
@@ -100,6 +126,7 @@ export default function SideBar({ handleInputLabel }: SideBarProps) {
                 id={item.title}
                 name="label"
                 value={item.id}
+                onChange={handleInputMilestone}
               />
             </DropdownOption>
           ))}
