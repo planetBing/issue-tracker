@@ -1,14 +1,14 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label, milestone, userList } from "./sideBarData";
+import { label, milestone, userList, Label, Milestone } from "./sideBarData";
 
 interface SideBarProps {
-  handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputLabel: (item: Label) => void;
+  handleInputMilestone: (item: Milestone) => void;
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
-  selectedLabel: string | null;
-  selectedMilestone: number | null;
+  selectedLabel: Label | null;
+  selectedMilestone: Milestone | null;
 }
 
 interface PopupState {
@@ -53,6 +53,11 @@ export default function SideBar({
   selectedMilestone,
 }: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
+  const { close_issue, open_issue } = selectedMilestone ?? {
+    close_issue: 0,
+    open_issue: 0,
+  };
+  const selectedMilestoneProgressNum = close_issue / (close_issue + open_issue);
 
   return (
     <SideBarWrapper>
@@ -111,20 +116,13 @@ export default function SideBar({
         </div>
         {selectedLabel && (
           <SelectedOptionWrapper>
-            {label.map((item) => {
-              const { backgroundColor, textColor, name } = item;
-              return (
-                item.name === selectedLabel && (
-                  <LabelDiv
-                    key={`selectedLabel-${name}`}
-                    $backgroundColor={backgroundColor}
-                    $textColor={textColor}
-                  >
-                    {name}
-                  </LabelDiv>
-                )
-              );
-            })}
+            <LabelDiv
+              key={`selectedLabel-${selectedLabel.name}`}
+              $backgroundColor={selectedLabel.backgroundColor}
+              $textColor={selectedLabel.textColor}
+            >
+              {selectedLabel.name}
+            </LabelDiv>
           </SelectedOptionWrapper>
         )}
       </SideBarItem>
@@ -144,8 +142,8 @@ export default function SideBar({
                   id={name}
                   name="label"
                   value={name}
-                  onChange={(e) => {
-                    handleInputLabel(e);
+                  onChange={() => {
+                    handleInputLabel(item);
                     dispatch({ type: "closePopup" });
                   }}
                 />
@@ -159,6 +157,14 @@ export default function SideBar({
         <div>
           <span>마일스톤</span> <span>+</span>
         </div>
+        {selectedMilestone && (
+          <SelectedMilestoneWrapper>
+            <ProgressBar>
+              <FilledProgressBar length={selectedMilestoneProgressNum} />
+            </ProgressBar>
+            <MilestoneTitle>{selectedMilestone.title}</MilestoneTitle>
+          </SelectedMilestoneWrapper>
+        )}
       </LastSideBarItem>
       {popupState.milestone && (
         <DropdownPanel>
@@ -175,7 +181,10 @@ export default function SideBar({
                   id={title}
                   name="label"
                   value={id}
-                  onChange={handleInputMilestone}
+                  onChange={() => {
+                    handleInputMilestone(item);
+                    dispatch({ type: "closePopup" });
+                  }}
                 />
               </DropdownOption>
             );
@@ -316,4 +325,30 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1000;
+`;
+
+const SelectedMilestoneWrapper = styled.div`
+  width: 224px;
+`;
+
+const ProgressBar = styled.div`
+  width: 100%;
+  background-color: rgba(239, 240, 246, 1);
+  border-radius: 10px;
+  height: 8px;
+  margin-bottom: 8px;
+`;
+
+const FilledProgressBar = styled.div<{ length: number }>`
+  width: ${(props) => 224 * props.length}px;
+  height: 100%;
+  border-radius: 10px;
+  background-color: rgba(0, 122, 255, 1);
+`;
+
+const MilestoneTitle = styled.div`
+  font-weight: 500;
+  font-size: 12px;
+  color: rgba(20, 20, 43, 1);
+  line-height: 16px;
 `;
