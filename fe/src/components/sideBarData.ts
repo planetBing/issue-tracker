@@ -1,10 +1,10 @@
-interface Label {
+export interface Label {
   name: string;
   backgroundColor: string;
   textColor: string;
 }
 
-interface Milestone {
+export interface Milestone {
   id: number;
   title: string;
   description: string | null;
@@ -15,7 +15,7 @@ interface Milestone {
   close_issue: number;
 }
 
-interface Assignee {
+export interface Assignee {
   user_id: string;
   user_name: string;
   image_path: string;

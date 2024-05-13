@@ -55,23 +55,27 @@ export default function SideBar({
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
 
   return (
-    <div>
+    <SideBarWrapper>
       <FirstSideBarItem onClick={() => dispatch({ type: "openAssigneePopup" })}>
         <div>
           <span>담당자</span> <span>+</span>
         </div>
-        {assigneeList &&
-          assigneeList.map((assignee) => {
-            const selectedUser = userList.find(
-              (userObj) => userObj.user_id === assignee
-            );
-            return (
-              <LabelInfo key={`selectedAssignee-${assignee}`}>
-                <AssigneeImg src={selectedUser?.image_path} />
-                <span>{selectedUser?.user_id}</span>
-              </LabelInfo>
-            );
-          })}
+
+        {!!assigneeList.length && (
+          <SelectedAssigneeWrapper>
+            {assigneeList.map((assignee) => {
+              const selectedUser = userList.find(
+                (userObj) => userObj.user_id === assignee
+              );
+              return (
+                <SelectedAssignee key={`selectedAssignee-${assignee}`}>
+                  <AssigneeImg src={selectedUser?.image_path} />
+                  <span>{selectedUser?.user_id}</span>
+                </SelectedAssignee>
+              );
+            })}
+          </SelectedAssigneeWrapper>
+        )}
       </FirstSideBarItem>
       {popupState.assignee && (
         <DropdownPanel>
@@ -80,10 +84,10 @@ export default function SideBar({
             const { user_id, image_path } = item;
             return (
               <DropdownOption key={`assignee-${user_id}`}>
-                <LabelInfo>
+                <OptionInfo>
                   <AssigneeImg src={image_path} />
                   <span>{user_id}</span>
-                </LabelInfo>
+                </OptionInfo>
                 <input
                   type="checkbox"
                   id={user_id}
@@ -105,21 +109,24 @@ export default function SideBar({
         <div>
           <span>레이블</span> <span>+</span>
         </div>
-        {selectedLabel &&
-          label.map((item) => {
-            const { backgroundColor, textColor, name } = item;
-            return (
-              item.name === selectedLabel && (
-                <LabelDiv
-                  key={`selectedLabel-${name}`}
-                  $backgroundColor={backgroundColor}
-                  $textColor={textColor}
-                >
-                  {name}
-                </LabelDiv>
-              )
-            );
-          })}
+        {selectedLabel && (
+          <SelectedOptionWrapper>
+            {label.map((item) => {
+              const { backgroundColor, textColor, name } = item;
+              return (
+                item.name === selectedLabel && (
+                  <LabelDiv
+                    key={`selectedLabel-${name}`}
+                    $backgroundColor={backgroundColor}
+                    $textColor={textColor}
+                  >
+                    {name}
+                  </LabelDiv>
+                )
+              );
+            })}
+          </SelectedOptionWrapper>
+        )}
       </SideBarItem>
       {popupState.label && (
         <DropdownPanel>
@@ -128,10 +135,10 @@ export default function SideBar({
             const { name, backgroundColor } = item;
             return (
               <DropdownOption key={`label-${name}`}>
-                <LabelInfo>
+                <OptionInfo>
                   <LabelColorCircle color={backgroundColor} />
                   <span>{name}</span>
-                </LabelInfo>
+                </OptionInfo>
                 <input
                   type="radio"
                   id={name}
@@ -160,9 +167,9 @@ export default function SideBar({
             const { id, title } = item;
             return (
               <DropdownOption key={`milestone-${id}`}>
-                <LabelInfo>
+                <OptionInfo>
                   <span>{title}</span>
-                </LabelInfo>
+                </OptionInfo>
                 <input
                   type="radio"
                   id={title}
@@ -179,37 +186,46 @@ export default function SideBar({
       {(popupState.label || popupState.milestone || popupState.assignee) && (
         <Overlay onClick={() => dispatch({ type: "closePopup" })} />
       )}
-    </div>
+    </SideBarWrapper>
   );
 }
 
-const SideBarItem = styled.div`
-  min-height: 75px;
+const SideBarWrapper = styled.div`
   width: 288px;
+`;
+
+const SelectedAssigneeWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const SelectedAssignee = styled.div`
+  display: flex;
+`;
+
+const SelectedOptionWrapper = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const SideBarItem = styled.div`
+  padding: 32px;
   background-color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 16px;
   align-items: center;
   border-bottom: 1px solid rgba(217, 219, 233, 1);
   border-left: 1px solid rgba(217, 219, 233, 1);
   border-right: 1px solid rgba(217, 219, 233, 1);
   cursor: pointer;
 
-  & div:first-child {
-    width: 224px;
+  > div:first-child {
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    margin: 32px 0 16px 0;
-  }
-
-  & div {
-    width: 224px;
-    margin-bottom: 16px;
-  }
-
-  & div:last-child {
-    margin-bottom: 32px;
   }
 
   & span {
@@ -231,6 +247,8 @@ const LastSideBarItem = styled(SideBarItem)`
 `;
 
 const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
+  padding: 4px 8px;
+  border-radius: 16px;
   background-color: ${(props) => props.$backgroundColor};
   color: ${(props) => props.$textColor};
 `;
@@ -281,7 +299,7 @@ const DropdownOption = styled.div`
   }
 `;
 
-const LabelInfo = styled.div`
+const OptionInfo = styled.div`
   display: flex;
 
   & span {
