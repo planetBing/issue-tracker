@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import { loggedInUserImageSrc } from "../constants/constants";
+import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 import { Label, Milestone } from "../components/sideBarData";
+import * as CommonS from "../styles/common";
 
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
@@ -56,10 +58,7 @@ export default function IssueCreationPage() {
 
   return (
     <>
-      <Header>
-        <div>Issue Tracker</div>
-        <LoggedInUserImage src={loggedInUserImageSrc} alt="loggedInUserImage" />
-      </Header>
+      <PageHeader loggedInUserImageSrc={loggedInUserImageSrc} />
       <Wrapper>
         <PageTitle>새로운 이슈 작성</PageTitle>
         <Main>
@@ -107,29 +106,10 @@ export default function IssueCreationPage() {
   );
 }
 
-const SpaceBetween = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 const LoggedInUserImage = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-`;
-
-const Header = styled(SpaceBetween)`
-  width: 1280px;
-  display: flex;
-  justify-content: space-between;
-  margin: 27px auto;
-
-  & div {
-    font-size: 32px;
-    line-height: 40px;
-    font-style: italic;
-    width: 199px;
-  }
 `;
 
 const PageTitle = styled.div`
@@ -138,7 +118,7 @@ const PageTitle = styled.div`
   line-height: 85px;
 `;
 
-const Main = styled(SpaceBetween)`
+const Main = styled(CommonS.SpaceBetween)`
   border-top: 1px solid rgba(217, 219, 233, 1);
   border-bottom: 1px solid rgba(217, 219, 233, 1);
   padding: 24px 0;
@@ -149,12 +129,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const ColumnFlex = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TextArea = styled(ColumnFlex)`
+const TextArea = styled(CommonS.ColumnFlex)`
   display: flex;
   flex-direction: column;
   width: 912px;
