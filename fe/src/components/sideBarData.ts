@@ -1,10 +1,10 @@
-interface Label {
+export interface Label {
   name: string;
   backgroundColor: string;
   textColor: string;
 }
 
-interface Milestone {
+export interface Milestone {
   id: number;
   title: string;
   description: string | null;
@@ -13,6 +13,12 @@ interface Milestone {
   progress: number;
   open_issue: number;
   close_issue: number;
+}
+
+export interface Assignee {
+  user_id: string;
+  user_name: string;
+  image_path: string;
 }
 
 export const label: Label[] = [
@@ -41,5 +47,20 @@ export const milestone: Milestone[] = [
     progress: 70,
     open_issue: 3,
     close_issue: 7,
+  },
+];
+
+export const userList: Assignee[] = [
+  {
+    user_id: "pobi",
+    user_name: "포비",
+    image_path:
+      "https://s3-alpha-sig.figma.com/img/b605/5489/13f119578d9ba03050fc4eb0c1bd5681?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=ZTCempwDrtDahneId5fMg6YCJ8ghsdob-4aokB~Oy6WL6T1h0zYP-eDhMcKh3lmljff9GO7qsLA6KxbjIMjrXHODFyWn40mGeIeK~6wbsZUDfSa~jtaKUaUAyMjs2zYYhn4rhlwBJ0Myw4wKOJtxGotLqkrx7aaHRbXenAOPSyDR9ilyw7VXWdxzFBI9-wyEzZbBkthl~mFw~wxg~K~D3oVYN0p~oPowCoj5lWy6XbZw54rjwZDY1cZeVmXjRCsAHFA67meQpQIggaRqf3P00L7LJD3zn9PmhSiVdyvNGSd5DAgD8d~thD6OWKMp6fq7w4b~z463YThAZutda6P41w__",
+  },
+  {
+    user_id: "crong",
+    user_name: "크롱",
+    image_path:
+      "https://s3-alpha-sig.figma.com/img/6d55/6a69/312d39e9f8c4ecbe35724caa49257977?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OZkxJBoErs0wbmHXfgooiq-LNRQcynglGGQzQW2rTWUwXM9DBdAmxC049cHzDNA4ayB6s93~ttCJAG3e06Gj6hksfDSJEiqAmVOIg7qB6ms8Vvi1XSyEqBD~DBbDh-KKR5aZt~GbcDG6Eq4MMqy2hhBdFIcIECswVg2zmtCcb6W1bqiJzwtDboW0ksCKcsbZNdBwfPvwMVr2tD0h3sYdLpgCeiK0OorIG4n6xdooMKTXaPXgGXo~n5did7P5-xeya-x~TdGUhXl41T0SLGsk96B~HfoCClasWAhG~PLwDvlriqsSkX2MduWPq7yBSO6N66TgMg4WCIRne9m7A8oMqQ__",
   },
 ];
