@@ -1,7 +1,13 @@
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 import LargeLogo from "../assets/logo_large.svg";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate("/");
+  };
   return (
     <Wrapper>
       <img src={LargeLogo} alt="largeLogo" />
@@ -20,7 +26,7 @@ export default function LoginPage() {
             <span>비밀번호</span>
           </label>
         </LoginTextArea>
-        <LoginButton>아이디로 로그인</LoginButton>
+        <LoginButton onClick={handleLogin}>아이디로 로그인</LoginButton>
         <JoinBtn>회원가입</JoinBtn>
       </LoginWrapper>
     </Wrapper>
