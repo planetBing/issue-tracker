@@ -160,7 +160,7 @@ export default function SideBar({
         {selectedMilestone && (
           <SelectedMilestoneWrapper>
             <ProgressBar>
-              <FilledProgressBar length={selectedMilestoneProgressNum} />
+              <FilledProgressBar $length={selectedMilestoneProgressNum} />
             </ProgressBar>
             <MilestoneTitle>{selectedMilestone.title}</MilestoneTitle>
           </SelectedMilestoneWrapper>
@@ -339,8 +339,8 @@ const ProgressBar = styled.div`
   margin-bottom: 8px;
 `;
 
-const FilledProgressBar = styled.div<{ length: number }>`
-  width: ${(props) => 224 * props.length}px;
+const FilledProgressBar = styled.div<{ $length: number }>`
+  width: ${(props) => 224 * props.$length}px;
   height: 100%;
   border-radius: 10px;
   background-color: rgba(0, 122, 255, 1);
