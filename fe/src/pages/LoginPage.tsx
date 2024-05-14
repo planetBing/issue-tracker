@@ -1,13 +1,37 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import LargeLogo from "../assets/logo_large.svg";
+import { useCurrentUser } from "../contexts/CurrentUserProvider";
+import { loggedInUserImageSrc } from "../constants/constants";
+
+interface LoggedInUser {
+  name: string;
+  password: string;
+}
+
+const initialState = {
+  name: "",
+  password: "",
+};
 
 export default function LoginPage() {
+  const { setCurrentUser } = useCurrentUser();
+  const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(initialState);
   const navigate = useNavigate();
 
   const handleLogin = () => {
+    const userInfo = {
+      name: loggedInUser.name,
+      image_path: loggedInUserImageSrc,
+    };
+    setCurrentUser(userInfo);
     navigate("/");
   };
+
+  const isLoginEnabled =
+    loggedInUser.name.trim() !== "" && loggedInUser.password.trim() !== "";
+
   return (
     <Wrapper>
       <img src={LargeLogo} alt="largeLogo" />
@@ -15,18 +39,34 @@ export default function LoginPage() {
         <GithubLogin>GitHub 계정으로 로그인</GithubLogin>
         <Or>or</Or>
         <LoginTextArea>
-          <input type="text" id="user_name" required />
-          <label htmlFor="user_name">
+          <input
+            type="text"
+            id="name"
+            onChange={(e) =>
+              setLoggedInUser({ ...loggedInUser, name: e.target.value })
+            }
+            required
+          />
+          <label htmlFor="name">
             <span>아이디</span>
           </label>
         </LoginTextArea>
         <LoginTextArea>
-          <input type="password" id="user_pw" required />
-          <label htmlFor="user_pw">
+          <input
+            type="password"
+            id="password"
+            onChange={(e) =>
+              setLoggedInUser({ ...loggedInUser, password: e.target.value })
+            }
+            required
+          />
+          <label htmlFor="password">
             <span>비밀번호</span>
           </label>
         </LoginTextArea>
-        <LoginButton onClick={handleLogin}>아이디로 로그인</LoginButton>
+        <LoginButton onClick={handleLogin} disabled={!isLoginEnabled}>
+          아이디로 로그인
+        </LoginButton>
         <JoinBtn>회원가입</JoinBtn>
       </LoginWrapper>
     </Wrapper>
@@ -68,7 +108,7 @@ const Or = styled.div`
   margin-top: 8px;
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled.button<{ disabled: boolean }>`
   width: 100%;
   height: 56px;
   border: none;
@@ -77,6 +117,7 @@ const LoginButton = styled.button`
   background-color: rgba(0, 122, 255, 1);
   color: white;
   cursor: pointer;
+  opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
 `;
 
 const JoinBtn = styled.div`
