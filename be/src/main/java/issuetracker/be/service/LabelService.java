@@ -17,7 +17,7 @@ public class LabelService {
     this.labelRepository = labelRepository;
   }
 
-  public List<Label> getAllLabel() {
+  public Iterable<Label> getAllLabel() {
     return labelRepository.findAll();
   }
 }

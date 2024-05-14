@@ -21,8 +21,8 @@ public class LabelController {
   }
 
   @GetMapping("/label")
-  public ResponseEntity<List<Label>> sendLabels() {
-    List<Label> allLabel = labelService.getAllLabel();
+  public ResponseEntity<Iterable<Label>> sendLabels() {
+    Iterable<Label> allLabel = labelService.getAllLabel();
     return ResponseEntity.ok().body(allLabel);
   }
 }
