@@ -19,7 +19,7 @@ public class IssueSaveRequestDto {
   private String comment;
 
   public Issue toEntity(LocalDateTime now) {
-    if (assignee.isEmpty()) {
+    if (assignee == null) {
       return new Issue(title, reporter, milestone_id, now, label);
     }
     return new Issue(title,reporter, milestone_id, now, label, assignee);
