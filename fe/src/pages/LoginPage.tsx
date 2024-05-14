@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import LargeLogo from "../assets/logo_large.svg";
@@ -28,6 +28,9 @@ export default function LoginPage() {
     setCurrentUser(userInfo);
     navigate("/");
   };
+
+  const isLoginEnabled =
+    loggedInUser.name.trim() !== "" && loggedInUser.password.trim() !== "";
 
   return (
     <Wrapper>
@@ -61,7 +64,9 @@ export default function LoginPage() {
             <span>비밀번호</span>
           </label>
         </LoginTextArea>
-        <LoginButton onClick={handleLogin}>아이디로 로그인</LoginButton>
+        <LoginButton onClick={handleLogin} disabled={!isLoginEnabled}>
+          아이디로 로그인
+        </LoginButton>
         <JoinBtn>회원가입</JoinBtn>
       </LoginWrapper>
     </Wrapper>
@@ -103,7 +108,7 @@ const Or = styled.div`
   margin-top: 8px;
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled.button<{ disabled: boolean }>`
   width: 100%;
   height: 56px;
   border: none;
@@ -112,6 +117,7 @@ const LoginButton = styled.button`
   background-color: rgba(0, 122, 255, 1);
   color: white;
   cursor: pointer;
+  opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
 `;
 
 const JoinBtn = styled.div`
