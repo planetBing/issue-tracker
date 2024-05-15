@@ -9,3 +9,8 @@ export const ColumnFlex = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+export const Wrapper = styled.div`
+  width: 1280px;
+  margin: 32px auto;
+`;
