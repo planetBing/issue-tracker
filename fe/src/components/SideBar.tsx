@@ -1,6 +1,8 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
 import { label, milestone, userList, Label, Milestone } from "./sideBarData";
+import UserPopup from "./popup/UserPopup";
+import LabelPopup from "./popup/LabelPopup";
 
 interface SideBarProps {
   handleInputLabel: (item: Label) => void;
@@ -65,17 +67,16 @@ export default function SideBar({
         <div>
           <span>담당자</span> <span>+</span>
         </div>
-
         {!!assigneeList.length && (
           <SelectedAssigneeWrapper>
             {assigneeList.map((assignee) => {
               const selectedUser = userList.find(
-                (userObj) => userObj.user_id === assignee
+                (userObj) => userObj.name === assignee
               );
               return (
                 <SelectedAssignee key={`selectedAssignee-${assignee}`}>
                   <AssigneeImg src={selectedUser?.image_path} />
-                  <span>{selectedUser?.user_id}</span>
+                  <span>{selectedUser?.name}</span>
                 </SelectedAssignee>
               );
             })}
@@ -83,31 +84,12 @@ export default function SideBar({
         )}
       </FirstSideBarItem>
       {popupState.assignee && (
-        <DropdownPanel>
-          <DropdownHeader>담당자 설정</DropdownHeader>
-          {userList.map((item) => {
-            const { user_id, image_path } = item;
-            return (
-              <DropdownOption key={`assignee-${user_id}`}>
-                <OptionInfo>
-                  <AssigneeImg src={image_path} />
-                  <span>{user_id}</span>
-                </OptionInfo>
-                <input
-                  type="checkbox"
-                  id={user_id}
-                  name="label"
-                  value={user_id}
-                  checked={assigneeList.includes(user_id)}
-                  onChange={(e) => {
-                    handleInputAssignee(e);
-                    dispatch({ type: "closePopup" });
-                  }}
-                />
-              </DropdownOption>
-            );
-          })}
-        </DropdownPanel>
+        <UserPopup
+          userList={userList}
+          assigneeList={assigneeList}
+          handleInputAssignee={handleInputAssignee}
+          closePopup={() => dispatch({ type: "closePopup" })}
+        />
       )}
 
       <SideBarItem onClick={() => dispatch({ type: "openLabelPopup" })}>
@@ -127,30 +109,11 @@ export default function SideBar({
         )}
       </SideBarItem>
       {popupState.label && (
-        <DropdownPanel>
-          <DropdownHeader>레이블 설정</DropdownHeader>
-          {label.map((item) => {
-            const { name, backgroundColor } = item;
-            return (
-              <DropdownOption key={`label-${name}`}>
-                <OptionInfo>
-                  <LabelColorCircle color={backgroundColor} />
-                  <span>{name}</span>
-                </OptionInfo>
-                <input
-                  type="radio"
-                  id={name}
-                  name="label"
-                  value={name}
-                  onChange={() => {
-                    handleInputLabel(item);
-                    dispatch({ type: "closePopup" });
-                  }}
-                />
-              </DropdownOption>
-            );
-          })}
-        </DropdownPanel>
+        <LabelPopup
+          labelList={label}
+          handleInputLabel={handleInputLabel}
+          closePopup={() => dispatch({ type: "closePopup" })}
+        />
       )}
 
       <LastSideBarItem onClick={() => dispatch({ type: "openMilestonePopup" })}>
@@ -284,14 +247,6 @@ const DropdownHeader = styled.div`
 const AssigneeImg = styled.img`
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  margin-right: 8px;
-`;
-
-const LabelColorCircle = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: ${(props) => props.color};
   border-radius: 50%;
   margin-right: 8px;
 `;
