@@ -10,6 +10,7 @@ import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
 import { issue, Issue } from "./issueMockData";
 import LabelComponent from "../components/Label";
+import { Link } from "react-router-dom";
 
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
@@ -39,7 +40,7 @@ export default function IssueListPage() {
                 마일스톤(2)
               </TapButton>
             </TapBox>
-            <IssueCreationButton>+ 이슈 작성</IssueCreationButton>
+            <IssueCreationButton to="/issue">+ 이슈 작성</IssueCreationButton>
           </ButtonsWrapper>
         </TapAndFilterWrapper>
         <IssueTableTop>
@@ -129,6 +130,7 @@ const FilterBtn = styled(CommonS.SpaceBetween)`
   width: 128px;
   align-items: center;
   border-right: 1px solid rgba(217, 219, 233, 1);
+  cursor: pointer;
 
   span {
     color: rgba(78, 75, 102, 1);
@@ -194,13 +196,14 @@ const TapButton = styled.div`
   }
 `;
 
-const IssueCreationButton = styled.button`
+const IssueCreationButton = styled(Link)`
   width: 128px;
   height: 100%;
   background-color: rgba(0, 122, 255, 1);
   color: white;
-  border: none;
   border-radius: 10px;
+  text-decoration: none;
+  padding: 10px 25px;
 `;
 
 const IssueTableTop = styled.div`
@@ -236,6 +239,7 @@ const ClosedIssueTap = styled.div`
   font-weight: 500;
   font-size: 16px;
   color: rgba(78, 75, 102, 1);
+  cursor: pointer;
   img {
     margin-right: 4px;
   }
@@ -245,6 +249,7 @@ const FilterBtnsOnTable = styled(CommonS.SpaceBetween)`
   align-items: center;
   width: 416px;
   height: 100%;
+  cursor: pointer;
 `;
 
 const TableFilterBtn = styled(CommonS.SpaceBetween)`
