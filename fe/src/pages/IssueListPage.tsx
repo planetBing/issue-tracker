@@ -8,6 +8,8 @@ import labelIcon from "../assets/label.svg";
 import milestoneIcon from "../assets/milestone.svg";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
+import { issue, Issue } from "./issueMockData";
+import LabelComponent from "../components/Label";
 
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
@@ -46,7 +48,7 @@ export default function IssueListPage() {
             <SelectOpenAndClosedIssueBox>
               <OpenedIssueTap>
                 <img src={alertIcon} alt="opened icon" />
-                <span>열린 이슈(2)</span>
+                <span>열린 이슈(3)</span>
               </OpenedIssueTap>
               <ClosedIssueTap>
                 <img src={archiveIcon} alt="closed icon" />
@@ -69,6 +71,38 @@ export default function IssueListPage() {
             </FilterBtnsOnTable>
           </TableContent>
         </IssueTableTop>
+        {issue.issue_list.map((issue: Issue) => {
+          const { id, title, label, create_at, reporter, milestone } = issue;
+          return (
+            <IssueTable>
+              <IssueCheckBox type="checkbox" name={id.toString()} />
+              <TableContent>
+                <IssueInfo>
+                  <IssueInfoTop>
+                    <img src={alertIcon} alt="blue alert icon" />
+                    <IssueTitle>{title}</IssueTitle>
+                    <LabelComponent labelInfo={label} />
+                  </IssueInfoTop>
+                  <IssueInfoBottom>
+                    <span>#{id}</span>
+                    <span>
+                      이 이슈가 {create_at}, {reporter.name}님에 의해
+                      작성되었습니다.
+                    </span>
+                    <span>
+                      <img src={milestoneIcon} alt="milestone icon" />
+                      {milestone.name}
+                    </span>
+                  </IssueInfoBottom>
+                </IssueInfo>
+                <IssueReporterImg
+                  src={reporter.image_path}
+                  alt="reporter img"
+                />
+              </TableContent>
+            </IssueTable>
+          );
+        })}
       </CommonS.Wrapper>
     </>
   );
@@ -184,18 +218,27 @@ const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
   width: 227px;
 `;
 
-const OpenedIssueTap = styled(CommonS.SpaceBetween)`
-  width: 102px;
+const OpenedIssueTap = styled.div`
+  display: flex;
+  width: 103px;
   font-weight: 700;
   font-size: 16px;
   color: rgba(20, 20, 43, 1);
+
+  img {
+    margin-right: 4px;
+  }
 `;
 
-const ClosedIssueTap = styled(CommonS.SpaceBetween)`
-  width: 102px;
+const ClosedIssueTap = styled.div`
+  display: flex;
+  width: 103px;
   font-weight: 500;
   font-size: 16px;
   color: rgba(78, 75, 102, 1);
+  img {
+    margin-right: 4px;
+  }
 `;
 
 const FilterBtnsOnTable = styled(CommonS.SpaceBetween)`
@@ -218,8 +261,70 @@ const TableFilterBtn = styled(CommonS.SpaceBetween)`
 const TableContent = styled(CommonS.SpaceBetween)`
   margin-left: 32px;
   width: 1200px;
+  height: 64px;
 `;
 
 const IssueCheckBox = styled.input`
   border: 1px solid rgba(217, 219, 233, 1);
+  margin-top: 7px;
+`;
+
+const IssueTable = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  height: 96px;
+  background-color: rgba(254, 254, 254, 1);
+  padding: 16px 32px;
+  border-left: 1px solid rgba(217, 219, 233, 1);
+  border-right: 1px solid rgba(217, 219, 233, 1);
+  border-bottom: 1px solid rgba(217, 219, 233, 1);
+
+  &:last-child {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+`;
+
+const IssueInfo = styled(CommonS.ColumnFlex)`
+  justify-content: space-between;
+`;
+
+const IssueInfoTop = styled.div`
+  display: flex;
+
+  img {
+    filter: invert(36%) sepia(41%) saturate(7096%) hue-rotate(201deg)
+      brightness(103%) contrast(104%);
+    margin-right: 8px;
+  }
+`;
+
+const IssueTitle = styled.div`
+  font-size: 20px;
+  color: rgba(20, 20, 43, 1);
+  font-weight: 500;
+  margin-right: 8px;
+`;
+
+const IssueInfoBottom = styled.div`
+  display: flex;
+
+  > span {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(110, 113, 145, 1);
+    margin-right: 16px;
+  }
+
+  & img {
+    margin-right: 8px;
+  }
+`;
+
+const IssueReporterImg = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 22px;
 `;
