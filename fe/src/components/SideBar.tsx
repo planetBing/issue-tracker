@@ -1,8 +1,10 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label, milestone, userList, Label, Milestone } from "./sideBarData";
+import { label, milestone, userList } from "./sideBarData";
 import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
+import MilestonePopup from "./popup/MilestonePopup";
+import { Label, Milestone } from "../Model/types";
 
 interface SideBarProps {
   handleInputLabel: (item: Label) => void;
@@ -130,29 +132,11 @@ export default function SideBar({
         )}
       </LastSideBarItem>
       {popupState.milestone && (
-        <DropdownPanel>
-          <DropdownHeader>마일스톤 설정</DropdownHeader>
-          {milestone.map((item) => {
-            const { id, title } = item;
-            return (
-              <DropdownOption key={`milestone-${id}`}>
-                <OptionInfo>
-                  <span>{title}</span>
-                </OptionInfo>
-                <input
-                  type="radio"
-                  id={title}
-                  name="label"
-                  value={id}
-                  onChange={() => {
-                    handleInputMilestone(item);
-                    dispatch({ type: "closePopup" });
-                  }}
-                />
-              </DropdownOption>
-            );
-          })}
-        </DropdownPanel>
+        <MilestonePopup
+          milestoneList={milestone}
+          handleInputMilestone={handleInputMilestone}
+          closePopup={() => dispatch({ type: "closePopup" })}
+        />
       )}
 
       {(popupState.label || popupState.milestone || popupState.assignee) && (
@@ -225,52 +209,11 @@ const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
   color: ${(props) => props.$textColor};
 `;
 
-const DropdownPanel = styled.div`
-  position: absolute;
-  width: 240px;
-  min-height: 67.5px;
-  max-height: 211.5px;
-  border-radius: 16px;
-  border: 1px solid rgba(217, 219, 233, 1);
-  overflow: hidden;
-  z-index: 1100;
-`;
-
-const DropdownHeader = styled.div`
-  padding: 8px 16px;
-  background-color: rgba(247, 247, 252, 1);
-  color: rgba(110, 113, 145, 1);
-  font-weight: 500;
-  font-size: 12px;
-`;
-
 const AssigneeImg = styled.img`
   width: 20px;
   height: 20px;
   border-radius: 50%;
   margin-right: 8px;
-`;
-
-const DropdownOption = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background-color: white;
-  padding: 8px 16px;
-  border-bottom: 1px solid rgba(217, 219, 233, 1);
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const OptionInfo = styled.div`
-  display: flex;
-
-  & span {
-    font-weight: 500;
-    font-size: 16px;
-    color: rgba(78, 75, 102, 1);
-  }
 `;
 
 const Overlay = styled.div`

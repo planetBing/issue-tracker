@@ -8,3 +8,14 @@ export interface Label {
   backgroundColor: string;
   textColor: string;
 }
+
+export interface Milestone {
+  id: number;
+  title: string;
+  description: string | null;
+  end_date: string;
+  is_open: boolean;
+  progress: number;
+  open_issue: number;
+  close_issue: number;
+}
