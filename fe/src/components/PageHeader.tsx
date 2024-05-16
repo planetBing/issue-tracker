@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import * as CommonS from "../styles/common";
 
 interface PageHeaderProps {
-  loggedInUserImageSrc: string;
+  loggedInUserImageSrc: string | undefined;
 }
 
 export default function PageHeader({ loggedInUserImageSrc }: PageHeaderProps) {
