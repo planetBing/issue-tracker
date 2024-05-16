@@ -10,5 +10,5 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @AllArgsConstructor
 public class AssigneeRef {
-  private String user_name;
+  private String userName;
 }
