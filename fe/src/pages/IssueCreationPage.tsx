@@ -6,6 +6,7 @@ import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
+import { Link } from "react-router-dom";
 
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
@@ -98,7 +99,7 @@ export default function IssueCreationPage() {
           />
         </Main>
         <ButtonArea>
-          <span>x 작성취소</span>
+          <CancelBtn to="/">x 작성취소</CancelBtn>
           <DoneBtn onClick={postIssue}>완료</DoneBtn>
         </ButtonArea>
       </Wrapper>
@@ -196,14 +197,14 @@ const ButtonArea = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-top: 25px;
+`;
 
-  & span {
-    margin-right: 32px;
-    color: rgba(78, 75, 102, 1);
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
-  }
+const CancelBtn = styled(Link)`
+  margin-right: 32px;
+  color: rgba(78, 75, 102, 1);
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
 `;
 
 const DoneBtn = styled.button`
