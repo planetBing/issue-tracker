@@ -1,11 +1,13 @@
-import { useReducer } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { label, milestone, userList } from "./sideBarData";
 import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
 import MilestonePopup from "./popup/MilestonePopup";
-import { Label, Milestone } from "../Model/types";
+import { Label, Milestone, User } from "../Model/types";
 import LabelComponent from "./Label";
+
+const SERVER = process.env.REACT_APP_SERVER;
 
 interface SideBarProps {
   handleInputLabel: (item: Label) => void;
@@ -58,6 +60,46 @@ export default function SideBar({
   selectedMilestone,
 }: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
+  const [userData, setUserData] = useState<User[]>([]);
+  const [labelData, setLabelData] = useState<Label[]>([]);
+  const [milestoneData, setMilestoneData] = useState<Milestone[]>([]);
+
+  useEffect(() => {
+    fetchUserData();
+    fetchLabelData();
+    fetchMilestoneData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`${SERVER}/user`);
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching label data:", error);
+    }
+  };
+
+  const fetchLabelData = async () => {
+    try {
+      const response = await fetch(`${SERVER}/label`);
+      const data = await response.json();
+      setLabelData(data);
+    } catch (error) {
+      console.error("Error fetching label data:", error);
+    }
+  };
+
+  const fetchMilestoneData = async () => {
+    try {
+      const response = await fetch(`${SERVER}/milestone`);
+      const data = await response.json();
+      setMilestoneData(data);
+    } catch (error) {
+      console.error("Error fetching label data:", error);
+    }
+  };
+
   const { close_issue, open_issue } = selectedMilestone ?? {
     close_issue: 0,
     open_issue: 0,
@@ -73,7 +115,7 @@ export default function SideBar({
         {!!assigneeList.length && (
           <SelectedAssigneeWrapper>
             {assigneeList.map((assignee) => {
-              const selectedUser = userList.find(
+              const selectedUser = userData.find(
                 (userObj) => userObj.name === assignee
               );
               return (
@@ -88,7 +130,7 @@ export default function SideBar({
       </FirstSideBarItem>
       {popupState.assignee && (
         <UserPopup
-          userList={userList}
+          userList={userData}
           assigneeList={assigneeList}
           handleInputAssignee={handleInputAssignee}
           closePopup={() => dispatch({ type: "closePopup" })}
@@ -107,7 +149,7 @@ export default function SideBar({
       </SideBarItem>
       {popupState.label && (
         <LabelPopup
-          labelList={label}
+          labelList={labelData}
           handleInputLabel={handleInputLabel}
           closePopup={() => dispatch({ type: "closePopup" })}
         />
@@ -128,7 +170,7 @@ export default function SideBar({
       </LastSideBarItem>
       {popupState.milestone && (
         <MilestonePopup
-          milestoneList={milestone}
+          milestoneList={milestoneData}
           handleInputMilestone={handleInputMilestone}
           closePopup={() => dispatch({ type: "closePopup" })}
         />
@@ -195,13 +237,6 @@ const FirstSideBarItem = styled(SideBarItem)`
 const LastSideBarItem = styled(SideBarItem)`
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 16px;
-`;
-
-const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
-  padding: 4px 8px;
-  border-radius: 16px;
-  background-color: ${(props) => props.$backgroundColor};
-  color: ${(props) => props.$textColor};
 `;
 
 const AssigneeImg = styled.img`
