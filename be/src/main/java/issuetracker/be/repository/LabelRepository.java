@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LabelRepository extends CrudRepository<Label, String> {
+
+  @Override
+  List<Label> findAll();
 }

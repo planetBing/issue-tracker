@@ -4,9 +4,6 @@ import issuetracker.be.domain.Issue;
 import issuetracker.be.dto.IssueSaveRequestDto;
 import issuetracker.be.repository.IssueRepository;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,7 @@ public class IssueService {
 
   public void save(IssueSaveRequestDto issueSaveRequestDto) {
     Issue issue = issueSaveRequestDto.toEntity(LocalDateTime.now());
-    issueRepository.save(issue);
+    Issue save = issueRepository.save(issue);
+    log.debug("저장된 이슈 : {}", save);
   }
 }

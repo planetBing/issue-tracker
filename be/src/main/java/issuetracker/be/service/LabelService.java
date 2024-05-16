@@ -2,10 +2,9 @@ package issuetracker.be.service;
 
 import issuetracker.be.domain.Label;
 import issuetracker.be.repository.LabelRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class LabelService {
@@ -17,7 +16,7 @@ public class LabelService {
     this.labelRepository = labelRepository;
   }
 
-  public Iterable<Label> getAllLabel() {
+  public List<Label> getAllLabel() {
     return labelRepository.findAll();
   }
 }
