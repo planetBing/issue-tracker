@@ -51,8 +51,8 @@ export default function IssueCreationPage() {
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
-      label: selectedLabel?.name,
-      milestone: selectedMilestone?.id,
+      label: selectedLabel ? selectedLabel.name : null,
+      milestone: selectedMilestone ? selectedMilestone.id : null,
     };
     console.log(issueCreationData);
   };
