@@ -11,14 +11,18 @@ import { Link } from "react-router-dom";
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
+  //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(
     null
   );
+  const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIssueTitle(e.target.value);
+    const titleValue = e.target.value;
+    setIssueTitle(titleValue);
+    setIsIssueTitleFilled(titleValue.trim() !== "");
   };
 
   const handleInputComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -100,7 +104,9 @@ export default function IssueCreationPage() {
         </Main>
         <ButtonArea>
           <CancelBtn to="/">x 작성취소</CancelBtn>
-          <DoneBtn onClick={postIssue}>완료</DoneBtn>
+          <DoneBtn onClick={postIssue} disabled={!isIssueTitleFilled}>
+            완료
+          </DoneBtn>
         </ButtonArea>
       </Wrapper>
     </>
@@ -207,7 +213,7 @@ const CancelBtn = styled(Link)`
   text-decoration: none;
 `;
 
-const DoneBtn = styled.button`
+const DoneBtn = styled.button<{ disabled: boolean }>`
   border: none;
   background-color: rgba(0, 122, 255, 1);
   color: white;
@@ -217,4 +223,5 @@ const DoneBtn = styled.button`
   font-weight: 500;
   border-radius: 10px;
   cursor: pointer;
+  opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
 `;
