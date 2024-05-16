@@ -5,6 +5,7 @@ import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
 import MilestonePopup from "./popup/MilestonePopup";
 import { Label, Milestone } from "../Model/types";
+import LabelComponent from "./Label";
 
 interface SideBarProps {
   handleInputLabel: (item: Label) => void;
@@ -100,13 +101,7 @@ export default function SideBar({
         </div>
         {selectedLabel && (
           <SelectedOptionWrapper>
-            <LabelDiv
-              key={`selectedLabel-${selectedLabel.name}`}
-              $backgroundColor={selectedLabel.backgroundColor}
-              $textColor={selectedLabel.textColor}
-            >
-              {selectedLabel.name}
-            </LabelDiv>
+            <LabelComponent labelInfo={selectedLabel} />
           </SelectedOptionWrapper>
         )}
       </SideBarItem>
@@ -127,7 +122,7 @@ export default function SideBar({
             <ProgressBar>
               <FilledProgressBar $length={selectedMilestoneProgressNum} />
             </ProgressBar>
-            <MilestoneTitle>{selectedMilestone.title}</MilestoneTitle>
+            <MilestoneTitle>{selectedMilestone.name}</MilestoneTitle>
           </SelectedMilestoneWrapper>
         )}
       </LastSideBarItem>

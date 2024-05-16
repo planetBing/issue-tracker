@@ -5,17 +5,17 @@ export interface User {
 
 export interface Label {
   name: string;
-  backgroundColor: string;
-  textColor: string;
+  background_color: string;
+  text_color: string;
+  description: string | null;
 }
 
 export interface Milestone {
   id: number;
-  title: string;
+  name: string;
   description: string | null;
   end_date: string;
   is_open: boolean;
-  progress: number;
   open_issue: number;
   close_issue: number;
 }

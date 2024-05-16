@@ -16,15 +16,15 @@ export default function MilestonePopup({
     <S.DropdownPanel>
       <S.DropdownHeader>마일스톤 설정</S.DropdownHeader>
       {milestoneList.map((item) => {
-        const { id, title } = item;
+        const { id, name } = item;
         return (
           <S.DropdownOption key={`milestone-${id}`}>
             <S.OptionInfo>
-              <span>{title}</span>
+              <span>{name}</span>
             </S.OptionInfo>
             <input
               type="radio"
-              id={title}
+              id={name}
               name="label"
               value={id}
               onChange={() => {

@@ -17,11 +17,11 @@ export default function LabelPopup({
     <S.DropdownPanel>
       <S.DropdownHeader>레이블 설정</S.DropdownHeader>
       {labelList.map((item) => {
-        const { name, backgroundColor } = item;
+        const { name, background_color } = item;
         return (
           <S.DropdownOption key={`label-${name}`}>
             <S.OptionInfo>
-              <LabelColorCircle color={backgroundColor} />
+              <LabelColorCircle color={background_color} />
               <span>{name}</span>
             </S.OptionInfo>
             <input

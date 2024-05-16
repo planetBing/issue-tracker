@@ -1,14 +1,8 @@
 import { styled } from "styled-components";
+import { Label } from "../Model/types";
 
 interface LabelProps {
   labelInfo: Label;
-}
-
-interface Label {
-  name: string;
-  background_color: string;
-  text_color: string;
-  description: string | null;
 }
 
 export default function LabelComponent({ labelInfo }: LabelProps) {

@@ -1,46 +1,42 @@
-import { User } from "../Model/types";
-
-export interface Label {
-  name: string;
-  backgroundColor: string;
-  textColor: string;
-}
-
-export interface Milestone {
-  id: number;
-  title: string;
-  description: string | null;
-  end_date: string;
-  is_open: boolean;
-  progress: number;
-  open_issue: number;
-  close_issue: number;
-}
+import { User, Label, Milestone } from "../Model/types";
 
 export const label: Label[] = [
-  { name: "fix", backgroundColor: "blue", textColor: "white" },
-  { name: "error", backgroundColor: "red", textColor: "black" },
-  { name: "bingsoo", backgroundColor: "yellow", textColor: "black" },
+  {
+    name: "fix",
+    background_color: "blue",
+    text_color: "white",
+    description: "fix입니다.",
+  },
+  {
+    name: "error",
+    background_color: "red",
+    text_color: "black",
+    description: "error입니다.",
+  },
+  {
+    name: "bingsoo",
+    background_color: "yellow",
+    text_color: "black",
+    description: "bingsoo입니다.",
+  },
 ];
 
 export const milestone: Milestone[] = [
   {
     id: 1243567654,
-    title: "이슈트래커 마일스톤",
+    name: "이슈트래커 마일스톤",
     description: "빙수~ 너무 귀여워",
     end_date: "2024-05-09",
     is_open: true,
-    progress: 70,
     open_issue: 3,
     close_issue: 7,
   },
   {
     id: 238579,
-    title: "스프링부트 마일스톤",
+    name: "스프링부트 마일스톤",
     description: null,
     end_date: "2024-05-09",
     is_open: true,
-    progress: 70,
     open_issue: 3,
     close_issue: 7,
   },

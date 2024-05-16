@@ -4,7 +4,7 @@ import { loggedInUserImageSrc } from "../constants/constants";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
-import { Label, Milestone } from "../components/sideBarData";
+import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 
 export default function IssueCreationPage() {
