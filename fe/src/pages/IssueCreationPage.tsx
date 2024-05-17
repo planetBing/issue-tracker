@@ -99,18 +99,23 @@ export default function IssueCreationPage() {
             src={currentUser?.image_path}
             alt="loggedInUserImage"
           />
-          <TextArea>
+          <TextContainer>
             <IssueTitle
               type="text"
               name="issueTitle"
               placeholder="제목"
               onChange={handleInputIssueTitle}
             ></IssueTitle>
-            <textarea
-              name="comment"
-              placeholder="코멘트를 입력하세요"
-              onChange={handleInputComment}
-            ></textarea>
+            <TextAreaWrapper>
+              <StyledTextArea
+                name="comment"
+                placeholder="코멘트를 입력하세요"
+                onChange={handleInputComment}
+              ></StyledTextArea>
+              {comment && (
+                <CharCount>띄어쓰기 포함 {comment?.length}자</CharCount>
+              )}
+            </TextAreaWrapper>
             <FileAttach>
               <label htmlFor="file">
                 <FileAttachBtn>
@@ -120,7 +125,7 @@ export default function IssueCreationPage() {
               </label>
               <input type="file" id="file" />
             </FileAttach>
-          </TextArea>
+          </TextContainer>
           <SideBar
             handleInputLabel={handleInputLabel}
             handleInputMilestone={handleInputMilestone}
@@ -164,25 +169,10 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const TextArea = styled(CommonS.ColumnFlex)`
+const TextContainer = styled(CommonS.ColumnFlex)`
   display: flex;
   flex-direction: column;
   width: 912px;
-
-  & textarea {
-    height: 350px;
-    border: none;
-    padding: 16px;
-    background-color: rgba(239, 240, 246, 1);
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    border-bottom: 1px dashed rgba(217, 219, 233, 1);
-  }
-
-  & textarea:focus {
-    outline-color: black;
-    background-color: white;
-  }
 `;
 
 const IssueTitle = styled.input`
@@ -193,9 +183,41 @@ const IssueTitle = styled.input`
   border-radius: 16px;
   margin-bottom: 7px;
 
-  :focus {
+  &:focus {
     outline: none;
   }
+`;
+
+const TextAreaWrapper = styled.div`
+  position: relative;
+  margin-bottom: -3px;
+`;
+
+const StyledTextArea = styled.textarea`
+  height: 350px;
+  border: none;
+  padding: 16px;
+  background-color: rgba(239, 240, 246, 1);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom: 1px dashed rgba(217, 219, 233, 1);
+  width: 100%;
+
+  &:focus {
+    outline-color: black;
+    background-color: white;
+  }
+`;
+
+const CharCount = styled.div`
+  text-align: right;
+  font-size: 12px;
+  color: gray;
+  margin-top: 4px;
+  position: absolute;
+  width: 100%;
+  top: 310px;
+  padding-right: 25px;
 `;
 
 const FileAttach = styled.div`
@@ -250,6 +272,6 @@ const DoneBtn = styled.button<{ disabled: boolean }>`
   font-size: 20px;
   font-weight: 500;
   border-radius: 10px;
-  cursor: pointer;
   opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;
