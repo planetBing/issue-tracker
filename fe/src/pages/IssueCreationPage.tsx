@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { loggedInUserImageSrc } from "../constants/constants";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
+import { useCurrentUser } from "../contexts/CurrentUserProvider";
+import { useNavigate } from "react-router-dom";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
 export default function IssueCreationPage() {
+  const { currentUser } = useCurrentUser();
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
@@ -20,6 +22,14 @@ export default function IssueCreationPage() {
     null
   );
   const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const titleValue = e.target.value;
@@ -53,7 +63,7 @@ export default function IssueCreationPage() {
 
   const postIssue = async () => {
     const issueCreationData = {
-      reporter: "bingsoo",
+      reporter: currentUser?.name,
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
@@ -81,12 +91,12 @@ export default function IssueCreationPage() {
 
   return (
     <>
-      <PageHeader loggedInUserImageSrc={loggedInUserImageSrc} />
+      <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
       <Wrapper>
         <PageTitle>새로운 이슈 작성</PageTitle>
         <Main>
           <LoggedInUserImage
-            src={loggedInUserImageSrc}
+            src={currentUser?.image_path}
             alt="loggedInUserImage"
           />
           <TextArea>
