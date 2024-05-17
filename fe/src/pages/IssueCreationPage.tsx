@@ -8,6 +8,8 @@ import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 
+const SERVER = process.env.REACT_APP_SERVER;
+
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export default function IssueCreationPage() {
     setSelectedMilestone(item);
   };
 
-  const postIssue = () => {
+  const postIssue = async () => {
     const issueCreationData = {
       reporter: "bingsoo",
       title: issueTitle,
@@ -58,7 +60,23 @@ export default function IssueCreationPage() {
       label: selectedLabel ? selectedLabel.name : null,
       milestone: selectedMilestone ? selectedMilestone.id : null,
     };
-    console.log(issueCreationData);
+    try {
+      const response = await fetch(`${SERVER}/issue`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(issueCreationData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log("Issue created successfully");
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
