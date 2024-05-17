@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { loggedInUserImageSrc } from "../constants/constants";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
 import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
+import { useCurrentUser } from "../contexts/CurrentUserProvider";
+import { useNavigate } from "react-router-dom";
+
+const SERVER = process.env.REACT_APP_SERVER;
 
 export default function IssueCreationPage() {
+  const { currentUser } = useCurrentUser();
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
@@ -18,6 +22,14 @@ export default function IssueCreationPage() {
     null
   );
   const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const titleValue = e.target.value;
@@ -49,40 +61,63 @@ export default function IssueCreationPage() {
     setSelectedMilestone(item);
   };
 
-  const postIssue = () => {
+  const postIssue = async () => {
     const issueCreationData = {
-      reporter: "bingsoo",
+      reporter: currentUser?.name,
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
       label: selectedLabel ? selectedLabel.name : null,
-      milestone: selectedMilestone ? selectedMilestone.id : null,
+      milestone_id: selectedMilestone ? selectedMilestone.id : null,
     };
-    console.log(issueCreationData);
+    try {
+      const response = await fetch(`${SERVER}/issue`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(issueCreationData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log("Issue created successfully");
+      console.log(issueCreationData);
+      navigate("/");
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
     <>
-      <PageHeader loggedInUserImageSrc={loggedInUserImageSrc} />
+      <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
       <Wrapper>
         <PageTitle>새로운 이슈 작성</PageTitle>
         <Main>
           <LoggedInUserImage
-            src={loggedInUserImageSrc}
+            src={currentUser?.image_path}
             alt="loggedInUserImage"
           />
-          <TextArea>
+          <TextContainer>
             <IssueTitle
               type="text"
               name="issueTitle"
               placeholder="제목"
               onChange={handleInputIssueTitle}
             ></IssueTitle>
-            <textarea
-              name="comment"
-              placeholder="코멘트를 입력하세요"
-              onChange={handleInputComment}
-            ></textarea>
+            <TextAreaWrapper>
+              <StyledTextArea
+                name="comment"
+                placeholder="코멘트를 입력하세요"
+                onChange={handleInputComment}
+              ></StyledTextArea>
+              {comment && (
+                <CharCount>띄어쓰기 포함 {comment?.length}자</CharCount>
+              )}
+            </TextAreaWrapper>
             <FileAttach>
               <label htmlFor="file">
                 <FileAttachBtn>
@@ -92,7 +127,7 @@ export default function IssueCreationPage() {
               </label>
               <input type="file" id="file" />
             </FileAttach>
-          </TextArea>
+          </TextContainer>
           <SideBar
             handleInputLabel={handleInputLabel}
             handleInputMilestone={handleInputMilestone}
@@ -136,25 +171,10 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const TextArea = styled(CommonS.ColumnFlex)`
+const TextContainer = styled(CommonS.ColumnFlex)`
   display: flex;
   flex-direction: column;
   width: 912px;
-
-  & textarea {
-    height: 350px;
-    border: none;
-    padding: 16px;
-    background-color: rgba(239, 240, 246, 1);
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    border-bottom: 1px dashed rgba(217, 219, 233, 1);
-  }
-
-  & textarea:focus {
-    outline-color: black;
-    background-color: white;
-  }
 `;
 
 const IssueTitle = styled.input`
@@ -165,9 +185,41 @@ const IssueTitle = styled.input`
   border-radius: 16px;
   margin-bottom: 7px;
 
-  :focus {
+  &:focus {
     outline: none;
   }
+`;
+
+const TextAreaWrapper = styled.div`
+  position: relative;
+  margin-bottom: -3px;
+`;
+
+const StyledTextArea = styled.textarea`
+  height: 350px;
+  border: none;
+  padding: 16px;
+  background-color: rgba(239, 240, 246, 1);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom: 1px dashed rgba(217, 219, 233, 1);
+  width: 100%;
+
+  &:focus {
+    outline-color: black;
+    background-color: white;
+  }
+`;
+
+const CharCount = styled.div`
+  text-align: right;
+  font-size: 12px;
+  color: gray;
+  margin-top: 4px;
+  position: absolute;
+  width: 100%;
+  top: 310px;
+  padding-right: 25px;
 `;
 
 const FileAttach = styled.div`
@@ -222,6 +274,6 @@ const DoneBtn = styled.button<{ disabled: boolean }>`
   font-size: 20px;
   font-weight: 500;
   border-radius: 10px;
-  cursor: pointer;
   opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 `;

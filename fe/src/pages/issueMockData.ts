@@ -23,16 +23,15 @@ interface Milestone {
 export interface Issue {
   id: number;
   title: string;
-  create_at: string;
+  create_At: string;
   reporter: Reporter;
-  label: Label;
-  milestone: Milestone;
+  label: Label | null;
+  milestone: Milestone | null;
 }
 
 export interface IssueData {
-  issue_list: Issue[];
-  total_open_issue: number;
-  total_close_issue: number;
+  close_Issues: Issue[];
+  open_Issues: Issue[];
 }
 
 export const issue = {
