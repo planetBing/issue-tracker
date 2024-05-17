@@ -28,7 +28,7 @@ CREATE TABLE issue (
                        label varchar(255),
                        foreign key (milestone_id) references milestone(id),
                        foreign key (label) references label(name),
-                       foreign key (reporter) references user(id)
+                       foreign key (reporter) references user(name)
 );
 
 CREATE TABLE comment (
@@ -38,13 +38,13 @@ CREATE TABLE comment (
                          created_at DATETIME NOT NULL ,
                          contents text NOT NULL ,
                          foreign key (issue_id) references issue(id),
-                         foreign key (reporter) references user(id)
+                         foreign key (reporter) references user(name)
 );
 
 CREATE TABLE issue_assignee (
                                 issue_id BIGINT NOT NULL ,
-                                user_id varchar(255) NOT NULL ,
-                                PRIMARY KEY (issue_id, user_id),
+                                user_name varchar(255) NOT NULL ,
+                                PRIMARY KEY (issue_id, user_name),
                                 foreign key (issue_id) references issue(id),
-                                foreign key (user_id) references user(id)
+                                foreign key (user_name) references user(name)
 )
