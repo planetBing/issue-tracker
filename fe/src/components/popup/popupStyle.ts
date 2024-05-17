@@ -9,6 +9,7 @@ export const DropdownPanel = styled.div`
   border: 1px solid rgba(217, 219, 233, 1);
   overflow: hidden;
   z-index: 1100;
+  overflow-y: scroll;
 `;
 
 export const DropdownHeader = styled.div`
