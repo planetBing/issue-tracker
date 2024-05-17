@@ -4,20 +4,25 @@ import { loggedInUserImageSrc } from "../constants/constants";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
 import paperclipSvg from "../assets/paperclip.svg";
-import { Label, Milestone } from "../components/sideBarData";
+import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
+import { Link } from "react-router-dom";
 
 export default function IssueCreationPage() {
   const [issueTitle, setIssueTitle] = useState<string>("");
   const [comment, setComment] = useState<string | null>(null);
+  //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(
     null
   );
+  const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
 
   const handleInputIssueTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIssueTitle(e.target.value);
+    const titleValue = e.target.value;
+    setIssueTitle(titleValue);
+    setIsIssueTitleFilled(titleValue.trim() !== "");
   };
 
   const handleInputComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -50,8 +55,8 @@ export default function IssueCreationPage() {
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
-      label: selectedLabel?.name,
-      milestone: selectedMilestone?.id,
+      label: selectedLabel ? selectedLabel.name : null,
+      milestone: selectedMilestone ? selectedMilestone.id : null,
     };
     console.log(issueCreationData);
   };
@@ -98,8 +103,10 @@ export default function IssueCreationPage() {
           />
         </Main>
         <ButtonArea>
-          <span>x 작성취소</span>
-          <DoneBtn onClick={postIssue}>완료</DoneBtn>
+          <CancelBtn to="/">x 작성취소</CancelBtn>
+          <DoneBtn onClick={postIssue} disabled={!isIssueTitleFilled}>
+            완료
+          </DoneBtn>
         </ButtonArea>
       </Wrapper>
     </>
@@ -196,17 +203,17 @@ const ButtonArea = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-top: 25px;
-
-  & span {
-    margin-right: 32px;
-    color: rgba(78, 75, 102, 1);
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
-  }
 `;
 
-const DoneBtn = styled.button`
+const CancelBtn = styled(Link)`
+  margin-right: 32px;
+  color: rgba(78, 75, 102, 1);
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
+`;
+
+const DoneBtn = styled.button<{ disabled: boolean }>`
   border: none;
   background-color: rgba(0, 122, 255, 1);
   color: white;
@@ -216,4 +223,5 @@ const DoneBtn = styled.button`
   font-weight: 500;
   border-radius: 10px;
   cursor: pointer;
+  opacity: ${({ disabled }) => (disabled ? "37%" : "100%")};
 `;
