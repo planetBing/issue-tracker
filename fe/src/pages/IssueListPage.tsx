@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -8,12 +9,36 @@ import labelIcon from "../assets/label.svg";
 import milestoneIcon from "../assets/milestone.svg";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
-import { issue, Issue } from "./issueMockData";
+import { Issue, IssueData } from "../Model/types";
 import LabelComponent from "../components/Label";
 import { Link } from "react-router-dom";
 
+const SERVER = process.env.REACT_APP_SERVER;
+
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
+  const [issueList, setIssueList] = useState<IssueData | null>(null);
+
+  useEffect(() => {
+    const fetchIssues = async () => {
+      try {
+        const response = await fetch(`${SERVER}/issue`);
+        const data = await response.json();
+        console.log(data);
+        setIssueList(data);
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+      }
+    };
+
+    fetchIssues();
+  }, []);
+
+  if (!issueList) {
+    return <div>Loading...</div>;
+  }
+  const { close_Issues, open_Issues } = issueList;
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -49,11 +74,11 @@ export default function IssueListPage() {
             <SelectOpenAndClosedIssueBox>
               <OpenedIssueTap>
                 <img src={alertIcon} alt="opened icon" />
-                <span>열린 이슈(3)</span>
+                <span>열린 이슈({open_Issues.length})</span>
               </OpenedIssueTap>
               <ClosedIssueTap>
                 <img src={archiveIcon} alt="closed icon" />
-                <span>닫힌 이슈(2)</span>
+                <span>닫힌 이슈({close_Issues.length})</span>
               </ClosedIssueTap>
             </SelectOpenAndClosedIssueBox>
             <FilterBtnsOnTable>
@@ -72,8 +97,8 @@ export default function IssueListPage() {
             </FilterBtnsOnTable>
           </TableContent>
         </IssueTableTop>
-        {issue.issue_list.map((issue: Issue) => {
-          const { id, title, label, create_at, reporter, milestone } = issue;
+        {open_Issues.map((issue: Issue) => {
+          const { id, title, label, create_At, reporter, milestone } = issue;
           return (
             <IssueTable key={`issue-${id}`}>
               <IssueCheckBox type="checkbox" name={id.toString()} />
@@ -82,18 +107,20 @@ export default function IssueListPage() {
                   <IssueInfoTop>
                     <img src={alertIcon} alt="blue alert icon" />
                     <IssueTitle>{title}</IssueTitle>
-                    <LabelComponent labelInfo={label} />
+                    {label && <LabelComponent labelInfo={label} />}
                   </IssueInfoTop>
                   <IssueInfoBottom>
                     <span>#{id}</span>
                     <span>
-                      이 이슈가 {create_at}, {reporter.name}님에 의해
+                      이 이슈가 {create_At}, {reporter.name}님에 의해
                       작성되었습니다.
                     </span>
-                    <span>
-                      <img src={milestoneIcon} alt="milestone icon" />
-                      {milestone.name}
-                    </span>
+                    {milestone && (
+                      <span>
+                        <img src={milestoneIcon} alt="milestone icon" />
+                        {milestone?.name}
+                      </span>
+                    )}
                   </IssueInfoBottom>
                 </IssueInfo>
                 <IssueReporterImg

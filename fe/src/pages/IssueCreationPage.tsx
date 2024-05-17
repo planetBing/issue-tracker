@@ -68,7 +68,7 @@ export default function IssueCreationPage() {
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
       label: selectedLabel ? selectedLabel.name : null,
-      milestone: selectedMilestone ? selectedMilestone.id : null,
+      milestone_id: selectedMilestone ? selectedMilestone.id : null,
     };
     try {
       const response = await fetch(`${SERVER}/issue`, {
@@ -84,6 +84,8 @@ export default function IssueCreationPage() {
       }
 
       console.log("Issue created successfully");
+      console.log(issueCreationData);
+      navigate("/");
     } catch (error) {
       console.error("Error:", error);
     }

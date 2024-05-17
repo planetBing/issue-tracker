@@ -19,3 +19,17 @@ export interface Milestone {
   open_issue: number;
   close_issue: number;
 }
+
+export interface Issue {
+  id: number;
+  title: string;
+  create_At: string;
+  reporter: User;
+  label: Label | null;
+  milestone: Milestone | null;
+}
+
+export interface IssueData {
+  close_Issues: Issue[];
+  open_Issues: Issue[];
+}
