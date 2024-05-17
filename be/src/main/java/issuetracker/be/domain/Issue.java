@@ -16,6 +16,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 @ToString
 @NoArgsConstructor
 public class Issue {
+
   @Id
   private Long id;
   private String title;
@@ -27,7 +28,8 @@ public class Issue {
   @MappedCollection(idColumn = "issue_id")
   private Set<AssigneeRef> assignees;
 
-  public Issue(String title, String reporter,Long milestoneId, LocalDateTime createdAt, String label,
+  public Issue(String title, String reporter, Long milestoneId, LocalDateTime createdAt,
+      String label,
       List<String> assignees) {
     this.title = title;
     this.reporter = reporter;
