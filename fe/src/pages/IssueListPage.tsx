@@ -75,7 +75,7 @@ export default function IssueListPage() {
         {issue.issue_list.map((issue: Issue) => {
           const { id, title, label, create_at, reporter, milestone } = issue;
           return (
-            <IssueTable>
+            <IssueTable key={`issue-${id}`}>
               <IssueCheckBox type="checkbox" name={id.toString()} />
               <TableContent>
                 <IssueInfo>
