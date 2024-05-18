@@ -7,9 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IssueRepository extends CrudRepository<Issue, Long> {
 
-  @Query("SELECT * FROM issue WHERE is_open = true")
-  List<Issue> findByIsOpenIsTrue();
-
-  @Query("SELECT * FROM issue WHERE is_open = false")
-  List<Issue> findByIsOpenIsFalse();
+  @Query("SELECT * FROM issue WHERE is_open = :isOpen")
+  List<Issue> findByIsOpen(boolean isOpen);
 }

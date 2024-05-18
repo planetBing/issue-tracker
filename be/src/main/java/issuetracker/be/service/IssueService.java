@@ -46,8 +46,8 @@ public class IssueService {
   }
 
   public IssueGetResponseDto getAllIssue() {
-    List<IssueShowDto> closeIssues = generateIssueShowDto(issueRepository.findByIsOpenIsFalse());
-    List<IssueShowDto> openIssues = generateIssueShowDto(issueRepository.findByIsOpenIsTrue());
+    List<IssueShowDto> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
+    List<IssueShowDto> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
 
     return new IssueGetResponseDto(closeIssues, openIssues);
   }
