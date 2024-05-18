@@ -15,7 +15,7 @@ jobs:
             key: ${{secrets.SSH_PRIVATE_KEY}}
             host: ${{secrets.EC2_HOST}}
             username: ${{secrets.EC2_USER}}
-            port: ${{SSH_PORT}}
+            port: ${{secrets.SSH_PORT}}
             script: |
               cd issue5/be
               git pull origin be-release
