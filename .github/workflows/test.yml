@@ -1,0 +1,26 @@
+name: CICD
+on:
+  push:
+    branches: 
+      - be-release
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+      - name: ssh running
+        uses: appleboy/ssh-action@v0.1.6
+        with: 
+            key: ${{secrets.SSH_PRIVATE_KEY}}
+            host: ${{secrets.EC2_HOST}}
+            username: ${{secrets.EC2_USER}}
+            port: ${{SSH_PORT}}
+            script: |
+              cd issue5/be
+              git pull origin be-release
+              ./gradlew build
+              cd build/libs
+              java -jar be-0.0.1-SNAPSHOT.jar
+              pkill -f 'be-0.0.1-SNAPSHOT.jar'
+              nohup java -jar be-0.0.1-SNAPSHOT.jar &
