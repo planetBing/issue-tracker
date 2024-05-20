@@ -45,6 +45,9 @@ public class IssueService {
     log.debug("저장된 이슈 : {}", save);
   }
 
+  public boolean isIssueExistBy(Long milestoneId){
+    return issueRepository.existsByMilestoneId(milestoneId);
+  
   public IssueListResponse getAllIssue() {
     List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpenIsFalse());
     List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpenIsTrue());
@@ -71,5 +74,6 @@ public class IssueService {
       result.add(issueShowResponse);
     }
     return result;
+
   }
 }

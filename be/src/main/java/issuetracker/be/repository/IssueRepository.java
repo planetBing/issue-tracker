@@ -7,9 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IssueRepository extends CrudRepository<Issue, Long> {
 
+  boolean existsByMilestoneId(Long milestoneId);
+
   @Query("SELECT * FROM issue WHERE is_open = true")
   List<Issue> findByIsOpenIsTrue();
 
   @Query("SELECT * FROM issue WHERE is_open = false")
   List<Issue> findByIsOpenIsFalse();
+
 }
