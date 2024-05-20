@@ -2,17 +2,21 @@ package issuetracker.be.controller;
 
 import issuetracker.be.domain.Label;
 import issuetracker.be.dto.LabelSaveRequest;
+import issuetracker.be.dto.LabelUpdateRequest;
 import issuetracker.be.service.LabelService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class LabelController {
 
@@ -32,5 +36,10 @@ public class LabelController {
   @PostMapping("/label")
   public void save(@RequestBody LabelSaveRequest labelSaveRequest) {
     labelService.save(labelSaveRequest);
+  }
+
+  @PutMapping("/label")
+  public void update(@RequestBody LabelUpdateRequest labelUpdateRequest) {
+    labelService.update(labelUpdateRequest);
   }
 }
