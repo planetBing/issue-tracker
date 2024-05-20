@@ -23,4 +23,8 @@ public class IssueService {
     Issue save = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", save);
   }
+
+  public boolean isIssueExistBy(Long milestoneId){
+    return issueRepository.existsByMilestoneId(milestoneId);
+  }
 }
