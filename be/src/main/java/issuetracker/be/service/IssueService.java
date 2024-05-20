@@ -17,6 +17,8 @@ import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import issuetracker.be.repository.UserRepository;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,20 +59,23 @@ public class IssueService {
 
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
-    for (Issue i : issues) {
-      Label label = i.getLabel() != null ?
-          labelRepository.findById(i.getLabel())
-              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")) : null;
+    for (Issue issue : issues) {
+      List<Label> label = (issue.getLabels() != null) ?
+          issue.getLabels().stream()
+              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id()))
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(Collectors.toList()) : null;
 
       MilestoneWithIssueCountResponse milestone =
-          i.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
-              i.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+          issue.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
+              issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
               : null;
 
-      User reporter = userRepository.findById(i.getReporter())
+      User reporter = userRepository.findById(issue.getReporter())
           .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(i, label, milestone, reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
       result.add(issueShowResponse);
     }
     return result;
