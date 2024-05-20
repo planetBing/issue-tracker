@@ -17,6 +17,8 @@ import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import issuetracker.be.repository.UserRepository;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,9 +57,12 @@ public class IssueService {
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
     for (Issue issue : issues) {
-      Label label = issue.getLabel() != null ?
-          labelRepository.findById(issue.getId())
-              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")) : null;
+      List<Label> label = (issue.getLabels() != null) ?
+          issue.getLabels().stream()
+              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id()))
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(Collectors.toList()) : null;
 
       MilestoneWithIssueCountResponse milestone =
           issue.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
