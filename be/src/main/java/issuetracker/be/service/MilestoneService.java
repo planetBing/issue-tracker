@@ -1,8 +1,8 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Milestone;
-import issuetracker.be.dto.SaveMilestone;
-import issuetracker.be.dto.UpdateMilestone;
+import issuetracker.be.dto.MilestoneSaveRequest;
+import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.exception.MilestoneDeletionException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.MilestoneRepository;
@@ -34,11 +34,11 @@ public class MilestoneService {
 
   /**
    * 마일스톤을 생성한다.
-   * @param saveMilestone 마일스톤 생성 내용이 담긴 DTO
+   * @param milestoneSaveRequest 마일스톤 생성 내용이 담긴 DTO
    * @return 생성한 마일스톤 객체
    */
-  public Milestone save(SaveMilestone saveMilestone) {
-    Milestone milestone = saveMilestone.toEntity();
+  public Milestone save(MilestoneSaveRequest milestoneSaveRequest) {
+    Milestone milestone = milestoneSaveRequest.toEntity();
     return milestoneRepository.save(milestone);
   }
 
@@ -63,14 +63,14 @@ public class MilestoneService {
   /**
    * 마일스톤의 내용을 수정한다.
    * @return 수정을 성공한 마일스톤 객체
-   * @param updateMilestone 마일스톤 수정 내용이 담긴 DTO
+   * @param milestoneUpdateRequest 마일스톤 수정 내용이 담긴 DTO
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
    */
-  public Milestone update(UpdateMilestone updateMilestone) {
-    Long id = updateMilestone.getId();
+  public Milestone update(MilestoneUpdateRequest milestoneUpdateRequest) {
+    Long id = milestoneUpdateRequest.getId();
     if (milestoneRepository.findById(id).isEmpty()) {
       throw new NoSuchElementException("존재하지 않는 마일스톤입니다.");
     }
-    return milestoneRepository.save(updateMilestone.toEntity());
+    return milestoneRepository.save(milestoneUpdateRequest.toEntity());
   }
 }
