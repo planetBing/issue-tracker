@@ -4,7 +4,7 @@ export const DropdownPanel = styled.div`
   position: absolute;
   width: 240px;
   min-height: 67.5px;
-  max-height: 211.5px;
+  max-height: 220px;
   border-radius: 16px;
   border: 1px solid rgba(217, 219, 233, 1);
   overflow: hidden;
