@@ -10,29 +10,31 @@ import milestoneIcon from "../assets/milestone.svg";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
 import { Issue, IssueData } from "../Model/types";
-import LabelComponent from "../components/Label";
 import { Link } from "react-router-dom";
+import { issueList } from "./issueMockData";
+import TableItems from "../components/IssueTableItems";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
-  const [issueList, setIssueList] = useState<IssueData | null>(null);
+  // const [issueList, setIssueList] = useState<IssueData | null>(null);
+  const [showOpenIssues, setShowOpenIssues] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchIssues = async () => {
-      try {
-        const response = await fetch(`${SERVER}/issue`);
-        const data = await response.json();
-        console.log(data);
-        setIssueList(data);
-      } catch (error) {
-        console.error("Error fetching issues:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchIssues = async () => {
+  //     try {
+  //       const response = await fetch(`${SERVER}/issue`);
+  //       const data = await response.json();
+  //       console.log(data);
+  //       setIssueList(data);
+  //     } catch (error) {
+  //       console.error("Error fetching issues:", error);
+  //     }
+  //   };
 
-    fetchIssues();
-  }, []);
+  //   fetchIssues();
+  // }, []);
 
   if (!issueList) {
     return <div>Loading...</div>;
@@ -72,11 +74,21 @@ export default function IssueListPage() {
           <IssueCheckBox type="checkbox" name="wholeIssue" />
           <TableContent>
             <SelectOpenAndClosedIssueBox>
-              <OpenedIssueTap>
-                <img src={alertIcon} alt="opened icon" />
+              <OpenIssueTap
+                onClick={() => {
+                  setShowOpenIssues(true);
+                }}
+                isActive={showOpenIssues}
+              >
+                <img src={alertIcon} alt="open icon" />
                 <span>열린 이슈({open_Issues.length})</span>
-              </OpenedIssueTap>
-              <ClosedIssueTap>
+              </OpenIssueTap>
+              <ClosedIssueTap
+                onClick={() => {
+                  setShowOpenIssues(false);
+                }}
+                isActive={!showOpenIssues}
+              >
                 <img src={archiveIcon} alt="closed icon" />
                 <span>닫힌 이슈({close_Issues.length})</span>
               </ClosedIssueTap>
@@ -97,40 +109,8 @@ export default function IssueListPage() {
             </FilterBtnsOnTable>
           </TableContent>
         </IssueTableTop>
-        {open_Issues.map((issue: Issue) => {
-          const { id, title, label, create_At, reporter, milestone } = issue;
-          return (
-            <IssueTable key={`issue-${id}`}>
-              <IssueCheckBox type="checkbox" name={id.toString()} />
-              <TableContent>
-                <IssueInfo>
-                  <IssueInfoTop>
-                    <img src={alertIcon} alt="blue alert icon" />
-                    <IssueTitle>{title}</IssueTitle>
-                    {label && <LabelComponent labelInfo={label} />}
-                  </IssueInfoTop>
-                  <IssueInfoBottom>
-                    <span>#{id}</span>
-                    <span>
-                      이 이슈가 {create_At}, {reporter.name}님에 의해
-                      작성되었습니다.
-                    </span>
-                    {milestone && (
-                      <span>
-                        <img src={milestoneIcon} alt="milestone icon" />
-                        {milestone?.name}
-                      </span>
-                    )}
-                  </IssueInfoBottom>
-                </IssueInfo>
-                <IssueReporterImg
-                  src={reporter.image_path}
-                  alt="reporter img"
-                />
-              </TableContent>
-            </IssueTable>
-          );
-        })}
+        {showOpenIssues && <TableItems items={open_Issues} />}
+        {!showOpenIssues && <TableItems items={close_Issues} />}
       </CommonS.Wrapper>
     </>
   );
@@ -248,24 +228,26 @@ const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
   width: 227px;
 `;
 
-const OpenedIssueTap = styled.div`
+const OpenIssueTap = styled.div<{ isActive: boolean }>`
   display: flex;
   width: 103px;
-  font-weight: 700;
+  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
   font-size: 16px;
-  color: rgba(20, 20, 43, 1);
-
+  color: ${({ isActive }) =>
+    isActive ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
+  cursor: pointer;
   img {
     margin-right: 4px;
   }
 `;
 
-const ClosedIssueTap = styled.div`
+const ClosedIssueTap = styled.div<{ isActive: boolean }>`
   display: flex;
   width: 103px;
-  font-weight: 500;
+  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
   font-size: 16px;
-  color: rgba(78, 75, 102, 1);
+  color: ${({ isActive }) =>
+    isActive ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
   cursor: pointer;
   img {
     margin-right: 4px;
@@ -299,64 +281,4 @@ const TableContent = styled(CommonS.SpaceBetween)`
 const IssueCheckBox = styled.input`
   border: 1px solid rgba(217, 219, 233, 1);
   margin-top: 7px;
-`;
-
-const IssueTable = styled.div`
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-  height: 96px;
-  background-color: rgba(254, 254, 254, 1);
-  padding: 16px 32px;
-  border-left: 1px solid rgba(217, 219, 233, 1);
-  border-right: 1px solid rgba(217, 219, 233, 1);
-  border-bottom: 1px solid rgba(217, 219, 233, 1);
-
-  &:last-child {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-  }
-`;
-
-const IssueInfo = styled(CommonS.ColumnFlex)`
-  justify-content: space-between;
-`;
-
-const IssueInfoTop = styled.div`
-  display: flex;
-
-  img {
-    filter: invert(36%) sepia(41%) saturate(7096%) hue-rotate(201deg)
-      brightness(103%) contrast(104%);
-    margin-right: 8px;
-  }
-`;
-
-const IssueTitle = styled.div`
-  font-size: 20px;
-  color: rgba(20, 20, 43, 1);
-  font-weight: 500;
-  margin-right: 8px;
-`;
-
-const IssueInfoBottom = styled.div`
-  display: flex;
-
-  > span {
-    font-size: 16px;
-    font-weight: 500;
-    color: rgba(110, 113, 145, 1);
-    margin-right: 16px;
-  }
-
-  & img {
-    margin-right: 8px;
-  }
-`;
-
-const IssueReporterImg = styled.img`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin: 22px;
 `;
