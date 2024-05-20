@@ -16,7 +16,6 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 @ToString
 @NoArgsConstructor
 public class Issue {
-
   @Id
   private Long id;
   private String title;
@@ -24,32 +23,28 @@ public class Issue {
   private Long milestone_id;
   private LocalDateTime created_at;
   private Boolean is_open = true;
-  private String label;
+  @MappedCollection(idColumn = "issue_id")
+  private Set<LabelRef> labels;
   @MappedCollection(idColumn = "issue_id")
   private Set<AssigneeRef> assignees;
 
-  public Issue(String title, String reporter, Long milestoneId, LocalDateTime createdAt,
-      String label,
-      List<String> assignees) {
+  public Issue(String title, String reporter,Long milestoneId, LocalDateTime createdAt, List<Long> labelIds,
+      List<String> assigneeNames) {
     this.title = title;
     this.reporter = reporter;
     this.milestone_id = milestoneId;
     this.created_at = createdAt;
-    this.label = label;
-    this.assignees = setAssigneeRef(assignees);
+    this.labels = createLabelRef(labelIds);
+    this.assignees = createAssigneeRef(assigneeNames);
   }
 
-  public Issue(String title, String reporter, Long milestoneId, LocalDateTime now, String label) {
-    this.title = title;
-    this.reporter = reporter;
-    this.milestone_id = milestoneId;
-    this.created_at = now;
-    this.label = label;
-  }
-
-  private Set<AssigneeRef> setAssigneeRef(List<String> assigneeList) {
-    return assigneeList.stream()
+  private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
+    return assigneeNames.stream()
         .map(AssigneeRef::new)
         .collect(Collectors.toSet());
+  }
+
+  private Set<LabelRef> createLabelRef(List<Long> labelIds) {
+    return labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
   }
 }

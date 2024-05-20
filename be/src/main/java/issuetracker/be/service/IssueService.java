@@ -3,10 +3,10 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
-import issuetracker.be.dto.IssueGetResponseDto;
-import issuetracker.be.dto.IssueSaveRequestDto;
-import issuetracker.be.dto.IssueShowDto;
-import issuetracker.be.dto.MilestoneWithIssueCountDto;
+import issuetracker.be.dto.IssueListResponse;
+import issuetracker.be.dto.IssueSaveRequest;
+import issuetracker.be.dto.IssueShowResponse;
+import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.IssueRepository;
 
 import java.time.LocalDateTime;
@@ -17,6 +17,8 @@ import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import issuetracker.be.repository.UserRepository;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,37 +41,44 @@ public class IssueService {
     this.userRepository = userRepository;
   }
 
-  public void save(IssueSaveRequestDto issueSaveRequestDto) {
-    Issue issue = issueSaveRequestDto.toEntity(LocalDateTime.now());
+  public void save(IssueSaveRequest issueSaveRequest) {
+    Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue save = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", save);
   }
 
-  public IssueGetResponseDto getAllIssue() {
-    List<IssueShowDto> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
-    List<IssueShowDto> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
+  public boolean isIssueExistBy(Long milestoneId){
+    return issueRepository.existsByMilestoneId(milestoneId);
+  
+  public IssueListResponse getAllIssue() {
+    List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpenIsFalse());
+    List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpenIsTrue());
 
-    return new IssueGetResponseDto(closeIssues, openIssues);
+    return new IssueListResponse(closeIssues, openIssues);
   }
 
-  private List<IssueShowDto> generateIssueShowDto(List<Issue> issues) {
-    List<IssueShowDto> result = new ArrayList<>();
-    for (Issue i : issues) {
-      Label label = i.getLabel() != null ?
-          labelRepository.findById(i.getLabel())
-              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")) : null;
+  private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
+    List<IssueShowResponse> result = new ArrayList<>();
+    for (Issue issue : issues) {
+      List<Label> label = (issue.getLabels() != null) ?
+          issue.getLabels().stream()
+              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id()))
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(Collectors.toList()) : null;
 
-      MilestoneWithIssueCountDto milestone =
-          i.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
-              i.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+      MilestoneWithIssueCountResponse milestone =
+          issue.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
+              issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
               : null;
 
-      User reporter = userRepository.findById(i.getReporter())
+      User reporter = userRepository.findById(issue.getReporter())
           .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
 
-      IssueShowDto issueShowDto = new IssueShowDto(i, label, milestone, reporter);
-      result.add(issueShowDto);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
+      result.add(issueShowResponse);
     }
     return result;
+
   }
 }
