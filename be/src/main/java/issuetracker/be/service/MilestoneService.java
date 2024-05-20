@@ -3,6 +3,7 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneWithIssueCountDto;
 import issuetracker.be.dto.SaveMilestone;
+import issuetracker.be.dto.UpdateMilestone;
 import issuetracker.be.exception.MilestoneDeletionException;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.List;
@@ -57,5 +58,19 @@ public class MilestoneService {
     }
     milestoneRepository.delete(byId);
     return id;
+  }
+
+  /**
+   * 마일스톤의 내용을 수정한다.
+   * @return 수정을 성공한 마일스톤 객체
+   * @param updateMilestone 마일스톤 수정 내용이 담긴 DTO
+   * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
+   */
+  public Milestone update(UpdateMilestone updateMilestone) {
+    Long id = updateMilestone.getId();
+    if (milestoneRepository.findById(id).isEmpty()) {
+      throw new NoSuchElementException("존재하지 않는 마일스톤입니다.");
+    }
+    return milestoneRepository.save(updateMilestone.toEntity());
   }
 }
