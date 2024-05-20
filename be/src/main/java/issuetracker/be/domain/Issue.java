@@ -23,11 +23,11 @@ public class Issue {
   private Long milestone_id;
   private LocalDateTime created_at;
   private Boolean is_open = true;
-  private String label;
+  private Long label;
   @MappedCollection(idColumn = "issue_id")
   private Set<AssigneeRef> assignees;
 
-  public Issue(String title, String reporter,Long milestoneId, LocalDateTime createdAt, String label,
+  public Issue(String title, String reporter,Long milestoneId, LocalDateTime createdAt, Long label,
       List<String> assignees) {
     this.title = title;
     this.reporter = reporter;
@@ -37,7 +37,7 @@ public class Issue {
     this.assignees = setAssigneeRef(assignees);
   }
 
-  public Issue(String title, String reporter, Long milestoneId, LocalDateTime now, String label) {
+  public Issue(String title, String reporter, Long milestoneId, LocalDateTime now, Long label) {
     this.title = title;
     this.reporter = reporter;
     this.milestone_id = milestoneId;
