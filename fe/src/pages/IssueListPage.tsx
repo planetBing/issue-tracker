@@ -15,6 +15,7 @@ import { issueList } from "./issueMockData";
 import TableItems from "../components/IssueTableItems";
 import usePopup from "../hooks/usePopup";
 import FilterPopup from "../components/popup/FilterPopup";
+import Overlay from "../components/popup/Overlay";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
@@ -126,6 +127,10 @@ export default function IssueListPage() {
         </IssueTableTop>
         {showOpenIssues && <TableItems items={open_Issues} />}
         {!showOpenIssues && <TableItems items={close_Issues} />}
+        <Overlay
+          popupState={popupState}
+          closePopup={() => popupDispatch({ type: "closePopup" })}
+        />
       </CommonS.Wrapper>
     </>
   );

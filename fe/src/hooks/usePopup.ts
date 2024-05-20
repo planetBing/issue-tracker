@@ -12,7 +12,7 @@ type ActionType =
   | { type: "openPopup"; popup: PopupType }
   | { type: "closePopup" };
 
-interface PopupState {
+export interface PopupState {
   assignee: boolean;
   label: boolean;
   milestone: boolean;
