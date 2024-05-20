@@ -1,10 +1,10 @@
 package issuetracker.be.controller;
 
-
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneWithIssueCountDto;
 import issuetracker.be.dto.SaveMilestone;
 import issuetracker.be.dto.UpdateMilestone;
+import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.service.MilestoneService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +31,8 @@ public class MilestoneController {
   }
 
   @GetMapping("/milestone")
-  public ResponseEntity<List<MilestoneWithIssueCountDto>> getAllMilestone() {
-    List<MilestoneWithIssueCountDto> result = milestoneService.getAllMilestone();
+  public ResponseEntity<List<MilestoneWithIssueCountResponse>> getAllMilestone() {
+    List<MilestoneWithIssueCountResponse> result = milestoneService.getAllMilestone();
     return ResponseEntity.ok().body(result);
   }
 

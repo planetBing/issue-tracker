@@ -5,6 +5,7 @@ import issuetracker.be.dto.MilestoneWithIssueCountDto;
 import issuetracker.be.dto.SaveMilestone;
 import issuetracker.be.dto.UpdateMilestone;
 import issuetracker.be.exception.MilestoneDeletionException;
+import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,7 +29,7 @@ public class MilestoneService {
    * 전체 마일스톤의 정보를 조회한다
    * @return 마일스톤 조회 DTO List
    */
-  public List<MilestoneWithIssueCountDto> getAllMilestone() {
+  public List<MilestoneWithIssueCountResponse> getAllMilestone() {
     return milestoneRepository.findAllWithIssueCount();
   }
 

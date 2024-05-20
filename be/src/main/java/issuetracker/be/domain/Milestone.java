@@ -15,6 +15,9 @@ public class Milestone {
   private Long id;
   private String name;
   private String description;
+  private Date end_date;
+  private boolean is_open;
+
   private LocalDate endDate;
   private boolean isOpen = true;
 
