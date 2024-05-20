@@ -13,14 +13,16 @@ import { Issue, IssueData } from "../Model/types";
 import { Link } from "react-router-dom";
 import { issueList } from "./issueMockData";
 import TableItems from "../components/IssueTableItems";
+import usePopup from "../hooks/usePopup";
+import FilterPopup from "../components/popup/FilterPopup";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
+  const { popupState, dispatch: popupDispatch } = usePopup();
   // const [issueList, setIssueList] = useState<IssueData | null>(null);
   const [showOpenIssues, setShowOpenIssues] = useState<boolean>(true);
-
   // useEffect(() => {
   //   const fetchIssues = async () => {
   //     try {
@@ -47,10 +49,19 @@ export default function IssueListPage() {
       <CommonS.Wrapper>
         <TapAndFilterWrapper>
           <FilterBar>
-            <FilterBtn>
+            <FilterBtn
+              onClick={() =>
+                popupDispatch({ type: "openPopup", popup: "filter" })
+              }
+            >
               <span>필터</span>
               <img src={dropdownIcon} alt="dropdown" />
             </FilterBtn>
+            {popupState.filter && (
+              <FilterPopup
+                closePopup={() => popupDispatch({ type: "closePopup" })}
+              />
+            )}
             <FilterSearchBox>
               <img src={searchIcon} alt="serch icon" />
               <input placeholder="is: issue is:open" />
@@ -78,7 +89,7 @@ export default function IssueListPage() {
                 onClick={() => {
                   setShowOpenIssues(true);
                 }}
-                isActive={showOpenIssues}
+                isactive={showOpenIssues ? "true" : "false"}
               >
                 <img src={alertIcon} alt="open icon" />
                 <span>열린 이슈({open_Issues.length})</span>
@@ -87,14 +98,18 @@ export default function IssueListPage() {
                 onClick={() => {
                   setShowOpenIssues(false);
                 }}
-                isActive={!showOpenIssues}
+                isactive={!showOpenIssues ? "true" : "false"}
               >
                 <img src={archiveIcon} alt="closed icon" />
                 <span>닫힌 이슈({close_Issues.length})</span>
               </ClosedIssueTap>
             </SelectOpenAndClosedIssueBox>
             <FilterBtnsOnTable>
-              <TableFilterBtn>
+              <TableFilterBtn
+                onClick={() =>
+                  popupDispatch({ type: "openPopup", popup: "assignee" })
+                }
+              >
                 담당자 <img src={dropdownIcon} alt="dropdown icon" />
               </TableFilterBtn>
               <TableFilterBtn>
@@ -228,26 +243,26 @@ const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
   width: 227px;
 `;
 
-const OpenIssueTap = styled.div<{ isActive: boolean }>`
+const OpenIssueTap = styled.div<{ isactive: string }>`
   display: flex;
   width: 103px;
-  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
+  font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
-  color: ${({ isActive }) =>
-    isActive ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
+  color: ${({ isactive }) =>
+    isactive === "true" ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
   cursor: pointer;
   img {
     margin-right: 4px;
   }
 `;
 
-const ClosedIssueTap = styled.div<{ isActive: boolean }>`
+const ClosedIssueTap = styled.div<{ isactive: string }>`
   display: flex;
   width: 103px;
-  font-weight: ${({ isActive }) => (isActive ? 700 : 500)};
+  font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
-  color: ${({ isActive }) =>
-    isActive ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
+  color: ${({ isactive }) =>
+    isactive === "true" ? "rgba(20, 20, 43, 1)" : "rgba(78, 75, 102, 1)"};
   cursor: pointer;
   img {
     margin-right: 4px;
