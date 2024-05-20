@@ -1,6 +1,7 @@
 package issuetracker.be.domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,20 +18,18 @@ public class Milestone {
   private String description;
   private Date end_date;
   private boolean is_open;
-
-  private LocalDate endDate;
   private boolean isOpen = true;
 
-  public Milestone(String name, String description, LocalDate endDate) {
+  public Milestone(String name, String description, Date end_date) {
     this.name = name;
     this.description = description;
-    this.endDate = endDate;
+    this.end_date = end_date;
   }
 
-  public Milestone(Long id, String name, String description, LocalDate endDate) {
+  public Milestone(Long id, String name, String description, Date end_date) {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.endDate = endDate;
+    this.end_date = end_date;
   }
 }
