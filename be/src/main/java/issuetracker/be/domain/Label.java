@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 public class Label {
 
   @Id
+  private Long id;
   private String name;
   private String background_color;
   private String text_color;
