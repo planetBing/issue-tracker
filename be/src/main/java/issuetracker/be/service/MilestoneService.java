@@ -1,7 +1,6 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Milestone;
-import issuetracker.be.dto.MilestoneWithIssueCountDto;
 import issuetracker.be.dto.SaveMilestone;
 import issuetracker.be.dto.UpdateMilestone;
 import issuetracker.be.exception.MilestoneDeletionException;
