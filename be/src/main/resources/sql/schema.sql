@@ -16,9 +16,9 @@ CREATE TABLE milestone
 CREATE TABLE label
 (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name             varchar(255),
-    background_color varchar(20) NOT NULL,
-    text_color       varchar(20) NOT NULL,
+    name             varchar(255) NOT NULL,
+    background_color varchar(20)  NOT NULL,
+    text_color       varchar(20)  NOT NULL,
     description      varchar(255)
 );
 
@@ -58,7 +58,7 @@ CREATE TABLE issue_assignee
 
 CREATE TABLE issue_label
 (
-    issue_id BIGINT       NOT NULL,
+    issue_id BIGINT NOT NULL,
     label_id BIGINT NOT NULL,
     PRIMARY KEY (issue_id, label_id),
     foreign key (issue_id) references issue (id),
