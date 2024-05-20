@@ -6,9 +6,8 @@ import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("issue_assignee")
-@Setter
 @Getter
 @AllArgsConstructor
 public class AssigneeRef {
-  private String userName;
+  private String user_name;
 }
