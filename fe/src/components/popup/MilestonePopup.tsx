@@ -3,14 +3,12 @@ import { Milestone } from "../../Model/types";
 
 interface MilestonePopupProps {
   milestoneList: Milestone[];
-  handleInputMilestone: (item: Milestone) => void;
-  closePopup: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function MilestonePopup({
   milestoneList,
-  handleInputMilestone,
-  closePopup,
+  onChange,
 }: MilestonePopupProps) {
   return (
     <S.DropdownPanel>
@@ -27,10 +25,7 @@ export default function MilestonePopup({
               id={name}
               name="label"
               value={id}
-              onChange={() => {
-                handleInputMilestone(item);
-                closePopup();
-              }}
+              onChange={onChange}
             />
           </S.DropdownOption>
         );

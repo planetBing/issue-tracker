@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 
-type PopupType =
+export type PopupType =
   | "assignee"
   | "label"
   | "milestone"

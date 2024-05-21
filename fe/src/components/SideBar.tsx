@@ -1,21 +1,19 @@
-import { useReducer, useEffect, useState } from "react";
+import { useReducer } from "react";
 import { styled } from "styled-components";
-import { label, milestone, userList } from "./sideBarData";
 import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
 import MilestonePopup from "./popup/MilestonePopup";
 import { Label, Milestone, User } from "../Model/types";
 import LabelComponent from "./Label";
-
-const SERVER = process.env.REACT_APP_SERVER;
+import useApi from "../hooks/api/useApi";
 
 interface SideBarProps {
   handleInputLabel: (item: Label) => void;
-  handleInputMilestone: (item: Milestone) => void;
+  handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
   selectedLabel: Label | null;
-  selectedMilestone: Milestone | null;
+  selectedMilestone: string | null;
 }
 
 interface PopupState {
@@ -60,47 +58,14 @@ export default function SideBar({
   selectedMilestone,
 }: SideBarProps) {
   const [popupState, dispatch] = useReducer(popupReducer, initialpopupState);
-  const [userData, setUserData] = useState<User[]>([]);
-  const [labelData, setLabelData] = useState<Label[]>([]);
-  const [milestoneData, setMilestoneData] = useState<Milestone[]>([]);
+  const { data: userData } = useApi<User[]>("/user");
+  const { data: labelData } = useApi<Label[]>("/label");
+  const { data: milestoneData } = useApi<Milestone[]>("/milestone");
 
-  useEffect(() => {
-    fetchUserData();
-    fetchLabelData();
-    fetchMilestoneData();
-  }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch(`${SERVER}/user`);
-      const data = await response.json();
-      setUserData(data);
-    } catch (error) {
-      console.error("Error fetching label data:", error);
-    }
-  };
-
-  const fetchLabelData = async () => {
-    try {
-      const response = await fetch(`${SERVER}/label`);
-      const data = await response.json();
-      setLabelData(data);
-    } catch (error) {
-      console.error("Error fetching label data:", error);
-    }
-  };
-
-  const fetchMilestoneData = async () => {
-    try {
-      const response = await fetch(`${SERVER}/milestone`);
-      const data = await response.json();
-      setMilestoneData(data);
-    } catch (error) {
-      console.error("Error fetching label data:", error);
-    }
-  };
-
-  const { close_issue, open_issue } = selectedMilestone ?? {
+  const selectedMilestoneObj = milestoneData?.find(
+    (item) => item.id === Number(selectedMilestone)
+  );
+  const { close_issue, open_issue } = selectedMilestoneObj ?? {
     close_issue: 0,
     open_issue: 0,
   };
@@ -115,7 +80,7 @@ export default function SideBar({
         {!!assigneeList.length && (
           <SelectedAssigneeWrapper>
             {assigneeList.map((assignee) => {
-              const selectedUser = userData.find(
+              const selectedUser = userData?.find(
                 (userObj) => userObj.name === assignee
               );
               return (
@@ -128,12 +93,14 @@ export default function SideBar({
           </SelectedAssigneeWrapper>
         )}
       </FirstSideBarItem>
-      {popupState.assignee && (
+      {popupState.assignee && userData && (
         <UserPopup
           userList={userData}
-          assigneeList={assigneeList}
-          handleInputAssignee={handleInputAssignee}
-          closePopup={() => dispatch({ type: "closePopup" })}
+          selectedUserList={assigneeList}
+          onChange={(e) => {
+            handleInputAssignee(e);
+            dispatch({ type: "closePopup" });
+          }}
         />
       )}
 
@@ -147,7 +114,7 @@ export default function SideBar({
           </SelectedOptionWrapper>
         )}
       </SideBarItem>
-      {popupState.label && (
+      {popupState.label && labelData && (
         <LabelPopup
           labelList={labelData}
           handleInputLabel={handleInputLabel}
@@ -164,15 +131,17 @@ export default function SideBar({
             <ProgressBar>
               <FilledProgressBar $length={selectedMilestoneProgressNum} />
             </ProgressBar>
-            <MilestoneTitle>{selectedMilestone.name}</MilestoneTitle>
+            <MilestoneTitle>{selectedMilestoneObj?.name}</MilestoneTitle>
           </SelectedMilestoneWrapper>
         )}
       </LastSideBarItem>
-      {popupState.milestone && (
+      {popupState.milestone && milestoneData && (
         <MilestonePopup
           milestoneList={milestoneData}
-          handleInputMilestone={handleInputMilestone}
-          closePopup={() => dispatch({ type: "closePopup" })}
+          onChange={(e) => {
+            handleInputMilestone(e);
+            dispatch({ type: "closePopup" });
+          }}
         />
       )}
 

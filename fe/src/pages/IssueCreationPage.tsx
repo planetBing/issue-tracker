@@ -18,7 +18,7 @@ export default function IssueCreationPage() {
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
-  const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(
+  const [selectedMilestone, setSelectedMilestone] = useState<string | null>(
     null
   );
   const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
@@ -57,8 +57,8 @@ export default function IssueCreationPage() {
     setSelectedLabel(item);
   };
 
-  const handleInputMilestone = (item: Milestone) => {
-    setSelectedMilestone(item);
+  const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedMilestone(e.target.value);
   };
 
   const postIssue = async () => {
@@ -68,7 +68,7 @@ export default function IssueCreationPage() {
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
       label: selectedLabel ? selectedLabel.name : null,
-      milestone_id: selectedMilestone ? selectedMilestone.id : null,
+      milestone_id: selectedMilestone,
     };
     try {
       const response = await fetch(`${SERVER}/issue`, {

@@ -6,7 +6,6 @@ import dropdownIcon from "../assets/dropdownIcon.svg";
 import { IssueData } from "../Model/types";
 import { PopupType, PopupState } from "../hooks/usePopup";
 import MilestonePopup from "./popup/MilestonePopup";
-import { milestone } from "../components/sideBarData";
 import UserPopup from "./popup/UserPopup";
 import useApi from "../hooks/api/useApi";
 import { User, Milestone, Label } from "../Model/types";
@@ -28,6 +27,8 @@ export default function IssueTableHeader({
 }: IssueTableHeaderProps) {
   const { close_Issues, open_Issues } = issueList;
   const { data: userListData } = useApi<User[]>("/user");
+  const { data: labelListData } = useApi<Label[]>("/label");
+  const { data: milestoneListData } = useApi<Milestone[]>("/milestone");
 
   return (
     <IssueTableTop>
@@ -60,19 +61,33 @@ export default function IssueTableHeader({
           {popupState.assignee && userListData && (
             <UserPopup
               userList={userListData}
-              assigneeList={[]}
+              selectedUserList={[]}
               onChange={console.log}
             />
           )}
-          <TableFilterBtn>
+          <TableFilterBtn onClick={() => handleOpenPopup("label")}>
             레이블 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
+
           <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
             마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
-          <TableFilterBtn>
+          {popupState.milestone && milestoneListData && (
+            <MilestonePopup
+              milestoneList={milestoneListData}
+              onChange={console.log}
+            />
+          )}
+          <TableFilterBtn onClick={() => handleOpenPopup("reporter")}>
             작성자 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
+          {popupState.reporter && userListData && (
+            <UserPopup
+              userList={userListData}
+              selectedUserList={[]}
+              onChange={console.log}
+            />
+          )}
         </FilterBtnsOnTable>
       </TableContent>
     </IssueTableTop>

@@ -4,16 +4,14 @@ import * as S from "./popupStyle";
 
 interface UserPopupProps {
   userList: User[];
-  assigneeList: string[];
-  handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  closePopup: () => void;
+  selectedUserList: string[];
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function UserPopup({
   userList,
-  assigneeList,
-  handleInputAssignee,
-  closePopup,
+  selectedUserList,
+  onChange,
 }: UserPopupProps) {
   return (
     <S.DropdownPanel>
@@ -31,11 +29,8 @@ export default function UserPopup({
               id={name}
               name="label"
               value={name}
-              checked={assigneeList.includes(name)}
-              onChange={(e) => {
-                handleInputAssignee(e);
-                closePopup();
-              }}
+              checked={selectedUserList.includes(name)}
+              onChange={onChange}
             />
           </S.DropdownOption>
         );
