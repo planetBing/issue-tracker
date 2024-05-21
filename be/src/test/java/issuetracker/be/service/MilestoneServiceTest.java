@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
-import issuetracker.be.exception.MilestoneDeletionException;
+import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -78,7 +78,7 @@ class MilestoneServiceTest {
     when(issueService.isIssueExistBy(1L)).thenReturn(true);
 
     assertThatThrownBy(() -> milestoneService.delete(1L))
-        .isInstanceOf(MilestoneDeletionException.class)
+        .isInstanceOf(MilestoneHasAssociatedIssuesException.class)
         .hasMessageContaining("이슈가 존재하는 마일스톤은 삭제할 수 없습니다.");
   }
 

@@ -3,7 +3,7 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
-import issuetracker.be.exception.MilestoneDeletionException;
+import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.List;
@@ -47,14 +47,14 @@ public class MilestoneService {
    * @param id 삭제하고자 하는 마일스톤의 id
    * @return 삭제된 마일스톤의 id
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
-   * @throws MilestoneDeletionException 마일스톤에 딸려있는 이슈가 있으면 예외가 발생한다.
+   * @throws MilestoneHasAssociatedIssuesException 마일스톤에 딸려있는 이슈가 있으면 예외가 발생한다.
    */
   public Long delete(Long id) {
     Milestone byId = milestoneRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("해당 마일스톤이 존재하지 않습니다."));
 
     if (issueService.isIssueExistBy(id)) {
-      throw new MilestoneDeletionException("이슈가 존재하는 마일스톤은 삭제할 수 없습니다.");
+      throw new MilestoneHasAssociatedIssuesException("이슈가 존재하는 마일스톤은 삭제할 수 없습니다.");
     }
     milestoneRepository.delete(byId);
     return id;
