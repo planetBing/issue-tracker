@@ -7,6 +7,7 @@ import { IssueData } from "../Model/types";
 import { PopupType, PopupState } from "../hooks/usePopup";
 import MilestonePopup from "./popup/MilestonePopup";
 import UserPopup from "./popup/UserPopup";
+import LabelPopup from "./popup/LabelPopup";
 import useApi from "../hooks/api/useApi";
 import { User, Milestone, Label } from "../Model/types";
 
@@ -68,7 +69,12 @@ export default function IssueTableHeader({
           <TableFilterBtn onClick={() => handleOpenPopup("label")}>
             레이블 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
-
+          {/* {popupState.label && labelListData && (
+            <LabelPopup
+              labelList={labelListData}
+              onChange={console.log}
+            />
+          )} */}
           <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
             마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>

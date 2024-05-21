@@ -17,7 +17,7 @@ export default function IssueCreationPage() {
   const [comment, setComment] = useState<string | null>(null);
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
-  const [selectedLabel, setSelectedLabel] = useState<Label | null>(null);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const [selectedMilestone, setSelectedMilestone] = useState<string | null>(
     null
   );
@@ -53,8 +53,8 @@ export default function IssueCreationPage() {
     }
   };
 
-  const handleInputLabel = (item: Label) => {
-    setSelectedLabel(item);
+  const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedLabel(e.target.value);
   };
 
   const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +67,7 @@ export default function IssueCreationPage() {
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
-      label: selectedLabel ? selectedLabel.name : null,
+      label: selectedLabel,
       milestone_id: selectedMilestone,
     };
     try {

@@ -4,15 +4,12 @@ import { Label } from "../../Model/types";
 
 interface LabelPopupProps {
   labelList: Label[];
-  handleInputLabel: (item: Label) => void;
-  closePopup: () => void;
+  // handleInputLabel: (item: Label) => void;
+  // closePopup: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function LabelPopup({
-  labelList,
-  handleInputLabel,
-  closePopup,
-}: LabelPopupProps) {
+export default function LabelPopup({ labelList, onChange }: LabelPopupProps) {
   return (
     <S.DropdownPanel>
       <S.DropdownHeader>레이블 설정</S.DropdownHeader>
@@ -29,10 +26,7 @@ export default function LabelPopup({
               id={name}
               name="label"
               value={name}
-              onChange={() => {
-                handleInputLabel(item);
-                closePopup();
-              }}
+              onChange={onChange}
             />
           </S.DropdownOption>
         );

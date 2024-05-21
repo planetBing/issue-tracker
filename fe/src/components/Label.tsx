@@ -2,10 +2,14 @@ import { styled } from "styled-components";
 import { Label } from "../Model/types";
 
 interface LabelProps {
-  labelInfo: Label;
+  labelInfo?: Label;
 }
 
 export default function LabelComponent({ labelInfo }: LabelProps) {
+  if (!labelInfo) {
+    return null;
+  }
+
   const { background_color, text_color, name } = labelInfo;
   return (
     <LabelDiv $backgroundColor={background_color} $textColor={text_color}>

@@ -7,7 +7,7 @@ import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
 import labelIcon from "../assets/label.svg";
 import milestoneIcon from "../assets/milestone.svg";
-import { Issue, IssueData } from "../Model/types";
+import { IssueData } from "../Model/types";
 import { Link } from "react-router-dom";
 import IssueTableHeader from "../components/IssueTableHeader";
 import TableItems from "../components/IssueTableItems";

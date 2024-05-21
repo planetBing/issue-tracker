@@ -8,11 +8,11 @@ import LabelComponent from "./Label";
 import useApi from "../hooks/api/useApi";
 
 interface SideBarProps {
-  handleInputLabel: (item: Label) => void;
+  handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
-  selectedLabel: Label | null;
+  selectedLabel: string | null;
   selectedMilestone: string | null;
 }
 
@@ -62,6 +62,9 @@ export default function SideBar({
   const { data: labelData } = useApi<Label[]>("/label");
   const { data: milestoneData } = useApi<Milestone[]>("/milestone");
 
+  const selectedLabelObj = labelData?.find(
+    (item) => item.name === selectedLabel
+  );
   const selectedMilestoneObj = milestoneData?.find(
     (item) => item.id === Number(selectedMilestone)
   );
@@ -110,15 +113,17 @@ export default function SideBar({
         </div>
         {selectedLabel && (
           <SelectedOptionWrapper>
-            <LabelComponent labelInfo={selectedLabel} />
+            <LabelComponent labelInfo={selectedLabelObj} />
           </SelectedOptionWrapper>
         )}
       </SideBarItem>
       {popupState.label && labelData && (
         <LabelPopup
           labelList={labelData}
-          handleInputLabel={handleInputLabel}
-          closePopup={() => dispatch({ type: "closePopup" })}
+          onChange={(e) => {
+            handleInputLabel(e);
+            dispatch({ type: "closePopup" });
+          }}
         />
       )}
 
