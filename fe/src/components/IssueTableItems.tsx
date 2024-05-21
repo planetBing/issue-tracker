@@ -10,6 +10,11 @@ interface TableItemsProps {
 }
 
 export default function TableItems({ items }: TableItemsProps) {
+  if (items.length === 0) {
+    return (
+      <NoneIssueNotification>등록된 이슈가 없습니다.</NoneIssueNotification>
+    );
+  }
   return (
     <>
       {items.map((item: Issue) => {
@@ -116,4 +121,22 @@ const TableContent = styled(CommonS.SpaceBetween)`
   margin-left: 32px;
   width: 1200px;
   height: 64px;
+`;
+
+const NoneIssueNotification = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 96px;
+  background-color: rgba(254, 254, 254, 1);
+  padding: 16px 32px;
+  border-left: 1px solid rgba(217, 219, 233, 1);
+  border-right: 1px solid rgba(217, 219, 233, 1);
+  border-bottom: 1px solid rgba(217, 219, 233, 1);
+
+  &:last-child {
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
 `;
