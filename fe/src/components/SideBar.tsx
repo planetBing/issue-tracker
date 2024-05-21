@@ -6,14 +6,15 @@ import MilestonePopup from "./popup/MilestonePopup";
 import { Label, Milestone, User } from "../Model/types";
 import LabelComponent from "./Label";
 import useApi from "../hooks/api/useApi";
+import { milestone } from "./sideBarData";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputMilestone: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
-  selectedLabel: string | null;
-  selectedMilestone: string | null;
+  selectedLabel: string[];
+  selectedMilestone: string[];
 }
 
 interface PopupState {
@@ -62,13 +63,13 @@ export default function SideBar({
   const { data: labelData } = useApi<Label[]>("/label");
   const { data: milestoneData } = useApi<Milestone[]>("/milestone");
 
-  const selectedLabelObj = labelData?.find(
-    (item) => item.name === selectedLabel
+  const selectedLabelObj = labelData?.filter((label) =>
+    selectedLabel.includes(label.name)
   );
-  const selectedMilestoneObj = milestoneData?.find(
-    (item) => item.id === Number(selectedMilestone)
+  const selectedMilestoneObj = milestoneData?.filter((milestone) =>
+    selectedMilestone.includes(milestone.id.toString())
   );
-  const { close_issue, open_issue } = selectedMilestoneObj ?? {
+  const { close_issue, open_issue } = selectedMilestoneObj?.[0] ?? {
     close_issue: 0,
     open_issue: 0,
   };
@@ -113,13 +114,21 @@ export default function SideBar({
         </div>
         {selectedLabel && (
           <SelectedOptionWrapper>
-            <LabelComponent labelInfo={selectedLabelObj} />
+            {selectedLabelObj?.map((label, index) => {
+              return (
+                <LabelComponent
+                  labelInfo={label}
+                  key={`selectedLabel-${index}`}
+                />
+              );
+            })}
           </SelectedOptionWrapper>
         )}
       </SideBarItem>
       {popupState.label && labelData && (
         <LabelPopup
           labelList={labelData}
+          selectedLabel={selectedLabel}
           onChange={(e) => {
             handleInputLabel(e);
             dispatch({ type: "closePopup" });
@@ -131,18 +140,21 @@ export default function SideBar({
         <div>
           <span>마일스톤</span> <span>+</span>
         </div>
-        {selectedMilestone && (
-          <SelectedMilestoneWrapper>
-            <ProgressBar>
-              <FilledProgressBar $length={selectedMilestoneProgressNum} />
-            </ProgressBar>
-            <MilestoneTitle>{selectedMilestoneObj?.name}</MilestoneTitle>
-          </SelectedMilestoneWrapper>
-        )}
+        {selectedMilestone &&
+          selectedMilestoneObj &&
+          selectedMilestoneObj.length > 0 && (
+            <SelectedMilestoneWrapper>
+              <ProgressBar>
+                <FilledProgressBar $length={selectedMilestoneProgressNum} />
+              </ProgressBar>
+              <MilestoneTitle>{selectedMilestoneObj[0]?.name}</MilestoneTitle>
+            </SelectedMilestoneWrapper>
+          )}
       </LastSideBarItem>
       {popupState.milestone && milestoneData && (
         <MilestonePopup
           milestoneList={milestoneData}
+          selectedMilestone={selectedMilestone}
           onChange={(e) => {
             handleInputMilestone(e);
             dispatch({ type: "closePopup" });

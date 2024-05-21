@@ -69,18 +69,20 @@ export default function IssueTableHeader({
           <TableFilterBtn onClick={() => handleOpenPopup("label")}>
             레이블 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
-          {/* {popupState.label && labelListData && (
+          {popupState.label && labelListData && (
             <LabelPopup
               labelList={labelListData}
+              selectedLabel={[]}
               onChange={console.log}
             />
-          )} */}
+          )}
           <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
             마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
           </TableFilterBtn>
           {popupState.milestone && milestoneListData && (
             <MilestonePopup
               milestoneList={milestoneListData}
+              selectedMilestone={[]}
               onChange={console.log}
             />
           )}

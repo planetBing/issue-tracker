@@ -17,10 +17,8 @@ export default function IssueCreationPage() {
   const [comment, setComment] = useState<string | null>(null);
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [selectedMilestone, setSelectedMilestone] = useState<string | null>(
-    null
-  );
+  const [selectedLabel, setSelectedLabel] = useState<string[]>([]);
+  const [selectedMilestone, setSelectedMilestone] = useState<string[]>([]);
   const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
 
   const navigate = useNavigate();
@@ -54,11 +52,11 @@ export default function IssueCreationPage() {
   };
 
   const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLabel(e.target.value);
+    setSelectedLabel([e.target.value]);
   };
 
   const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedMilestone(e.target.value);
+    setSelectedMilestone([e.target.value]);
   };
 
   const postIssue = async () => {

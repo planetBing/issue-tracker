@@ -3,11 +3,13 @@ import { Milestone } from "../../Model/types";
 
 interface MilestonePopupProps {
   milestoneList: Milestone[];
+  selectedMilestone: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function MilestonePopup({
   milestoneList,
+  selectedMilestone,
   onChange,
 }: MilestonePopupProps) {
   return (
@@ -25,6 +27,7 @@ export default function MilestonePopup({
               id={name}
               name="label"
               value={id}
+              checked={selectedMilestone.includes(id.toString())}
               onChange={onChange}
             />
           </S.DropdownOption>
