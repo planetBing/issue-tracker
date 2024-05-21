@@ -3,7 +3,7 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Label;
 import issuetracker.be.dto.LabelSaveRequest;
 import issuetracker.be.dto.LabelUpdateRequest;
-import issuetracker.be.repository.IssueRepository;
+import issuetracker.be.repository.LabelRefRepository;
 import issuetracker.be.repository.LabelRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class LabelService {
 
   private LabelRepository labelRepository;
-  private IssueRepository issueRepository;
+  private LabelRefRepository labelRefRepository;
 
   @Autowired
-  public LabelService(LabelRepository labelRepository, IssueRepository issueRepository) {
+  public LabelService(LabelRepository labelRepository, LabelRefRepository labelRefRepository) {
     this.labelRepository = labelRepository;
-    this.issueRepository = issueRepository;
+    this.labelRefRepository = labelRefRepository;
   }
 
   public List<Label> getAllLabel() {
@@ -51,7 +51,7 @@ public class LabelService {
 
   @Transactional
   public void delete(Long labelId) {
-    issueRepository.updateIssueSetLabelIdToNull(labelId);
+    labelRefRepository.deleteById(labelId);
     labelRepository.deleteById(labelId);
   }
 }

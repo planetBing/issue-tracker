@@ -4,15 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import issuetracker.be.domain.Milestone;
-import issuetracker.be.dto.SaveMilestone;
-import issuetracker.be.dto.UpdateMilestone;
+import issuetracker.be.dto.MilestoneSaveRequest;
+import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.exception.MilestoneDeletionException;
-import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,14 +32,14 @@ class MilestoneServiceTest {
 
   @Test
   void 정상적으로_마일스톤이_저장되는지_확인한다() {
-    SaveMilestone saveMilestone = new SaveMilestone();
-    saveMilestone.setName("first milestone");
+    MilestoneSaveRequest milestoneSaveRequest = new MilestoneSaveRequest();
+    milestoneSaveRequest.setName("first milestone");
     Milestone milestone = new Milestone();
     milestone.setName("first milestone");
 
     when(milestoneRepository.save(any(Milestone.class))).thenReturn(milestone);
 
-    Milestone result = milestoneService.save(saveMilestone);
+    Milestone result = milestoneService.save(milestoneSaveRequest);
 
     verify(milestoneRepository).save(any(Milestone.class));
     assertNotNull(milestone);
@@ -90,14 +88,14 @@ class MilestoneServiceTest {
     milestone.setId(1L);
     milestone.setName("first milestone");
 
-    UpdateMilestone updateMilestone = new UpdateMilestone();
-    updateMilestone.setName("updated milestone");
-    updateMilestone.setId(1L);
+    MilestoneUpdateRequest milestoneUpdateRequest = new MilestoneUpdateRequest();
+    milestoneUpdateRequest.setName("updated milestone");
+    milestoneUpdateRequest.setId(1L);
 
-    when(milestoneRepository.save(any(Milestone.class))).thenReturn(updateMilestone.toEntity());
+    when(milestoneRepository.save(any(Milestone.class))).thenReturn(milestoneUpdateRequest.toEntity());
     when(milestoneRepository.findById(1L)).thenReturn(Optional.of(milestone));
 
-    Milestone result = milestoneService.update(updateMilestone);
+    Milestone result = milestoneService.update(milestoneUpdateRequest);
 
     assertThat(result.getName()).isEqualTo("updated milestone");
   }

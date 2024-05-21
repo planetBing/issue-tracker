@@ -7,12 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SaveMilestone {
+public class MilestoneSaveRequest {
   private String name;
   private String description;
-  private LocalDate endDate;
+  private LocalDate end_date;
 
   public Milestone toEntity() {
-    return new Milestone(name, description, endDate);
+    return new Milestone(name, description, end_date);
   }
 }

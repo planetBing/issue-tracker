@@ -4,11 +4,10 @@ import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
 import issuetracker.be.utils.TimeLapseCalculator;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

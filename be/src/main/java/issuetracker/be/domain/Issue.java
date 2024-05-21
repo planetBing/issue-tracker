@@ -39,12 +39,13 @@ public class Issue {
   }
 
   private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
-    return assigneeNames.stream()
+    return (assigneeNames == null) ? null : assigneeNames.stream()
         .map(AssigneeRef::new)
         .collect(Collectors.toSet());
   }
 
   private Set<LabelRef> createLabelRef(List<Long> labelIds) {
-    return labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
+    return (labelIds == null) ?
+        null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
   }
 }

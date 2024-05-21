@@ -8,16 +8,13 @@ import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.IssueRepository;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import issuetracker.be.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +49,8 @@ public class IssueService {
   }
 
   public IssueListResponse getAllIssue() {
-    List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpenIsFalse());
-    List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpenIsTrue());
+    List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
+    List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
 
     return new IssueListResponse(closeIssues, openIssues);
   }
@@ -61,15 +58,14 @@ public class IssueService {
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
     for (Issue issue : issues) {
-      List<Label> label = (issue.getLabels() != null) ?
-          issue.getLabels().stream()
-              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id()))
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toList()) : null;
+      List<Label> label = issue.getLabels().isEmpty() ?
+          null : issue.getLabels().stream()
+              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
+                  .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
+              .collect(Collectors.toList());
 
       MilestoneWithIssueCountResponse milestone =
-          issue.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
+          (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
               issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
               : null;
 
