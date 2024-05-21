@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class LabelService {
 
-  private LabelRepository labelRepository;
-  private LabelRefRepository labelRefRepository;
+  private final LabelRepository labelRepository;
+  private final LabelRefRepository labelRefRepository;
 
   @Autowired
   public LabelService(LabelRepository labelRepository, LabelRefRepository labelRefRepository) {

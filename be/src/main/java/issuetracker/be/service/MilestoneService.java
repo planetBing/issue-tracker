@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MilestoneService {
 
-  MilestoneRepository milestoneRepository;
-  IssueService issueService;
+  private final MilestoneRepository milestoneRepository;
+  private final IssueService issueService;
 
   @Autowired
   public MilestoneService(MilestoneRepository milestoneRepository, IssueService issueService) {
