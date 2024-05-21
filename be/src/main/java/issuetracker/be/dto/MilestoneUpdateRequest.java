@@ -2,7 +2,6 @@ package issuetracker.be.dto;
 
 import issuetracker.be.domain.Milestone;
 import java.time.LocalDate;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +10,7 @@ import lombok.Setter;
 public class MilestoneUpdateRequest {
   private Long id;
   private String name;
-  private Date end_date;
+  private LocalDate end_date;
   private String description;
 
   public Milestone toEntity() {
