@@ -38,7 +38,11 @@ export default function TableItems({
                 <IssueInfoTop>
                   <img src={alertIcon} alt="blue alert icon" />
                   <IssueTitle>{title}</IssueTitle>
-                  {label && <LabelComponent labelInfo={label} />}
+                  {label &&
+                    label.length > 0 &&
+                    label.map((labelObj) => {
+                      return <LabelComponent labelInfo={labelObj} />;
+                    })}
                 </IssueInfoTop>
                 <IssueInfoBottom>
                   <span>#{id}</span>

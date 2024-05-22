@@ -4,6 +4,7 @@ export interface User {
 }
 
 export interface Label {
+  id: number;
   name: string;
   background_color: string;
   text_color: string;
@@ -25,7 +26,7 @@ export interface Issue {
   title: string;
   create_At: string;
   reporter: User;
-  label: Label | null;
+  label: Label[] | null;
   milestone: Milestone | null;
 }
 

@@ -2,18 +2,21 @@ import { User, Label, Milestone } from "../Model/types";
 
 export const label: Label[] = [
   {
+    id: 1,
     name: "fix",
     background_color: "blue",
     text_color: "white",
     description: "fix입니다.",
   },
   {
+    id: 2,
     name: "error",
     background_color: "red",
     text_color: "black",
     description: "error입니다.",
   },
   {
+    id: 3,
     name: "bingsoo",
     background_color: "yellow",
     text_color: "black",

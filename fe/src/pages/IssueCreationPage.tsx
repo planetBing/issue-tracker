@@ -65,9 +65,14 @@ export default function IssueCreationPage() {
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
-      label: selectedLabel.length ? selectedLabel : null,
-      milestone_id: selectedMilestone.length ? selectedMilestone : null,
+      label_id: selectedLabel.length
+        ? selectedLabel.map((labelId) => Number(labelId))
+        : null,
+      milestone_id: selectedMilestone.length
+        ? Number(selectedMilestone[0])
+        : null,
     };
+    console.log(issueCreationData);
     try {
       const response = await fetch(`${SERVER}/issue`, {
         method: "POST",

@@ -17,7 +17,7 @@ export default function LabelPopup({
     <S.DropdownPanel>
       <S.DropdownHeader>레이블 설정</S.DropdownHeader>
       {labelList.map((item) => {
-        const { name, background_color } = item;
+        const { id, name, background_color } = item;
         return (
           <S.DropdownOption key={`label-${name}`}>
             <S.OptionInfo>
@@ -28,7 +28,7 @@ export default function LabelPopup({
               type="radio"
               id={name}
               name="label"
-              value={name}
+              value={id.toString()}
               checked={selectedLabel.includes(name)}
               onChange={onChange}
             />

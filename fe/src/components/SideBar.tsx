@@ -64,7 +64,7 @@ export default function SideBar({
   const { data: milestoneData } = useApi<Milestone[]>("/milestone");
 
   const selectedLabelObj = labelData?.filter((label) =>
-    selectedLabel.includes(label.name)
+    selectedLabel.includes(label.id.toString())
   );
   const selectedMilestoneObj = milestoneData?.filter((milestone) =>
     selectedMilestone.includes(milestone.id.toString())
