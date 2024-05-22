@@ -2,12 +2,14 @@ package issuetracker.be.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
@@ -15,6 +17,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 @Getter
 @ToString
 @NoArgsConstructor
+@Slf4j
 public class Issue {
   @Id
   private Long id;
@@ -53,13 +56,12 @@ public class Issue {
     return assignees.contains(new AssigneeRef(assigneeName));
   }
 
-  public boolean hasLabelId(Long labelId) {
+  public boolean hasLabelId(long labelId) {
     return labels.contains(new LabelRef(labelId));
   }
 
-  public boolean hasMilestoneId(Long milestoneId) {
-    log.debug("마일스톤 비교 : {}", milestone_id == milestoneId);
-    return Objects.equals(milestone_id, milestoneId);
+  public boolean hasMilestoneId(long milestoneId) {
+    return this.milestone_id == milestoneId;
   }
 
   public boolean hasReporter(String reporter) {
