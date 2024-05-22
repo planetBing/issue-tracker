@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IssueController {
 
-  private IssueService issueService;
+  private final IssueService issueService;
 
   @Autowired
   public IssueController(IssueService issueService) {
