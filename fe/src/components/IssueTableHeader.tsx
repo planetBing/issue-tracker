@@ -8,6 +8,7 @@ import { PopupType, PopupState } from "../hooks/usePopup";
 import MilestonePopup from "./popup/MilestonePopup";
 import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
+import IssueStatusPopup from "./popup/IssueStatusPopup";
 import useApi from "../hooks/api/useApi";
 import { User, Milestone, Label, FilteringState } from "../Model/types";
 
@@ -45,9 +46,15 @@ export default function IssueTableHeader({
       <IssueCheckBox type="checkbox" name="wholeIssue" />
       <TableContent>
         {selectedIssue.length > 0 ? (
-          <SelectedIssueNum>
-            {selectedIssue.length}개 이슈 선택
-          </SelectedIssueNum>
+          <>
+            <SelectedIssueNum>
+              {selectedIssue.length}개 이슈 선택
+            </SelectedIssueNum>
+            <TableFilterBtn onClick={() => handleOpenPopup("issueStatus")}>
+              상태 변경 <img src={dropdownIcon} alt="dropdown icon" />
+              {popupState.issueStatus && <IssueStatusPopup />}
+            </TableFilterBtn>
+          </>
         ) : (
           <>
             <SelectOpenAndClosedIssueBox>
@@ -73,58 +80,61 @@ export default function IssueTableHeader({
             <FilterBtnsOnTable>
               <TableFilterBtn onClick={() => handleOpenPopup("assignee")}>
                 담당자 <img src={dropdownIcon} alt="dropdown icon" />
+                {popupState.assignee && userListData && (
+                  <UserPopup
+                    userList={userListData}
+                    selectedUserList={filteringState.assignee}
+                    onChange={(e) => {
+                      handleFilterInTableHeader(e, "assignee");
+                      handleClosePopup();
+                    }}
+                    inputType={"radio"}
+                  />
+                )}
               </TableFilterBtn>
-              {popupState.assignee && userListData && (
-                <UserPopup
-                  userList={userListData}
-                  selectedUserList={filteringState.assignee}
-                  onChange={(e) => {
-                    handleFilterInTableHeader(e, "assignee");
-                    handleClosePopup();
-                  }}
-                  inputType={"radio"}
-                />
-              )}
+
               <TableFilterBtn onClick={() => handleOpenPopup("label")}>
                 레이블 <img src={dropdownIcon} alt="dropdown icon" />
+                {popupState.label && labelListData && (
+                  <LabelPopup
+                    labelList={labelListData}
+                    selectedLabel={filteringState.label}
+                    onChange={(e) => {
+                      handleFilterInTableHeader(e, "label");
+                      handleClosePopup();
+                    }}
+                  />
+                )}
               </TableFilterBtn>
-              {popupState.label && labelListData && (
-                <LabelPopup
-                  labelList={labelListData}
-                  selectedLabel={filteringState.label}
-                  onChange={(e) => {
-                    handleFilterInTableHeader(e, "label");
-                    handleClosePopup();
-                  }}
-                />
-              )}
+
               <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
                 마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
+                {popupState.milestone && milestoneListData && (
+                  <MilestonePopup
+                    milestoneList={milestoneListData}
+                    selectedMilestone={filteringState.milestone}
+                    onChange={(e) => {
+                      handleFilterInTableHeader(e, "milestone");
+                      handleClosePopup();
+                    }}
+                  />
+                )}
               </TableFilterBtn>
-              {popupState.milestone && milestoneListData && (
-                <MilestonePopup
-                  milestoneList={milestoneListData}
-                  selectedMilestone={filteringState.milestone}
-                  onChange={(e) => {
-                    handleFilterInTableHeader(e, "milestone");
-                    handleClosePopup();
-                  }}
-                />
-              )}
+
               <TableFilterBtn onClick={() => handleOpenPopup("reporter")}>
                 작성자 <img src={dropdownIcon} alt="dropdown icon" />
+                {popupState.reporter && userListData && (
+                  <UserPopup
+                    userList={userListData}
+                    selectedUserList={filteringState.reporter}
+                    onChange={(e) => {
+                      handleFilterInTableHeader(e, "reporter");
+                      handleClosePopup();
+                    }}
+                    inputType={"radio"}
+                  />
+                )}
               </TableFilterBtn>
-              {popupState.reporter && userListData && (
-                <UserPopup
-                  userList={userListData}
-                  selectedUserList={filteringState.reporter}
-                  onChange={(e) => {
-                    handleFilterInTableHeader(e, "reporter");
-                    handleClosePopup();
-                  }}
-                  inputType={"radio"}
-                />
-              )}
             </FilterBtnsOnTable>{" "}
           </>
         )}
