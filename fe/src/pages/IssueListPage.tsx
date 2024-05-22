@@ -58,10 +58,6 @@ export default function IssueListPage() {
     popupDispatch({ type: "openPopup", popup: popupType });
   };
 
-  const handleClosePopup = () => {
-    popupDispatch({ type: "closePopup" });
-  };
-
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -74,6 +70,7 @@ export default function IssueListPage() {
             </FilterBtn>
             {popupState.filter && (
               <FilterPopup
+                setFilteringState={setFilteringState}
                 closePopup={() => popupDispatch({ type: "closePopup" })}
               />
             )}
@@ -101,7 +98,7 @@ export default function IssueListPage() {
           setFilteringState={setFilteringState}
           issueList={issueList}
           handleOpenPopup={handleOpenPopup}
-          handleClosePopup={handleClosePopup}
+          handleClosePopup={() => popupDispatch({ type: "closePopup" })}
           popupState={popupState}
           handleFilterInTableHeader={handleFilterInTableHeader}
         />

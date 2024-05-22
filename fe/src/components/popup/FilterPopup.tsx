@@ -1,17 +1,17 @@
 import * as S from "./popupStyle";
 import { useCurrentUser } from "../../contexts/CurrentUserProvider";
+import { FilteringState } from "../../Model/types";
 
 interface GeneralPopupProps {
+  setFilteringState: (item: FilteringState) => void;
   closePopup: () => void;
 }
 
-export default function FilterPopup({ closePopup }: GeneralPopupProps) {
+export default function FilterPopup({
+  setFilteringState,
+  closePopup,
+}: GeneralPopupProps) {
   const { currentUser } = useCurrentUser();
-  const popupItems = [
-    "내가 작성한 이슈",
-    "나에게 할당된 이슈",
-    "내가 댓글을 남긴 이슈",
-  ];
 
   return (
     <S.DropdownPanel>
@@ -22,39 +22,94 @@ export default function FilterPopup({ closePopup }: GeneralPopupProps) {
         </S.OptionInfo>
         <input
           type="radio"
-          name="label"
-          value={"true"}
           onChange={() => {
+            setFilteringState({
+              isOpen: true,
+              assignee: [],
+              label: [],
+              milestone: [],
+              reporter: [],
+              comment: [],
+            });
             closePopup();
           }}
         />
       </S.DropdownOption>
-      {popupItems.map((item, index) => {
-        return (
-          <S.DropdownOption key={`이슈 필터-${index}`}>
-            <S.OptionInfo>
-              <span>{item}</span>
-            </S.OptionInfo>
-            <input
-              type="radio"
-              name="label"
-              value={currentUser?.name || ""}
-              onChange={() => {
-                closePopup();
-              }}
-            />
-          </S.DropdownOption>
-        );
-      })}
+      <S.DropdownOption>
+        <S.OptionInfo>
+          <span>내가 작성한 이슈</span>
+        </S.OptionInfo>
+        <input
+          type="radio"
+          value={currentUser?.name || ""}
+          onChange={(e) => {
+            setFilteringState({
+              isOpen: true,
+              assignee: [],
+              label: [],
+              milestone: [],
+              reporter: [e.target.value],
+              comment: [],
+            });
+            closePopup();
+          }}
+        />
+      </S.DropdownOption>
+      <S.DropdownOption>
+        <S.OptionInfo>
+          <span>나에게 할당된 이슈</span>
+        </S.OptionInfo>
+        <input
+          type="radio"
+          value={currentUser?.name || ""}
+          onChange={(e) => {
+            setFilteringState({
+              isOpen: true,
+              assignee: [e.target.value],
+              label: [],
+              milestone: [],
+              reporter: [],
+              comment: [],
+            });
+            closePopup();
+          }}
+        />
+      </S.DropdownOption>
+      <S.DropdownOption>
+        <S.OptionInfo>
+          <span>내가 댓글을 남긴 이슈</span>
+        </S.OptionInfo>
+        <input
+          type="radio"
+          value={currentUser?.name || ""}
+          onChange={(e) => {
+            setFilteringState({
+              isOpen: true,
+              assignee: [],
+              label: [],
+              milestone: [],
+              reporter: [],
+              comment: [e.target.value],
+            });
+            closePopup();
+          }}
+        />
+      </S.DropdownOption>
       <S.DropdownOption>
         <S.OptionInfo>
           <span>닫힌 이슈</span>
         </S.OptionInfo>
         <input
           type="radio"
-          name="label"
-          value={"false"}
           onChange={() => {
+            setFilteringState({
+              isOpen: false,
+              assignee: [],
+              label: [],
+              milestone: [],
+              reporter: [],
+              comment: [],
+            });
             closePopup();
           }}
         />
