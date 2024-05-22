@@ -140,7 +140,7 @@ const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
 
 const OpenIssueTap = styled.div<{ isactive: string }>`
   display: flex;
-  width: 103px;
+  width: 120px;
   font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
   color: ${({ isactive }) =>
@@ -153,7 +153,7 @@ const OpenIssueTap = styled.div<{ isactive: string }>`
 
 const ClosedIssueTap = styled.div<{ isactive: string }>`
   display: flex;
-  width: 103px;
+  width: 120px;
   font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
   color: ${({ isactive }) =>
