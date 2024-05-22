@@ -12,17 +12,14 @@ import lombok.ToString;
 @ToString
 public class IssueSaveRequest {
 
-  private String reporter;
-  private List<String> assignee;
-  private Long label_id;
-  private Long milestone_id;
   private String title;
+  private String reporter;
+  private Long milestone_id;
+  private List<Long> label_id;
+  private List<String> assignee;
   private String comment;
 
   public Issue toEntity(LocalDateTime now) {
-    if (assignee == null) {
-      return new Issue(title, reporter, milestone_id, now, label_id);
-    }
     return new Issue(title, reporter, milestone_id, now, label_id, assignee);
   }
 }

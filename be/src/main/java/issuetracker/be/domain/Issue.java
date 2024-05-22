@@ -24,32 +24,30 @@ public class Issue {
   private Long milestone_id;
   private LocalDateTime created_at;
   private Boolean is_open = true;
-  private Long label_id;
+  @MappedCollection(idColumn = "issue_id")
+  private Set<LabelRef> labels;
   @MappedCollection(idColumn = "issue_id")
   private Set<AssigneeRef> assignees;
 
-  public Issue(String title, String reporter, Long milestoneId, LocalDateTime createdAt,
-      Long label_id,
-      List<String> assignees) {
+  public Issue(String title, String reporter,Long milestoneId, LocalDateTime createdAt, List<Long> labelIds,
+      List<String> assigneeNames) {
     this.title = title;
     this.reporter = reporter;
     this.milestone_id = milestoneId;
     this.created_at = createdAt;
-    this.label_id = label_id;
-    this.assignees = setAssigneeRef(assignees);
+    this.labels = createLabelRef(labelIds);
+    this.assignees = createAssigneeRef(assigneeNames);
   }
 
-  public Issue(String title, String reporter, Long milestoneId, LocalDateTime now, Long label_id) {
-    this.title = title;
-    this.reporter = reporter;
-    this.milestone_id = milestoneId;
-    this.created_at = now;
-    this.label_id = label_id;
-  }
-
-  private Set<AssigneeRef> setAssigneeRef(List<String> assigneeList) {
-    return assigneeList.stream()
+  private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
+    return (assigneeNames == null) ? null : assigneeNames.stream()
         .map(AssigneeRef::new)
         .collect(Collectors.toSet());
   }
+
+  private Set<LabelRef> createLabelRef(List<Long> labelIds) {
+    return (labelIds == null) ?
+        null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
+  }
 }
+

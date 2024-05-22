@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,33 +56,38 @@ public class IssueService {
     }
   }
 
+  public boolean isIssueExistBy(Long milestoneId) {
+    return issueRepository.existsByMilestoneId(milestoneId);
+  }
+
   public IssueListResponse getAllIssue() {
-    List<IssueShowResponse> closeIssues = generateIssueShowDto(
-        issueRepository.findByIsOpenIsFalse());
-    List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpenIsTrue());
+    List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
+    List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
 
     return new IssueListResponse(closeIssues, openIssues);
   }
 
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
-    for (Issue i : issues) {
-      Label label =
-          i.getLabel_id() != null ?
-              labelRepository.findById(i.getLabel_id())
-                  .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")) : null;
+    for (Issue issue : issues) {
+      List<Label> label = issue.getLabels().isEmpty() ?
+          null : issue.getLabels().stream()
+              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
+                  .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
+              .collect(Collectors.toList());
 
       MilestoneWithIssueCountResponse milestone =
-          i.getMilestone_id() != null ? milestoneRepository.findWithIssueCountBy(
-              i.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+          (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
+              issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
               : null;
 
-      User reporter = userRepository.findById(i.getReporter())
+      User reporter = userRepository.findById(issue.getReporter())
           .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(i, label, milestone, reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
       result.add(issueShowResponse);
     }
     return result;
+
   }
 }
