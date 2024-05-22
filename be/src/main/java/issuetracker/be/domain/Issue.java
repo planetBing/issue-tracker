@@ -48,4 +48,25 @@ public class Issue {
     return (labelIds == null) ?
         null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
   }
+
+  public boolean hasAssignee(String assigneeName) {
+    return assignees.contains(new AssigneeRef(assigneeName));
+  }
+
+  public boolean hasLabelId(Long labelId) {
+    return labels.contains(new LabelRef(labelId));
+  }
+
+  public boolean hasMilestoneId(Long milestoneId) {
+    log.debug("마일스톤 비교 : {}", milestone_id == milestoneId);
+    return Objects.equals(milestone_id, milestoneId);
+  }
+
+  public boolean hasReporter(String reporter) {
+    return Objects.equals(this.reporter, reporter);
+  }
+
+  public boolean has(String reporter) {
+    return Objects.equals(this.reporter, reporter);
+  }
 }
