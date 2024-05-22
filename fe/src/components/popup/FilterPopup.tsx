@@ -3,15 +3,18 @@ import { useCurrentUser } from "../../contexts/CurrentUserProvider";
 import { FilteringState } from "../../Model/types";
 
 interface GeneralPopupProps {
+  filteringState: FilteringState;
   setFilteringState: (item: FilteringState) => void;
   closePopup: () => void;
 }
 
 export default function FilterPopup({
+  filteringState,
   setFilteringState,
   closePopup,
 }: GeneralPopupProps) {
   const { currentUser } = useCurrentUser();
+  const { assignee, reporter, comment } = filteringState;
 
   return (
     <S.DropdownPanel>
@@ -42,6 +45,7 @@ export default function FilterPopup({
         <input
           type="radio"
           value={currentUser?.name || ""}
+          checked={reporter.includes(currentUser?.name || "")}
           onChange={(e) => {
             setFilteringState({
               isOpen: true,
@@ -62,6 +66,7 @@ export default function FilterPopup({
         <input
           type="radio"
           value={currentUser?.name || ""}
+          checked={assignee.includes(currentUser?.name || "")}
           onChange={(e) => {
             setFilteringState({
               isOpen: true,
@@ -82,6 +87,7 @@ export default function FilterPopup({
         <input
           type="radio"
           value={currentUser?.name || ""}
+          checked={comment.includes(currentUser?.name || "")}
           onChange={(e) => {
             setFilteringState({
               isOpen: true,

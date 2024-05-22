@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 export default function useApi<T>(path: string) {
   const [data, setData] = useState<T>();
   const [isLoading, setIsLoading] = useState(false);
+  const [apiPath, setApiPath] = useState(path);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [apiPath]);
 
   const fetchData = async () => {
     try {
@@ -21,5 +22,9 @@ export default function useApi<T>(path: string) {
     }
   };
 
-  return { data, isLoading };
+  const refetch = (newPath?: string) => {
+    setApiPath(newPath || path); // newPath가 제공되면 그것으로 경로를 업데이트
+  };
+
+  return { data, isLoading, refetch };
 }

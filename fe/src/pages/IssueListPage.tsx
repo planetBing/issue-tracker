@@ -1,4 +1,5 @@
-import { useState } from "react";
+import queryString from "query-string";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -29,15 +30,19 @@ const initialFilteringState = {
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
   const { popupState, dispatch: popupDispatch } = usePopup();
-  const { data: issueList, isLoading: isIssueListLoading } =
-    useApi<IssueData>("/issue");
+  const {
+    data: issueList,
+    isLoading: isIssueListLoading,
+    refetch: isssueListRefetch,
+  } = useApi<IssueData>("/issue");
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
   );
 
-  if (isIssueListLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const paramString = queryString.stringify(filteringState);
+    // isssueListRefetch(`/issue/filter?${paramString}`);
+  }, [filteringState]);
 
   if (!issueList) {
     return null;
@@ -77,6 +82,7 @@ export default function IssueListPage() {
             </FilterBtn>
             {popupState.filter && (
               <FilterPopup
+                filteringState={filteringState}
                 setFilteringState={setFilteringState}
                 closePopup={() => popupDispatch({ type: "closePopup" })}
               />
@@ -111,6 +117,7 @@ export default function IssueListPage() {
         />
         {filteringState.isOpen && <TableItems items={open_Issues} />}
         {!filteringState.isOpen && <TableItems items={close_Issues} />}
+        {isIssueListLoading && <p>loading...</p>}
         <Overlay
           popupState={popupState}
           closePopup={() => popupDispatch({ type: "closePopup" })}
