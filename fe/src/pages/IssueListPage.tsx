@@ -58,6 +58,13 @@ export default function IssueListPage() {
     popupDispatch({ type: "openPopup", popup: popupType });
   };
 
+  const filterString = [
+    `is: ${filteringState.isOpen ? "open" : "closed"}`,
+    ...Object.entries(filteringState)
+      .filter(([key, value]) => Array.isArray(value) && value.length > 0)
+      .map(([key, value]) => `${key}:${value.join(",")}`),
+  ].join(" ");
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -76,7 +83,7 @@ export default function IssueListPage() {
             )}
             <FilterSearchBox>
               <img src={searchIcon} alt="serch icon" />
-              <input placeholder="is: issue is:open" />
+              <input placeholder={`is: issue ${filterString}`} />
             </FilterSearchBox>
           </FilterBar>
           <ButtonsWrapper>
