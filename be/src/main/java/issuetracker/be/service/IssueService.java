@@ -1,5 +1,6 @@
 package issuetracker.be.service;
 
+import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
@@ -7,6 +8,7 @@ import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
@@ -28,20 +30,30 @@ public class IssueService {
   private MilestoneRepository milestoneRepository;
   private LabelRepository labelRepository;
   private UserRepository userRepository;
+  private CommentRepository commentRepository;
 
   @Autowired
   public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,
-      LabelRepository labelRepository, UserRepository userRepository) {
+      LabelRepository labelRepository, UserRepository userRepository,
+      CommentRepository commentRepository) {
     this.issueRepository = issueRepository;
     this.milestoneRepository = milestoneRepository;
     this.labelRepository = labelRepository;
     this.userRepository = userRepository;
+    this.commentRepository = commentRepository;
   }
 
   public void save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
-    Issue save = issueRepository.save(issue);
-    log.debug("저장된 이슈 : {}", save);
+    Issue saveIssue = issueRepository.save(issue);
+    log.debug("저장된 이슈 : {}", saveIssue);
+
+    if (issueSaveRequest.getComment() != null) {
+      Comment comment = new Comment(saveIssue.getId(), saveIssue.getReporter(),
+          saveIssue.getCreated_at(), issueSaveRequest.getComment());
+      Comment saveComment = commentRepository.save(comment);
+      log.debug("저장된 코멘트 : {}", saveComment);
+    }
   }
 
   public boolean isIssueExistBy(Long milestoneId) {

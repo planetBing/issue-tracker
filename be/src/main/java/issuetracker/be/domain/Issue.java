@@ -16,6 +16,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 @ToString
 @NoArgsConstructor
 public class Issue {
+
   @Id
   private Long id;
   private String title;
@@ -49,3 +50,4 @@ public class Issue {
         null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
   }
 }
+
