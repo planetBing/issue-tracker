@@ -10,13 +10,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional(readOnly = true)
 public class MilestoneService {
 
-  MilestoneRepository milestoneRepository;
-  IssueService issueService;
+  private final MilestoneRepository milestoneRepository;
+  private final IssueService issueService;
 
   @Autowired
   public MilestoneService(MilestoneRepository milestoneRepository, IssueService issueService) {
@@ -37,6 +39,7 @@ public class MilestoneService {
    * @param milestoneSaveRequest 마일스톤 생성 내용이 담긴 DTO
    * @return 생성한 마일스톤 객체
    */
+  @Transactional
   public Milestone save(MilestoneSaveRequest milestoneSaveRequest) {
     Milestone milestone = milestoneSaveRequest.toEntity();
     return milestoneRepository.save(milestone);
@@ -49,6 +52,7 @@ public class MilestoneService {
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
    * @throws MilestoneDeletionException 마일스톤에 딸려있는 이슈가 있으면 예외가 발생한다.
    */
+  @Transactional
   public Long delete(Long id) {
     Milestone byId = milestoneRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("해당 마일스톤이 존재하지 않습니다."));
@@ -66,6 +70,7 @@ public class MilestoneService {
    * @param milestoneUpdateRequest 마일스톤 수정 내용이 담긴 DTO
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
    */
+  @Transactional
   public Milestone update(MilestoneUpdateRequest milestoneUpdateRequest) {
     Long id = milestoneUpdateRequest.getId();
     if (milestoneRepository.findById(id).isEmpty()) {

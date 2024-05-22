@@ -26,16 +26,18 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class IssueService {
 
-  private IssueRepository issueRepository;
-  private MilestoneRepository milestoneRepository;
-  private LabelRepository labelRepository;
-  private UserRepository userRepository;
-  private CommentRepository commentRepository;
+  private final IssueRepository issueRepository;
+  private final MilestoneRepository milestoneRepository;
+  private final LabelRepository labelRepository;
+  private final UserRepository userRepository;
+  private final CommentRepository commentRepository;
 
   @Autowired
   public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,
@@ -48,6 +50,7 @@ public class IssueService {
     this.commentRepository = commentRepository;
   }
 
+  @Transactional
   public void save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue saveIssue = issueRepository.save(issue);
