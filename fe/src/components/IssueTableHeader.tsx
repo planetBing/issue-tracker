@@ -24,6 +24,7 @@ interface IssueTableHeaderProps {
     key: string
   ) => void;
   selectedIssue: string[];
+  openOrCloseIssues: (status: string) => void;
 }
 
 export default function IssueTableHeader({
@@ -35,6 +36,7 @@ export default function IssueTableHeader({
   popupState,
   handleFilterInTableHeader,
   selectedIssue,
+  openOrCloseIssues,
 }: IssueTableHeaderProps) {
   const { close_Issues, open_Issues } = issueList;
   const { data: userListData } = useApi<User[]>("/user");
@@ -52,7 +54,9 @@ export default function IssueTableHeader({
             </SelectedIssueNum>
             <TableFilterBtn onClick={() => handleOpenPopup("issueStatus")}>
               상태 변경 <img src={dropdownIcon} alt="dropdown icon" />
-              {popupState.issueStatus && <IssueStatusPopup />}
+              {popupState.issueStatus && (
+                <IssueStatusPopup openOrCloseIssues={openOrCloseIssues} />
+              )}
             </TableFilterBtn>
           </>
         ) : (

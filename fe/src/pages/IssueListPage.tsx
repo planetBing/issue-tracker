@@ -34,6 +34,7 @@ export default function IssueListPage() {
     data: issueList,
     isLoading: isIssueListLoading,
     refetch: isssueListRefetch,
+    putData: updateIssueStatus,
   } = useApi<IssueData>("/issue");
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
@@ -83,6 +84,12 @@ export default function IssueListPage() {
     }
   };
 
+  const openOrCloseIssues = (status: string) => {
+    const putPath = status === "open" ? "/issue/open" : "/issue/close";
+    const selectedIssueIds = selectedIssue.map((id) => Number(id));
+    updateIssueStatus(putPath, { issueIds: selectedIssueIds });
+  };
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -128,6 +135,7 @@ export default function IssueListPage() {
           popupState={popupState}
           handleFilterInTableHeader={handleFilterInTableHeader}
           selectedIssue={selectedIssue}
+          openOrCloseIssues={openOrCloseIssues}
         />
         {filteringState.isOpen && (
           <TableItems items={open_Issues} handleCheckIssue={handleCheckIssue} />
