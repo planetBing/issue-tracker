@@ -4,14 +4,14 @@ import { Label } from "../../Model/types";
 
 interface LabelPopupProps {
   labelList: Label[];
-  handleInputLabel: (item: Label) => void;
-  closePopup: () => void;
+  selectedLabel: string[];
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function LabelPopup({
   labelList,
-  handleInputLabel,
-  closePopup,
+  selectedLabel,
+  onChange,
 }: LabelPopupProps) {
   return (
     <S.DropdownPanel>
@@ -29,10 +29,8 @@ export default function LabelPopup({
               id={name}
               name="label"
               value={name}
-              onChange={() => {
-                handleInputLabel(item);
-                closePopup();
-              }}
+              checked={selectedLabel.includes(name)}
+              onChange={onChange}
             />
           </S.DropdownOption>
         );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -7,37 +7,56 @@ import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
 import labelIcon from "../assets/label.svg";
 import milestoneIcon from "../assets/milestone.svg";
-import alertIcon from "../assets/alertCircle.svg";
-import archiveIcon from "../assets/archive.svg";
-import { Issue, IssueData } from "../Model/types";
-import LabelComponent from "../components/Label";
+import { IssueData, FilteringState } from "../Model/types";
 import { Link } from "react-router-dom";
+import IssueTableHeader from "../components/IssueTableHeader";
+import TableItems from "../components/IssueTableItems";
+import usePopup from "../hooks/usePopup";
+import { PopupType } from "../hooks/usePopup";
+import FilterPopup from "../components/popup/FilterPopup";
+import Overlay from "../components/popup/Overlay";
+import useApi from "../hooks/api/useApi";
 
-const SERVER = process.env.REACT_APP_SERVER;
+const initialFilteringState = {
+  isOpen: true,
+  assignee: [],
+  label: [],
+  milestone: [],
+  reporter: [],
+  comment: [],
+};
 
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
-  const [issueList, setIssueList] = useState<IssueData | null>(null);
+  const { popupState, dispatch: popupDispatch } = usePopup();
+  const { data: issueList, isLoading: isIssueListLoading } =
+    useApi<IssueData>("/issue");
+  const [filteringState, setFilteringState] = useState<FilteringState>(
+    initialFilteringState
+  );
 
-  useEffect(() => {
-    const fetchIssues = async () => {
-      try {
-        const response = await fetch(`${SERVER}/issue`);
-        const data = await response.json();
-        console.log(data);
-        setIssueList(data);
-      } catch (error) {
-        console.error("Error fetching issues:", error);
-      }
-    };
-
-    fetchIssues();
-  }, []);
-
-  if (!issueList) {
+  if (isIssueListLoading) {
     return <div>Loading...</div>;
   }
+
+  if (!issueList) {
+    return null;
+  }
   const { close_Issues, open_Issues } = issueList;
+
+  const handleFilterInTableHeader = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => {
+    setFilteringState((prevState) => ({
+      ...prevState,
+      [key]: [e.target.value],
+    }));
+  };
+
+  const handleOpenPopup = (popupType: PopupType) => {
+    popupDispatch({ type: "openPopup", popup: popupType });
+  };
 
   return (
     <>
@@ -45,10 +64,16 @@ export default function IssueListPage() {
       <CommonS.Wrapper>
         <TapAndFilterWrapper>
           <FilterBar>
-            <FilterBtn>
+            <FilterBtn onClick={() => handleOpenPopup("filter")}>
               <span>필터</span>
               <img src={dropdownIcon} alt="dropdown" />
             </FilterBtn>
+            {popupState.filter && (
+              <FilterPopup
+                setFilteringState={setFilteringState}
+                closePopup={() => popupDispatch({ type: "closePopup" })}
+              />
+            )}
             <FilterSearchBox>
               <img src={searchIcon} alt="serch icon" />
               <input placeholder="is: issue is:open" />
@@ -68,69 +93,21 @@ export default function IssueListPage() {
             <IssueCreationButton to="/issue">+ 이슈 작성</IssueCreationButton>
           </ButtonsWrapper>
         </TapAndFilterWrapper>
-        <IssueTableTop>
-          <IssueCheckBox type="checkbox" name="wholeIssue" />
-          <TableContent>
-            <SelectOpenAndClosedIssueBox>
-              <OpenedIssueTap>
-                <img src={alertIcon} alt="opened icon" />
-                <span>열린 이슈({open_Issues.length})</span>
-              </OpenedIssueTap>
-              <ClosedIssueTap>
-                <img src={archiveIcon} alt="closed icon" />
-                <span>닫힌 이슈({close_Issues.length})</span>
-              </ClosedIssueTap>
-            </SelectOpenAndClosedIssueBox>
-            <FilterBtnsOnTable>
-              <TableFilterBtn>
-                담당자 <img src={dropdownIcon} alt="dropdown icon" />
-              </TableFilterBtn>
-              <TableFilterBtn>
-                레이블 <img src={dropdownIcon} alt="dropdown icon" />
-              </TableFilterBtn>
-              <TableFilterBtn>
-                마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
-              </TableFilterBtn>
-              <TableFilterBtn>
-                작성자 <img src={dropdownIcon} alt="dropdown icon" />
-              </TableFilterBtn>
-            </FilterBtnsOnTable>
-          </TableContent>
-        </IssueTableTop>
-        {open_Issues.map((issue: Issue) => {
-          const { id, title, label, create_At, reporter, milestone } = issue;
-          return (
-            <IssueTable key={`issue-${id}`}>
-              <IssueCheckBox type="checkbox" name={id.toString()} />
-              <TableContent>
-                <IssueInfo>
-                  <IssueInfoTop>
-                    <img src={alertIcon} alt="blue alert icon" />
-                    <IssueTitle>{title}</IssueTitle>
-                    {label && <LabelComponent labelInfo={label} />}
-                  </IssueInfoTop>
-                  <IssueInfoBottom>
-                    <span>#{id}</span>
-                    <span>
-                      이 이슈가 {create_At}, {reporter.name}님에 의해
-                      작성되었습니다.
-                    </span>
-                    {milestone && (
-                      <span>
-                        <img src={milestoneIcon} alt="milestone icon" />
-                        {milestone?.name}
-                      </span>
-                    )}
-                  </IssueInfoBottom>
-                </IssueInfo>
-                <IssueReporterImg
-                  src={reporter.image_path}
-                  alt="reporter img"
-                />
-              </TableContent>
-            </IssueTable>
-          );
-        })}
+        <IssueTableHeader
+          filteringState={filteringState}
+          setFilteringState={setFilteringState}
+          issueList={issueList}
+          handleOpenPopup={handleOpenPopup}
+          handleClosePopup={() => popupDispatch({ type: "closePopup" })}
+          popupState={popupState}
+          handleFilterInTableHeader={handleFilterInTableHeader}
+        />
+        {filteringState.isOpen && <TableItems items={open_Issues} />}
+        {!filteringState.isOpen && <TableItems items={close_Issues} />}
+        <Overlay
+          popupState={popupState}
+          closePopup={() => popupDispatch({ type: "closePopup" })}
+        />
       </CommonS.Wrapper>
     </>
   );
@@ -231,132 +208,4 @@ const IssueCreationButton = styled(Link)`
   border-radius: 10px;
   text-decoration: none;
   padding: 10px 25px;
-`;
-
-const IssueTableTop = styled.div`
-  display: flex;
-  height: 64px;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  border: 1px solid rgba(217, 219, 233, 1);
-  margin-top: 25px;
-  padding: 0 32px;
-`;
-
-const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
-  align-items: center;
-  width: 227px;
-`;
-
-const OpenedIssueTap = styled.div`
-  display: flex;
-  width: 103px;
-  font-weight: 700;
-  font-size: 16px;
-  color: rgba(20, 20, 43, 1);
-
-  img {
-    margin-right: 4px;
-  }
-`;
-
-const ClosedIssueTap = styled.div`
-  display: flex;
-  width: 103px;
-  font-weight: 500;
-  font-size: 16px;
-  color: rgba(78, 75, 102, 1);
-  cursor: pointer;
-  img {
-    margin-right: 4px;
-  }
-`;
-
-const FilterBtnsOnTable = styled(CommonS.SpaceBetween)`
-  align-items: center;
-  width: 416px;
-  height: 100%;
-  cursor: pointer;
-`;
-
-const TableFilterBtn = styled(CommonS.SpaceBetween)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 80px;
-  height: 100%;
-  color: rgba(78, 75, 102, 1);
-  font-size: 16px;
-  font-weight: 500;
-`;
-
-const TableContent = styled(CommonS.SpaceBetween)`
-  margin-left: 32px;
-  width: 1200px;
-  height: 64px;
-`;
-
-const IssueCheckBox = styled.input`
-  border: 1px solid rgba(217, 219, 233, 1);
-  margin-top: 7px;
-`;
-
-const IssueTable = styled.div`
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-  height: 96px;
-  background-color: rgba(254, 254, 254, 1);
-  padding: 16px 32px;
-  border-left: 1px solid rgba(217, 219, 233, 1);
-  border-right: 1px solid rgba(217, 219, 233, 1);
-  border-bottom: 1px solid rgba(217, 219, 233, 1);
-
-  &:last-child {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-  }
-`;
-
-const IssueInfo = styled(CommonS.ColumnFlex)`
-  justify-content: space-between;
-`;
-
-const IssueInfoTop = styled.div`
-  display: flex;
-
-  img {
-    filter: invert(36%) sepia(41%) saturate(7096%) hue-rotate(201deg)
-      brightness(103%) contrast(104%);
-    margin-right: 8px;
-  }
-`;
-
-const IssueTitle = styled.div`
-  font-size: 20px;
-  color: rgba(20, 20, 43, 1);
-  font-weight: 500;
-  margin-right: 8px;
-`;
-
-const IssueInfoBottom = styled.div`
-  display: flex;
-
-  > span {
-    font-size: 16px;
-    font-weight: 500;
-    color: rgba(110, 113, 145, 1);
-    margin-right: 16px;
-  }
-
-  & img {
-    margin-right: 8px;
-  }
-`;
-
-const IssueReporterImg = styled.img`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin: 22px;
 `;
