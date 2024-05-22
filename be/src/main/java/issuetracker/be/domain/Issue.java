@@ -41,17 +41,6 @@ public class Issue {
     this.assignees = createAssigneeRef(assigneeNames);
   }
 
-  private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
-    return (assigneeNames == null) ? null : assigneeNames.stream()
-        .map(AssigneeRef::new)
-        .collect(Collectors.toSet());
-  }
-
-  private Set<LabelRef> createLabelRef(List<Long> labelIds) {
-    return (labelIds == null) ?
-        null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
-  }
-
   public boolean hasAssignee(String assigneeName) {
     return assignees.contains(new AssigneeRef(assigneeName));
   }
@@ -70,5 +59,23 @@ public class Issue {
 
   public boolean has(String reporter) {
     return Objects.equals(this.reporter, reporter);
+  }
+
+  private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
+    if (assigneeNames == null) {
+      return null;
+    }
+    return assigneeNames.stream()
+        .map(AssigneeRef::new)
+        .collect(Collectors.toSet());
+  }
+
+  private Set<LabelRef> createLabelRef(List<Long> labelIds) {
+    if (labelIds == null) {
+      return null;
+    }
+    return labelIds.stream()
+        .map(LabelRef::new)
+        .collect(Collectors.toSet());
   }
 }

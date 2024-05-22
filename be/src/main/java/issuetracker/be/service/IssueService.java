@@ -29,10 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class IssueService {
 
-  private IssueRepository issueRepository;
-  private MilestoneRepository milestoneRepository;
-  private LabelRepository labelRepository;
-  private UserRepository userRepository;
+  private final IssueRepository issueRepository;
+  private final MilestoneRepository milestoneRepository;
+  private final LabelRepository labelRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,
@@ -82,7 +82,6 @@ public class IssueService {
       result.add(issueShowResponse);
     }
     return result;
-
   }
 
   public IssueListResponse getFilteredIssue(String reporter,
