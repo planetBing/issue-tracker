@@ -105,6 +105,7 @@ export default function SideBar({
             handleInputAssignee(e);
             dispatch({ type: "closePopup" });
           }}
+          inputType={"checkbox"}
         />
       )}
 

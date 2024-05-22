@@ -6,12 +6,14 @@ interface UserPopupProps {
   userList: User[];
   selectedUserList: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  inputType: string;
 }
 
 export default function UserPopup({
   userList,
   selectedUserList,
   onChange,
+  inputType,
 }: UserPopupProps) {
   return (
     <S.DropdownPanel>
@@ -25,7 +27,7 @@ export default function UserPopup({
               <span>{name}</span>
             </S.OptionInfo>
             <input
-              type="checkbox"
+              type={inputType}
               id={name}
               name="label"
               value={name}

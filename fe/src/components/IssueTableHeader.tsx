@@ -74,6 +74,7 @@ export default function IssueTableHeader({
                 handleFilterInTableHeader(e, "assignee");
                 handleClosePopup();
               }}
+              inputType={"radio"}
             />
           )}
           <TableFilterBtn onClick={() => handleOpenPopup("label")}>
@@ -113,6 +114,7 @@ export default function IssueTableHeader({
                 handleFilterInTableHeader(e, "reporter");
                 handleClosePopup();
               }}
+              inputType={"radio"}
             />
           )}
         </FilterBtnsOnTable>
