@@ -4,7 +4,7 @@ import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.IssueFilter;
 
 public class IssueMilestoneFilter implements IssueFilter {
-
+  private static final String NO_FILTER_CONDITION = "none";
   private final String milestoneId;
 
   public IssueMilestoneFilter(String milestoneId) {
@@ -13,7 +13,7 @@ public class IssueMilestoneFilter implements IssueFilter {
 
   @Override
   public boolean canFilter(Issue issue) {
-    if ("none".equals(milestoneId)) {
+    if (NO_FILTER_CONDITION.equals(milestoneId)) {
       return false;
     }
     return issue.hasMilestoneId(Long.parseLong(milestoneId));

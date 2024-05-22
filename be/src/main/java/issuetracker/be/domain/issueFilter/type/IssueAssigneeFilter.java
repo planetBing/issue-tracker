@@ -4,7 +4,7 @@ import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.IssueFilter;
 
 public class IssueAssigneeFilter implements IssueFilter {
-
+  private static final String NO_FILTER_CONDITION = "none";
   private final String assignee;
 
   public IssueAssigneeFilter(String assignee) {
@@ -13,7 +13,7 @@ public class IssueAssigneeFilter implements IssueFilter {
 
   @Override
   public boolean canFilter(Issue issue) {
-    if ("none".equals(assignee)) {
+    if (NO_FILTER_CONDITION.equals(assignee)) {
       return false;
     }
     return issue.hasAssignee(assignee);

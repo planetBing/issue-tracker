@@ -4,7 +4,7 @@ import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.IssueFilter;
 
 public class IssueLabelFilter implements IssueFilter {
-
+  private static final String NO_FILTER_CONDITION = "none";
   private final String labelId;
 
   public IssueLabelFilter(String labelId) {
@@ -13,7 +13,7 @@ public class IssueLabelFilter implements IssueFilter {
 
   @Override
   public boolean canFilter(Issue issue) {
-    if ("none".equals(labelId)) {
+    if (NO_FILTER_CONDITION.equals(labelId)) {
       return false;
     }
     return issue.hasLabelId(Long.parseLong(labelId));
