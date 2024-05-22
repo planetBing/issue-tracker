@@ -1,8 +1,11 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Issue;
+import issuetracker.be.domain.issueFilter.IssueFilterFactory;
+import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
@@ -19,9 +22,11 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class IssueService {
 
   private IssueRepository issueRepository;
@@ -38,6 +43,7 @@ public class IssueService {
     this.userRepository = userRepository;
   }
 
+  @Transactional
   public void save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue save = issueRepository.save(issue);
@@ -77,5 +83,27 @@ public class IssueService {
     }
     return result;
 
+  }
+
+  public IssueListResponse getFilteredIssue(String reporter,
+      IssueFilterRequest filterTypeRequest) {
+
+    List<Issue> closeIssues = issueRepository.findByIsOpen(false);
+    List<Issue> openIssues = issueRepository.findByIsOpen(true);
+
+    IssueFilters issueFilters = new IssueFilterFactory().createIssueFilters(
+        filterTypeRequest.assignee(),
+        filterTypeRequest.label(),
+        filterTypeRequest.milestone(),
+        filterTypeRequest.reporter()
+    );
+
+    List<Issue> filteredCloseIssues = issueFilters.doFilter(reporter, closeIssues);
+    List<Issue> filteredOpenIssues = issueFilters.doFilter(reporter, openIssues);
+
+    List<IssueShowResponse> filteredCloseIssueResponses = generateIssueShowDto(filteredCloseIssues);
+    List<IssueShowResponse> filteredOpenIssueResponses = generateIssueShowDto(filteredOpenIssues);
+
+    return new IssueListResponse(filteredCloseIssueResponses, filteredOpenIssueResponses);
   }
 }
