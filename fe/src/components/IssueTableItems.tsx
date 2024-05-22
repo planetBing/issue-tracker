@@ -24,7 +24,7 @@ export default function TableItems({
       {items.map((item: Issue) => {
         const { id, title, label, create_At, reporter, milestone } = item;
         return (
-          <IssueTable key={`issue-${id}`}>
+          <IssueTable key={`issueTableContent-${id}`}>
             <IssueCheckBox
               type="checkbox"
               name={id.toString()}
@@ -41,7 +41,12 @@ export default function TableItems({
                   {label &&
                     label.length > 0 &&
                     label.map((labelObj) => {
-                      return <LabelComponent labelInfo={labelObj} />;
+                      return (
+                        <LabelComponent
+                          key={`label-${labelObj.id}`}
+                          labelInfo={labelObj}
+                        />
+                      );
                     })}
                 </IssueInfoTop>
                 <IssueInfoBottom>

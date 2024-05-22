@@ -19,7 +19,7 @@ export default function LabelPopup({
       {labelList.map((item) => {
         const { id, name, background_color } = item;
         return (
-          <S.DropdownOption key={`label-${name}`}>
+          <S.DropdownOption key={`labelPopupOtion-${name}`}>
             <S.OptionInfo>
               <LabelColorCircle color={background_color} />
               <span>{name}</span>
