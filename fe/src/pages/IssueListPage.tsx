@@ -38,6 +38,7 @@ export default function IssueListPage() {
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
   );
+  const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
 
   useEffect(() => {
     const paramString = queryString.stringify(filteringState);
@@ -69,6 +70,18 @@ export default function IssueListPage() {
       .filter(([key, value]) => Array.isArray(value) && value.length > 0)
       .map(([key, value]) => `${key}:${value.join(",")}`),
   ].join(" ");
+
+  const handleCheckIssue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (selectedIssue.includes(value)) {
+      const newSelectedIssueList = selectedIssue.filter(
+        (assignee) => assignee !== value
+      );
+      setSelectedIssue(newSelectedIssueList);
+    } else {
+      setSelectedIssue([...selectedIssue, e.target.value]);
+    }
+  };
 
   return (
     <>
@@ -115,8 +128,15 @@ export default function IssueListPage() {
           popupState={popupState}
           handleFilterInTableHeader={handleFilterInTableHeader}
         />
-        {filteringState.isOpen && <TableItems items={open_Issues} />}
-        {!filteringState.isOpen && <TableItems items={close_Issues} />}
+        {filteringState.isOpen && (
+          <TableItems items={open_Issues} handleCheckIssue={handleCheckIssue} />
+        )}
+        {!filteringState.isOpen && (
+          <TableItems
+            items={close_Issues}
+            handleCheckIssue={handleCheckIssue}
+          />
+        )}
         {isIssueListLoading && <p>loading...</p>}
         <Overlay
           popupState={popupState}

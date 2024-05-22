@@ -7,9 +7,13 @@ import * as CommonS from "../styles/common";
 
 interface TableItemsProps {
   items: Issue[];
+  handleCheckIssue: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function TableItems({ items }: TableItemsProps) {
+export default function TableItems({
+  items,
+  handleCheckIssue,
+}: TableItemsProps) {
   if (items.length === 0) {
     return (
       <NoneIssueNotification>등록된 이슈가 없습니다.</NoneIssueNotification>
@@ -21,7 +25,14 @@ export default function TableItems({ items }: TableItemsProps) {
         const { id, title, label, create_At, reporter, milestone } = item;
         return (
           <IssueTable key={`issue-${id}`}>
-            <IssueCheckBox type="checkbox" name={id.toString()} />
+            <IssueCheckBox
+              type="checkbox"
+              name={id.toString()}
+              value={id}
+              onChange={(e) => {
+                handleCheckIssue(e);
+              }}
+            />
             <TableContent>
               <IssueInfo>
                 <IssueInfoTop>

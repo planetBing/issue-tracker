@@ -42,3 +42,20 @@ export interface FilteringState {
   reporter: string[];
   comment: string[];
 }
+
+export interface Comment {
+  id: number;
+  reporter: string;
+  contents: string;
+}
+
+export interface issueDetails {
+  id: number;
+  title: string;
+  create_At: string;
+  reporter: User;
+  label: Label;
+  milestone: Milestone;
+  comment: Comment[];
+  assignee: User[];
+}
