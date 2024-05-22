@@ -22,6 +22,7 @@ interface IssueTableHeaderProps {
     e: React.ChangeEvent<HTMLInputElement>,
     key: string
   ) => void;
+  selectedIssue: string[];
 }
 
 export default function IssueTableHeader({
@@ -32,6 +33,7 @@ export default function IssueTableHeader({
   handleClosePopup,
   popupState,
   handleFilterInTableHeader,
+  selectedIssue,
 }: IssueTableHeaderProps) {
   const { close_Issues, open_Issues } = issueList;
   const { data: userListData } = useApi<User[]>("/user");
@@ -42,82 +44,90 @@ export default function IssueTableHeader({
     <IssueTableTop>
       <IssueCheckBox type="checkbox" name="wholeIssue" />
       <TableContent>
-        <SelectOpenAndClosedIssueBox>
-          <OpenIssueTap
-            onClick={() => {
-              setFilteringState({ ...filteringState, isOpen: true });
-            }}
-            isactive={filteringState.isOpen ? "true" : "false"}
-          >
-            <img src={alertIcon} alt="open icon" />
-            <span>열린 이슈({open_Issues.length})</span>
-          </OpenIssueTap>
-          <ClosedIssueTap
-            onClick={() => {
-              setFilteringState({ ...filteringState, isOpen: false });
-            }}
-            isactive={!filteringState.isOpen ? "true" : "false"}
-          >
-            <img src={archiveIcon} alt="closed icon" />
-            <span>닫힌 이슈({close_Issues.length})</span>
-          </ClosedIssueTap>
-        </SelectOpenAndClosedIssueBox>
-        <FilterBtnsOnTable>
-          <TableFilterBtn onClick={() => handleOpenPopup("assignee")}>
-            담당자 <img src={dropdownIcon} alt="dropdown icon" />
-          </TableFilterBtn>
-          {popupState.assignee && userListData && (
-            <UserPopup
-              userList={userListData}
-              selectedUserList={filteringState.assignee}
-              onChange={(e) => {
-                handleFilterInTableHeader(e, "assignee");
-                handleClosePopup();
-              }}
-              inputType={"radio"}
-            />
-          )}
-          <TableFilterBtn onClick={() => handleOpenPopup("label")}>
-            레이블 <img src={dropdownIcon} alt="dropdown icon" />
-          </TableFilterBtn>
-          {popupState.label && labelListData && (
-            <LabelPopup
-              labelList={labelListData}
-              selectedLabel={filteringState.label}
-              onChange={(e) => {
-                handleFilterInTableHeader(e, "label");
-                handleClosePopup();
-              }}
-            />
-          )}
-          <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
-            마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
-          </TableFilterBtn>
-          {popupState.milestone && milestoneListData && (
-            <MilestonePopup
-              milestoneList={milestoneListData}
-              selectedMilestone={filteringState.milestone}
-              onChange={(e) => {
-                handleFilterInTableHeader(e, "milestone");
-                handleClosePopup();
-              }}
-            />
-          )}
-          <TableFilterBtn onClick={() => handleOpenPopup("reporter")}>
-            작성자 <img src={dropdownIcon} alt="dropdown icon" />
-          </TableFilterBtn>
-          {popupState.reporter && userListData && (
-            <UserPopup
-              userList={userListData}
-              selectedUserList={filteringState.reporter}
-              onChange={(e) => {
-                handleFilterInTableHeader(e, "reporter");
-                handleClosePopup();
-              }}
-              inputType={"radio"}
-            />
-          )}
-        </FilterBtnsOnTable>
+        {selectedIssue.length > 0 ? (
+          <SelectedIssueNum>
+            {selectedIssue.length}개 이슈 선택
+          </SelectedIssueNum>
+        ) : (
+          <>
+            <SelectOpenAndClosedIssueBox>
+              <OpenIssueTap
+                onClick={() => {
+                  setFilteringState({ ...filteringState, isOpen: true });
+                }}
+                isactive={filteringState.isOpen ? "true" : "false"}
+              >
+                <img src={alertIcon} alt="open icon" />
+                <span>열린 이슈({open_Issues.length})</span>
+              </OpenIssueTap>
+              <ClosedIssueTap
+                onClick={() => {
+                  setFilteringState({ ...filteringState, isOpen: false });
+                }}
+                isactive={!filteringState.isOpen ? "true" : "false"}
+              >
+                <img src={archiveIcon} alt="closed icon" />
+                <span>닫힌 이슈({close_Issues.length})</span>
+              </ClosedIssueTap>
+            </SelectOpenAndClosedIssueBox>
+            <FilterBtnsOnTable>
+              <TableFilterBtn onClick={() => handleOpenPopup("assignee")}>
+                담당자 <img src={dropdownIcon} alt="dropdown icon" />
+              </TableFilterBtn>
+              {popupState.assignee && userListData && (
+                <UserPopup
+                  userList={userListData}
+                  selectedUserList={filteringState.assignee}
+                  onChange={(e) => {
+                    handleFilterInTableHeader(e, "assignee");
+                    handleClosePopup();
+                  }}
+                  inputType={"radio"}
+                />
+              )}
+              <TableFilterBtn onClick={() => handleOpenPopup("label")}>
+                레이블 <img src={dropdownIcon} alt="dropdown icon" />
+              </TableFilterBtn>
+              {popupState.label && labelListData && (
+                <LabelPopup
+                  labelList={labelListData}
+                  selectedLabel={filteringState.label}
+                  onChange={(e) => {
+                    handleFilterInTableHeader(e, "label");
+                    handleClosePopup();
+                  }}
+                />
+              )}
+              <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
+                마일스톤 <img src={dropdownIcon} alt="dropdown icon" />
+              </TableFilterBtn>
+              {popupState.milestone && milestoneListData && (
+                <MilestonePopup
+                  milestoneList={milestoneListData}
+                  selectedMilestone={filteringState.milestone}
+                  onChange={(e) => {
+                    handleFilterInTableHeader(e, "milestone");
+                    handleClosePopup();
+                  }}
+                />
+              )}
+              <TableFilterBtn onClick={() => handleOpenPopup("reporter")}>
+                작성자 <img src={dropdownIcon} alt="dropdown icon" />
+              </TableFilterBtn>
+              {popupState.reporter && userListData && (
+                <UserPopup
+                  userList={userListData}
+                  selectedUserList={filteringState.reporter}
+                  onChange={(e) => {
+                    handleFilterInTableHeader(e, "reporter");
+                    handleClosePopup();
+                  }}
+                  inputType={"radio"}
+                />
+              )}
+            </FilterBtnsOnTable>{" "}
+          </>
+        )}
       </TableContent>
     </IssueTableTop>
   );
@@ -191,4 +201,12 @@ const TableContent = styled(CommonS.SpaceBetween)`
 const IssueCheckBox = styled.input`
   border: 1px solid rgba(217, 219, 233, 1);
   margin-top: 7px;
+`;
+
+const SelectedIssueNum = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 16px;
 `;

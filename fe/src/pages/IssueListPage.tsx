@@ -127,6 +127,7 @@ export default function IssueListPage() {
           handleClosePopup={() => popupDispatch({ type: "closePopup" })}
           popupState={popupState}
           handleFilterInTableHeader={handleFilterInTableHeader}
+          selectedIssue={selectedIssue}
         />
         {filteringState.isOpen && (
           <TableItems items={open_Issues} handleCheckIssue={handleCheckIssue} />
