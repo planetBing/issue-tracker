@@ -7,7 +7,7 @@ import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
 import labelIcon from "../assets/label.svg";
 import milestoneIcon from "../assets/milestone.svg";
-import { IssueData } from "../Model/types";
+import { IssueData, FilteringState } from "../Model/types";
 import { Link } from "react-router-dom";
 import IssueTableHeader from "../components/IssueTableHeader";
 import TableItems from "../components/IssueTableItems";
@@ -17,12 +17,23 @@ import FilterPopup from "../components/popup/FilterPopup";
 import Overlay from "../components/popup/Overlay";
 import useApi from "../hooks/api/useApi";
 
+const initialFilteringState = {
+  isOpen: true,
+  assignee: [],
+  label: [],
+  milestone: [],
+  reporter: [],
+  comment: [],
+};
+
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
   const { popupState, dispatch: popupDispatch } = usePopup();
   const { data: issueList, isLoading: isIssueListLoading } =
     useApi<IssueData>("/issue");
-  const [showOpenIssues, setShowOpenIssues] = useState<boolean>(true);
+  const [filteringState, setFilteringState] = useState<FilteringState>(
+    initialFilteringState
+  );
 
   if (isIssueListLoading) {
     return <div>Loading...</div>;
@@ -33,8 +44,22 @@ export default function IssueListPage() {
   }
   const { close_Issues, open_Issues } = issueList;
 
+  const handleFilterInTableHeader = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => {
+    setFilteringState((prevState) => ({
+      ...prevState,
+      [key]: [e.target.value],
+    }));
+  };
+
   const handleOpenPopup = (popupType: PopupType) => {
     popupDispatch({ type: "openPopup", popup: popupType });
+  };
+
+  const handleClosePopup = () => {
+    popupDispatch({ type: "closePopup" });
   };
 
   return (
@@ -72,14 +97,16 @@ export default function IssueListPage() {
           </ButtonsWrapper>
         </TapAndFilterWrapper>
         <IssueTableHeader
-          showOpenIssues={showOpenIssues}
-          setShowOpenIssues={setShowOpenIssues}
+          filteringState={filteringState}
+          setFilteringState={setFilteringState}
           issueList={issueList}
           handleOpenPopup={handleOpenPopup}
+          handleClosePopup={handleClosePopup}
           popupState={popupState}
+          handleFilterInTableHeader={handleFilterInTableHeader}
         />
-        {showOpenIssues && <TableItems items={open_Issues} />}
-        {!showOpenIssues && <TableItems items={close_Issues} />}
+        {filteringState.isOpen && <TableItems items={open_Issues} />}
+        {!filteringState.isOpen && <TableItems items={close_Issues} />}
         <Overlay
           popupState={popupState}
           closePopup={() => popupDispatch({ type: "closePopup" })}

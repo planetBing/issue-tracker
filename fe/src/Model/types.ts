@@ -33,3 +33,12 @@ export interface IssueData {
   close_Issues: Issue[];
   open_Issues: Issue[];
 }
+
+export interface FilteringState {
+  isOpen: boolean;
+  assignee: string[];
+  label: string[];
+  milestone: string[];
+  reporter: string[];
+  comment: string[];
+}

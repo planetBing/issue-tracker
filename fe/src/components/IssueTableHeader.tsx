@@ -9,22 +9,29 @@ import MilestonePopup from "./popup/MilestonePopup";
 import UserPopup from "./popup/UserPopup";
 import LabelPopup from "./popup/LabelPopup";
 import useApi from "../hooks/api/useApi";
-import { User, Milestone, Label } from "../Model/types";
+import { User, Milestone, Label, FilteringState } from "../Model/types";
 
 interface IssueTableHeaderProps {
-  showOpenIssues: boolean;
-  setShowOpenIssues: React.Dispatch<React.SetStateAction<boolean>>;
+  filteringState: FilteringState;
+  setFilteringState: (item: FilteringState) => void;
   issueList: IssueData;
   popupState: PopupState;
   handleOpenPopup: (popupType: PopupType) => void;
+  handleClosePopup: () => void;
+  handleFilterInTableHeader: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => void;
 }
 
 export default function IssueTableHeader({
-  showOpenIssues,
-  setShowOpenIssues,
+  filteringState,
+  setFilteringState,
   issueList,
   handleOpenPopup,
+  handleClosePopup,
   popupState,
+  handleFilterInTableHeader,
 }: IssueTableHeaderProps) {
   const { close_Issues, open_Issues } = issueList;
   const { data: userListData } = useApi<User[]>("/user");
@@ -38,18 +45,18 @@ export default function IssueTableHeader({
         <SelectOpenAndClosedIssueBox>
           <OpenIssueTap
             onClick={() => {
-              setShowOpenIssues(true);
+              setFilteringState({ ...filteringState, isOpen: true });
             }}
-            isactive={showOpenIssues ? "true" : "false"}
+            isactive={filteringState.isOpen ? "true" : "false"}
           >
             <img src={alertIcon} alt="open icon" />
             <span>열린 이슈({open_Issues.length})</span>
           </OpenIssueTap>
           <ClosedIssueTap
             onClick={() => {
-              setShowOpenIssues(false);
+              setFilteringState({ ...filteringState, isOpen: false });
             }}
-            isactive={!showOpenIssues ? "true" : "false"}
+            isactive={!filteringState.isOpen ? "true" : "false"}
           >
             <img src={archiveIcon} alt="closed icon" />
             <span>닫힌 이슈({close_Issues.length})</span>
@@ -62,8 +69,11 @@ export default function IssueTableHeader({
           {popupState.assignee && userListData && (
             <UserPopup
               userList={userListData}
-              selectedUserList={[]}
-              onChange={console.log}
+              selectedUserList={filteringState.assignee}
+              onChange={(e) => {
+                handleFilterInTableHeader(e, "assignee");
+                handleClosePopup();
+              }}
             />
           )}
           <TableFilterBtn onClick={() => handleOpenPopup("label")}>
@@ -72,8 +82,11 @@ export default function IssueTableHeader({
           {popupState.label && labelListData && (
             <LabelPopup
               labelList={labelListData}
-              selectedLabel={[]}
-              onChange={console.log}
+              selectedLabel={filteringState.label}
+              onChange={(e) => {
+                handleFilterInTableHeader(e, "label");
+                handleClosePopup();
+              }}
             />
           )}
           <TableFilterBtn onClick={() => handleOpenPopup("milestone")}>
@@ -82,8 +95,11 @@ export default function IssueTableHeader({
           {popupState.milestone && milestoneListData && (
             <MilestonePopup
               milestoneList={milestoneListData}
-              selectedMilestone={[]}
-              onChange={console.log}
+              selectedMilestone={filteringState.milestone}
+              onChange={(e) => {
+                handleFilterInTableHeader(e, "milestone");
+                handleClosePopup();
+              }}
             />
           )}
           <TableFilterBtn onClick={() => handleOpenPopup("reporter")}>
@@ -92,8 +108,11 @@ export default function IssueTableHeader({
           {popupState.reporter && userListData && (
             <UserPopup
               userList={userListData}
-              selectedUserList={[]}
-              onChange={console.log}
+              selectedUserList={filteringState.reporter}
+              onChange={(e) => {
+                handleFilterInTableHeader(e, "reporter");
+                handleClosePopup();
+              }}
             />
           )}
         </FilterBtnsOnTable>
