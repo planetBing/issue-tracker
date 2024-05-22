@@ -112,7 +112,7 @@ export default function SideBar({
         <div>
           <span>레이블</span> <span>+</span>
         </div>
-        {selectedLabel && (
+        {selectedLabel && selectedLabelObj && selectedLabelObj.length > 0 && (
           <SelectedOptionWrapper>
             {selectedLabelObj?.map((label, index) => {
               return (

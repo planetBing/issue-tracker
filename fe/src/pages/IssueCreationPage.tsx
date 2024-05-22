@@ -65,8 +65,8 @@ export default function IssueCreationPage() {
       title: issueTitle,
       comment: comment,
       assignee: assigneeList.length ? assigneeList : null,
-      label: selectedLabel,
-      milestone_id: selectedMilestone,
+      label: selectedLabel.length ? selectedLabel : null,
+      milestone_id: selectedMilestone.length ? selectedMilestone : null,
     };
     try {
       const response = await fetch(`${SERVER}/issue`, {
