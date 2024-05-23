@@ -49,5 +49,15 @@ public class Issue {
     return (labelIds == null) ?
         null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
   }
-}
 
+  public boolean hasAssignee(String username) {
+    return assignees.stream()
+        .anyMatch(assignee -> assignee.getUser_name().equals(username));
+  }
+
+  public boolean hasLabel(Long id) {
+    labels.forEach(System.out::println);
+    return labels.stream()
+        .anyMatch(label -> label.getLabel_id().equals(id));
+  }
+}
