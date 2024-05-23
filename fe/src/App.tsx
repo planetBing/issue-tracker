@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import IssueCreationPage from "./pages/IssueCreationPage";
 import IssueListPage from "./pages/IssueListPage";
 import { CurrentUserProvider } from "./contexts/CurrentUserProvider";
+import IssueDetailsPage from "./pages/IssueDetailsPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path={"/"} element={<IssueListPage />} />
             <Route path={"/login"} element={<LoginPage />} />
             <Route path={"/issue"} element={<IssueCreationPage />} />
+            <Route path={"/issue/:id"} element={<IssueDetailsPage />} />
           </Routes>
         </CurrentUserProvider>
       </BrowserRouter>
