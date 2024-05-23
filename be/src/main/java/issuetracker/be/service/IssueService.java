@@ -1,9 +1,12 @@
 package issuetracker.be.service;
 
+import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
+import issuetracker.be.domain.LabelRef;
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.IssueFilterTypeRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
@@ -17,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +94,129 @@ public class IssueService {
     }
     return result;
 
+  }
+
+  // 내가 작성한 코멘트 이슈들의 id로 이슈 리스트 생성
+  public List<Issue> findCommentIssue(List<Long> issueIds) {
+    List<Issue> issues = new ArrayList<>();
+    for (Long id : issueIds) {
+      Optional<Issue> optionalIssue = issueRepository.findById(id);
+      if (optionalIssue.isPresent()) {
+        issues.add(optionalIssue.get());
+      }
+    }
+    return issues;
+  }
+
+  // 필터 적용해서
+  public List<IssueShowResponse> commentIssueShowDto(List<Issue> issues,
+      IssueFilterTypeRequest issueFilterTypeRequest) {
+
+    String assignee = issueFilterTypeRequest.assignee();
+    String label = issueFilterTypeRequest.label();
+    String milestone = issueFilterTypeRequest.milestone();
+    String reporter = issueFilterTypeRequest.reporter();
+
+    List<Issue> filteredIssues = issues;
+
+    if (assignee != null) {
+      filteredIssues = getAssigneeIssues(filteredIssues, assignee);
+    }
+
+    if(label != null) {
+      filteredIssues = getLabelIssues(filteredIssues, label);
+    }
+
+    if(milestone != null) {
+      filteredIssues = getMilestoneIssues(filteredIssues, milestone);
+    }
+
+    if (reporter != null) {
+      filteredIssues = getReporterIssues(filteredIssues, reporter);
+    }
+
+    filteredIssues.forEach(issue -> log.debug(issue.toString()));
+
+    return generateIssueShowDto(filteredIssues);
+  }
+
+  private static List<Issue> getLabelIssues(List<Issue> filteredIssues, String id) {
+    System.out.println("라벨필터작동");
+    filteredIssues = filteredIssues.stream()
+        .filter(issue -> {
+          if ("none".equalsIgnoreCase(id)) {
+            Set<LabelRef> labels = issue.getLabels();
+            System.out.println("labels = " + labels);
+            return labels.isEmpty();
+          } else {
+            try {
+              // 특정 id ID가 있는 이슈 필터링
+              Long labelId = Long.valueOf(id);
+              return issue.hasLabel(labelId);
+            } catch (NumberFormatException e) {
+              throw new IllegalArgumentException("잘못된 id ID 형식");
+            }
+          }
+        })
+        .toList();
+    filteredIssues.forEach(System.out::println);
+    return filteredIssues;
+  }
+
+  private static List<Issue> getMilestoneIssues(List<Issue> filteredIssues, String id) {
+    System.out.println("마일스톤필터작동");
+    filteredIssues = filteredIssues.stream()
+        .filter(issue -> {
+          if ("none".equalsIgnoreCase(id)) {
+            Set<AssigneeRef> assignees = issue.getAssignees();
+            System.out.println("assignees = " + assignees);
+            return assignees.isEmpty();
+          } else {
+            try {
+              // 특정 id ID가 있는 이슈 필터링
+              Long labelId = Long.valueOf(id);
+              return labelId.equals(issue.getMilestone_id());
+            } catch (NumberFormatException e) {
+              throw new IllegalArgumentException("잘못된 id ID 형식");
+            }
+          }
+        })
+        .toList();
+    filteredIssues.forEach(System.out::println);
+    return filteredIssues;
+  }
+
+  private static List<Issue> getAssigneeIssues(List<Issue> filteredIssues, String name) {
+    System.out.println("관리자필터작동");
+    filteredIssues = filteredIssues.stream()
+        .filter(issue -> {
+          if ("none".equalsIgnoreCase(name)) {
+            return issue.getAssignees() == null;
+          } else {
+            // 포함되어있는 것 필터링
+            return issue.hasAssignee(name);
+          }
+        })
+        .toList();
+    filteredIssues.forEach(System.out::println);
+    // 없을 때는 [] 반환
+    return filteredIssues;
+  }
+
+  private static List<Issue> getReporterIssues(List<Issue> filteredIssues, String name) {
+    System.out.println("작성자필터작동");
+    filteredIssues = filteredIssues.stream()
+        .filter(issue -> {
+          if ("none".equalsIgnoreCase(name)) {
+            return issue.getAssignees() == null;
+          } else {
+            // 포함되어있는 것 필터링
+            return issue.getReporter().equals(name);
+          }
+        })
+        .toList();
+    filteredIssues.forEach(System.out::println);
+    // 없을 때는 [] 반환
+    return filteredIssues;
   }
 }
