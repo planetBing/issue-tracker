@@ -49,8 +49,11 @@ public class CommentService {
     }
   }
 
-
   public List<Comment> getComment(Long id) {
     return commentRepository.findByIssueId(id);
+  }
+
+  public List<Long> getIssueId(String name) {
+    return commentRepository.findIssueIdByName(name);
   }
 }
