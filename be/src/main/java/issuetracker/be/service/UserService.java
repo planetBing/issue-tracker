@@ -17,4 +17,7 @@ public class UserService {
   public List<User> getAllUsers() {
     return userRepository.findAll();
   }
+  public User getCommentUsers(String name) {
+    return userRepository.findByName(name);
+  }
 }

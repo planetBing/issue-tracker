@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends CrudRepository<User, String> {
   @Override
   List<User> findAll();
+
+  User findByName(String name);
 }
