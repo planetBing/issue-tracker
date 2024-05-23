@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 import { Issue } from "../Model/types";
 import LabelComponent from "./Label";
 import alertIcon from "../assets/alertCircle.svg";
@@ -40,7 +41,7 @@ export default function TableItems({
               <IssueInfo>
                 <IssueInfoTop>
                   <img src={alertIcon} alt="blue alert icon" />
-                  <IssueTitle>{title}</IssueTitle>
+                  <IssueTitle to={`issue/${id}`}>{title}</IssueTitle>
                   {label &&
                     label.length > 0 &&
                     label.map((labelObj) => {
@@ -106,11 +107,12 @@ const IssueInfoTop = styled.div`
   }
 `;
 
-const IssueTitle = styled.div`
+const IssueTitle = styled(Link)`
   font-size: 20px;
   color: rgba(20, 20, 43, 1);
   font-weight: 500;
   margin-right: 8px;
+  text-decoration: none;
 `;
 
 const IssueInfoBottom = styled.div`
