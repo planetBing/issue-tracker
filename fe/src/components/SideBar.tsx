@@ -64,7 +64,7 @@ export default function SideBar({
   const { data: milestoneData } = useApi<Milestone[]>("/milestone");
 
   const selectedLabelObj = labelData?.filter((label) =>
-    selectedLabel.includes(label.name)
+    selectedLabel.includes(label.id.toString())
   );
   const selectedMilestoneObj = milestoneData?.filter((milestone) =>
     selectedMilestone.includes(milestone.id.toString())
@@ -106,6 +106,8 @@ export default function SideBar({
             dispatch({ type: "closePopup" });
           }}
           inputType={"checkbox"}
+          isAssigneeNone={false}
+          headerTitle={"담당자"}
         />
       )}
 
@@ -134,6 +136,7 @@ export default function SideBar({
             handleInputLabel(e);
             dispatch({ type: "closePopup" });
           }}
+          isLabelNone={false}
         />
       )}
 
@@ -160,6 +163,7 @@ export default function SideBar({
             handleInputMilestone(e);
             dispatch({ type: "closePopup" });
           }}
+          isMilestoneNone={false}
         />
       )}
 

@@ -1,25 +1,48 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
 
-export default function useApi<T>(path: string) {
-  const [data, setData] = useState<T>();
+export default function useApi<T>(initialPath: string) {
+  const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [apiPath, setApiPath] = useState(initialPath);
+
+  const fetchData = useCallback(
+    async (method: "GET" | "PUT", path: string, body?: any) => {
+      setIsLoading(true);
+      try {
+        const response = await axios({
+          url: `${process.env.REACT_APP_SERVER}${path}`,
+          method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: body,
+        });
+        if (method === "GET") {
+          setData(response.data);
+        } else {
+          refetch();
+        }
+      } catch (error) {
+        console.error(`Error with ${method} request:`, error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData("GET", apiPath);
+  }, [apiPath, fetchData]);
 
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${process.env.REACT_APP_SERVER}${path}`);
-      const data = await response.json();
-      setData(data);
-    } catch (error) {
-      console.error("Error fetching label data:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const refetch = (newPath?: string) => {
+    setApiPath(newPath || initialPath);
   };
 
-  return { data, isLoading };
+  const putData = (putPath: string, body: any) => {
+    fetchData("PUT", putPath, body);
+  };
+
+  return { data, isLoading, refetch, putData };
 }

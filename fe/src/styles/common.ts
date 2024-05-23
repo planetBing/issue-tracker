@@ -14,3 +14,9 @@ export const Wrapper = styled.div`
   width: 1280px;
   margin: 32px auto;
 `;
+
+export const Center = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

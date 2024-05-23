@@ -4,6 +4,7 @@ export interface User {
 }
 
 export interface Label {
+  id: number;
   name: string;
   background_color: string;
   text_color: string;
@@ -25,7 +26,7 @@ export interface Issue {
   title: string;
   create_At: string;
   reporter: User;
-  label: Label | null;
+  label: Label[] | null;
   milestone: Milestone | null;
 }
 
@@ -41,4 +42,21 @@ export interface FilteringState {
   milestone: string[];
   reporter: string[];
   comment: string[];
+}
+
+export interface Comment {
+  id: number;
+  reporter: string;
+  contents: string;
+}
+
+export interface issueDetails {
+  id: number;
+  title: string;
+  create_At: string;
+  reporter: User;
+  label: Label;
+  milestone: Milestone;
+  comment: Comment[];
+  assignee: User[];
 }

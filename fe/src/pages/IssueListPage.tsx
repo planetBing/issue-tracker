@@ -1,4 +1,5 @@
-import { useState } from "react";
+import queryString from "query-string";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -26,18 +27,33 @@ const initialFilteringState = {
   comment: [],
 };
 
+const OnlyFilteringClosedState = {
+  isOpen: false,
+  assignee: [],
+  label: [],
+  milestone: [],
+  reporter: [],
+  comment: [],
+};
+
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
   const { popupState, dispatch: popupDispatch } = usePopup();
-  const { data: issueList, isLoading: isIssueListLoading } =
-    useApi<IssueData>("/issue");
+  const {
+    data: issueList,
+    isLoading: isIssueListLoading,
+    refetch: isssueListRefetch,
+    putData: updateIssueStatus,
+  } = useApi<IssueData>("/issue");
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
   );
+  const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
 
-  if (isIssueListLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const paramString = queryString.stringify(filteringState);
+    // isssueListRefetch(`/issue/filter?${paramString}`);
+  }, [filteringState]);
 
   if (!issueList) {
     return null;
@@ -58,6 +74,47 @@ export default function IssueListPage() {
     popupDispatch({ type: "openPopup", popup: popupType });
   };
 
+  const filterString = [
+    `is: ${filteringState.isOpen ? "open" : "closed"}`,
+    ...Object.entries(filteringState)
+      .filter(([key, value]) => Array.isArray(value) && value.length > 0)
+      .map(([key, value]) => `${key}:${value.join(",")}`),
+  ].join(" ");
+
+  const handleCheckIssue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (selectedIssue.includes(value)) {
+      const newSelectedIssueList = selectedIssue.filter(
+        (assignee) => assignee !== value
+      );
+      setSelectedIssue(newSelectedIssueList);
+    } else {
+      setSelectedIssue([...selectedIssue, e.target.value]);
+    }
+  };
+
+  const handleCheckAllIssues = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIssueIds = (
+        filteringState.isOpen ? open_Issues : close_Issues
+      ).map((issue) => issue.id.toString());
+      setSelectedIssue(allIssueIds);
+    } else {
+      setSelectedIssue([]);
+    }
+  };
+
+  const openOrCloseIssues = (status: string) => {
+    const putPath = status === "open" ? "/issue/open" : "/issue/close";
+    const selectedIssueIds = selectedIssue.map((id) => Number(id));
+    console.log(selectedIssueIds);
+    // updateIssueStatus(putPath, { issueIds: selectedIssueIds });
+  };
+
+  const isFilteringChanged =
+    JSON.stringify(filteringState) !== JSON.stringify(initialFilteringState) &&
+    JSON.stringify(filteringState) !== JSON.stringify(OnlyFilteringClosedState);
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -70,13 +127,14 @@ export default function IssueListPage() {
             </FilterBtn>
             {popupState.filter && (
               <FilterPopup
+                filteringState={filteringState}
                 setFilteringState={setFilteringState}
                 closePopup={() => popupDispatch({ type: "closePopup" })}
               />
             )}
             <FilterSearchBox>
               <img src={searchIcon} alt="serch icon" />
-              <input placeholder="is: issue is:open" />
+              <input placeholder={`is: issue ${filterString}`} />
             </FilterSearchBox>
           </FilterBar>
           <ButtonsWrapper>
@@ -93,6 +151,13 @@ export default function IssueListPage() {
             <IssueCreationButton to="/issue">+ 이슈 작성</IssueCreationButton>
           </ButtonsWrapper>
         </TapAndFilterWrapper>
+        {isFilteringChanged && (
+          <FilterResetButton
+            onClick={() => setFilteringState(initialFilteringState)}
+          >
+            X 현재의 검색 필터 및 정렬 지우기
+          </FilterResetButton>
+        )}
         <IssueTableHeader
           filteringState={filteringState}
           setFilteringState={setFilteringState}
@@ -101,9 +166,25 @@ export default function IssueListPage() {
           handleClosePopup={() => popupDispatch({ type: "closePopup" })}
           popupState={popupState}
           handleFilterInTableHeader={handleFilterInTableHeader}
+          selectedIssue={selectedIssue}
+          openOrCloseIssues={openOrCloseIssues}
+          handleCheckAllIssues={handleCheckAllIssues}
         />
-        {filteringState.isOpen && <TableItems items={open_Issues} />}
-        {!filteringState.isOpen && <TableItems items={close_Issues} />}
+        {filteringState.isOpen && (
+          <TableItems
+            items={open_Issues}
+            handleCheckIssue={handleCheckIssue}
+            selectedIssue={selectedIssue}
+          />
+        )}
+        {!filteringState.isOpen && (
+          <TableItems
+            items={close_Issues}
+            handleCheckIssue={handleCheckIssue}
+            selectedIssue={selectedIssue}
+          />
+        )}
+        {isIssueListLoading && <p>loading...</p>}
         <Overlay
           popupState={popupState}
           closePopup={() => popupDispatch({ type: "closePopup" })}
@@ -208,4 +289,12 @@ const IssueCreationButton = styled(Link)`
   border-radius: 10px;
   text-decoration: none;
   padding: 10px 25px;
+`;
+
+const FilterResetButton = styled.div`
+  color: rgba(78, 75, 102, 1);
+  font-size: 12px;
+  margin-top: 25px;
+  margin-left: 5px;
+  cursor: pointer;
 `;

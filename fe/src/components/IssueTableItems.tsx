@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 import { Issue } from "../Model/types";
 import LabelComponent from "./Label";
 import alertIcon from "../assets/alertCircle.svg";
@@ -7,9 +8,15 @@ import * as CommonS from "../styles/common";
 
 interface TableItemsProps {
   items: Issue[];
+  handleCheckIssue: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedIssue: string[];
 }
 
-export default function TableItems({ items }: TableItemsProps) {
+export default function TableItems({
+  items,
+  handleCheckIssue,
+  selectedIssue,
+}: TableItemsProps) {
   if (items.length === 0) {
     return (
       <NoneIssueNotification>등록된 이슈가 없습니다.</NoneIssueNotification>
@@ -20,14 +27,31 @@ export default function TableItems({ items }: TableItemsProps) {
       {items.map((item: Issue) => {
         const { id, title, label, create_At, reporter, milestone } = item;
         return (
-          <IssueTable key={`issue-${id}`}>
-            <IssueCheckBox type="checkbox" name={id.toString()} />
+          <IssueTable key={`issueTableContent-${id}`}>
+            <IssueCheckBox
+              type="checkbox"
+              name={id.toString()}
+              value={id}
+              checked={selectedIssue.includes(id.toString())}
+              onChange={(e) => {
+                handleCheckIssue(e);
+              }}
+            />
             <TableContent>
               <IssueInfo>
                 <IssueInfoTop>
                   <img src={alertIcon} alt="blue alert icon" />
-                  <IssueTitle>{title}</IssueTitle>
-                  {label && <LabelComponent labelInfo={label} />}
+                  <IssueTitle to={`issue/${id}`}>{title}</IssueTitle>
+                  {label &&
+                    label.length > 0 &&
+                    label.map((labelObj) => {
+                      return (
+                        <LabelComponent
+                          key={`label-${labelObj.id}`}
+                          labelInfo={labelObj}
+                        />
+                      );
+                    })}
                 </IssueInfoTop>
                 <IssueInfoBottom>
                   <span>#{id}</span>
@@ -83,11 +107,12 @@ const IssueInfoTop = styled.div`
   }
 `;
 
-const IssueTitle = styled.div`
+const IssueTitle = styled(Link)`
   font-size: 20px;
   color: rgba(20, 20, 43, 1);
   font-weight: 500;
   margin-right: 8px;
+  text-decoration: none;
 `;
 
 const IssueInfoBottom = styled.div`
