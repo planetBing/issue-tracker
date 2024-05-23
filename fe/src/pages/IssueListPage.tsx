@@ -6,8 +6,6 @@ import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
-import labelIcon from "../assets/label.svg";
-import milestoneIcon from "../assets/milestone.svg";
 import { IssueData, FilteringState } from "../Model/types";
 import { Link } from "react-router-dom";
 import IssueTableHeader from "../components/IssueTableHeader";
@@ -17,6 +15,7 @@ import { PopupType } from "../hooks/usePopup";
 import FilterPopup from "../components/popup/FilterPopup";
 import Overlay from "../components/popup/Overlay";
 import useApi from "../hooks/api/useApi";
+import LabelMilestoneTap from "../components/LabelMilestoneTap";
 
 const initialFilteringState = {
   isOpen: true,
@@ -138,16 +137,7 @@ export default function IssueListPage() {
             </FilterSearchBox>
           </FilterBar>
           <ButtonsWrapper>
-            <TapBox>
-              <TapButton>
-                <img src={labelIcon} alt="label icon" />
-                레이블(3)
-              </TapButton>
-              <TapButton>
-                <img src={milestoneIcon} alt="milestone icon" />
-                마일스톤(2)
-              </TapButton>
-            </TapBox>
+            <LabelMilestoneTap />
             <IssueCreationButton to="/issue">+ 이슈 작성</IssueCreationButton>
           </ButtonsWrapper>
         </TapAndFilterWrapper>
@@ -265,7 +255,6 @@ const TapButton = styled.div`
   width: 159.5px;
   height: 100%;
   background-color: rgba(247, 247, 252, 1);
-  color: rgba(78, 75, 102, 1);
   font-size: 16px;
   border-right: 1px solid rgba(217, 219, 233, 1);
   display: flex;
