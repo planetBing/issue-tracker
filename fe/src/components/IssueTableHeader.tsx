@@ -157,14 +157,11 @@ const IssueTableTop = styled.div`
   padding: 0 32px;
 `;
 
-const SelectOpenAndClosedIssueBox = styled(CommonS.SpaceBetween)`
-  align-items: center;
-  width: 227px;
-`;
+const SelectOpenAndClosedIssueBox = styled(CommonS.Center)``;
 
 const OpenIssueTap = styled.div<{ isactive: string }>`
   display: flex;
-  width: 120px;
+  margin-right: 24px;
   font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
   color: ${({ isactive }) =>
@@ -177,7 +174,6 @@ const OpenIssueTap = styled.div<{ isactive: string }>`
 
 const ClosedIssueTap = styled.div<{ isactive: string }>`
   display: flex;
-  width: 120px;
   font-weight: ${({ isactive }) => (isactive === "true" ? 700 : 500)};
   font-size: 16px;
   color: ${({ isactive }) =>

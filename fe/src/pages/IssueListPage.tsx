@@ -27,6 +27,15 @@ const initialFilteringState = {
   comment: [],
 };
 
+const OnlyFilteringClosedState = {
+  isOpen: false,
+  assignee: [],
+  label: [],
+  milestone: [],
+  reporter: [],
+  comment: [],
+};
+
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
   const { popupState, dispatch: popupDispatch } = usePopup();
@@ -87,8 +96,13 @@ export default function IssueListPage() {
   const openOrCloseIssues = (status: string) => {
     const putPath = status === "open" ? "/issue/open" : "/issue/close";
     const selectedIssueIds = selectedIssue.map((id) => Number(id));
-    updateIssueStatus(putPath, { issueIds: selectedIssueIds });
+    console.log(selectedIssueIds);
+    // updateIssueStatus(putPath, { issueIds: selectedIssueIds });
   };
+
+  const isFilteringChanged =
+    JSON.stringify(filteringState) !== JSON.stringify(initialFilteringState) &&
+    JSON.stringify(filteringState) !== JSON.stringify(OnlyFilteringClosedState);
 
   return (
     <>
@@ -126,6 +140,13 @@ export default function IssueListPage() {
             <IssueCreationButton to="/issue">+ 이슈 작성</IssueCreationButton>
           </ButtonsWrapper>
         </TapAndFilterWrapper>
+        {isFilteringChanged && (
+          <FilterResetButton
+            onClick={() => setFilteringState(initialFilteringState)}
+          >
+            X 현재의 검색 필터 및 정렬 지우기
+          </FilterResetButton>
+        )}
         <IssueTableHeader
           filteringState={filteringState}
           setFilteringState={setFilteringState}
@@ -251,4 +272,12 @@ const IssueCreationButton = styled(Link)`
   border-radius: 10px;
   text-decoration: none;
   padding: 10px 25px;
+`;
+
+const FilterResetButton = styled.div`
+  color: rgba(78, 75, 102, 1);
+  font-size: 12px;
+  margin-top: 25px;
+  margin-left: 5px;
+  cursor: pointer;
 `;
