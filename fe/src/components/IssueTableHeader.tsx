@@ -25,6 +25,7 @@ interface IssueTableHeaderProps {
   ) => void;
   selectedIssue: string[];
   openOrCloseIssues: (status: string) => void;
+  handleCheckAllIssues: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function IssueTableHeader({
@@ -37,6 +38,7 @@ export default function IssueTableHeader({
   handleFilterInTableHeader,
   selectedIssue,
   openOrCloseIssues,
+  handleCheckAllIssues,
 }: IssueTableHeaderProps) {
   const { close_Issues, open_Issues } = issueList;
   const { data: userListData } = useApi<User[]>("/user");
@@ -45,7 +47,16 @@ export default function IssueTableHeader({
 
   return (
     <IssueTableTop>
-      <IssueCheckBox type="checkbox" name="wholeIssue" />
+      <IssueCheckBox
+        type="checkbox"
+        name="wholeIssue"
+        checked={
+          (filteringState.isOpen ? open_Issues : close_Issues).length > 0 &&
+          selectedIssue.length ===
+            (filteringState.isOpen ? open_Issues : close_Issues).length
+        }
+        onChange={handleCheckAllIssues}
+      />
       <TableContent>
         {selectedIssue.length > 0 ? (
           <>

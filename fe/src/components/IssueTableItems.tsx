@@ -8,11 +8,13 @@ import * as CommonS from "../styles/common";
 interface TableItemsProps {
   items: Issue[];
   handleCheckIssue: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedIssue: string[];
 }
 
 export default function TableItems({
   items,
   handleCheckIssue,
+  selectedIssue,
 }: TableItemsProps) {
   if (items.length === 0) {
     return (
@@ -29,6 +31,7 @@ export default function TableItems({
               type="checkbox"
               name={id.toString()}
               value={id}
+              checked={selectedIssue.includes(id.toString())}
               onChange={(e) => {
                 handleCheckIssue(e);
               }}

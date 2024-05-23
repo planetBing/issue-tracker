@@ -93,6 +93,17 @@ export default function IssueListPage() {
     }
   };
 
+  const handleCheckAllIssues = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIssueIds = (
+        filteringState.isOpen ? open_Issues : close_Issues
+      ).map((issue) => issue.id.toString());
+      setSelectedIssue(allIssueIds);
+    } else {
+      setSelectedIssue([]);
+    }
+  };
+
   const openOrCloseIssues = (status: string) => {
     const putPath = status === "open" ? "/issue/open" : "/issue/close";
     const selectedIssueIds = selectedIssue.map((id) => Number(id));
@@ -157,14 +168,20 @@ export default function IssueListPage() {
           handleFilterInTableHeader={handleFilterInTableHeader}
           selectedIssue={selectedIssue}
           openOrCloseIssues={openOrCloseIssues}
+          handleCheckAllIssues={handleCheckAllIssues}
         />
         {filteringState.isOpen && (
-          <TableItems items={open_Issues} handleCheckIssue={handleCheckIssue} />
+          <TableItems
+            items={open_Issues}
+            handleCheckIssue={handleCheckIssue}
+            selectedIssue={selectedIssue}
+          />
         )}
         {!filteringState.isOpen && (
           <TableItems
             items={close_Issues}
             handleCheckIssue={handleCheckIssue}
+            selectedIssue={selectedIssue}
           />
         )}
         {isIssueListLoading && <p>loading...</p>}
