@@ -104,6 +104,8 @@ export default function IssueTableHeader({
                       handleClosePopup();
                     }}
                     inputType={"radio"}
+                    isAssigneeNone={true}
+                    headerTitle={"담당자"}
                   />
                 )}
               </TableFilterBtn>
@@ -118,6 +120,7 @@ export default function IssueTableHeader({
                       handleFilterInTableHeader(e, "label");
                       handleClosePopup();
                     }}
+                    isLabelNone={true}
                   />
                 )}
               </TableFilterBtn>
@@ -132,6 +135,7 @@ export default function IssueTableHeader({
                       handleFilterInTableHeader(e, "milestone");
                       handleClosePopup();
                     }}
+                    isMilestoneNone={true}
                   />
                 )}
               </TableFilterBtn>
@@ -147,6 +151,8 @@ export default function IssueTableHeader({
                       handleClosePopup();
                     }}
                     inputType={"radio"}
+                    isAssigneeNone={false}
+                    headerTitle={"작성자"}
                   />
                 )}
               </TableFilterBtn>

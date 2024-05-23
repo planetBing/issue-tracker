@@ -7,6 +7,8 @@ interface UserPopupProps {
   selectedUserList: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputType: string;
+  isAssigneeNone: boolean;
+  headerTitle: string;
 }
 
 export default function UserPopup({
@@ -14,10 +16,27 @@ export default function UserPopup({
   selectedUserList,
   onChange,
   inputType,
+  isAssigneeNone,
+  headerTitle,
 }: UserPopupProps) {
   return (
     <S.DropdownPanel>
-      <S.DropdownHeader>담당자 설정</S.DropdownHeader>
+      <S.DropdownHeader>{headerTitle} 설정</S.DropdownHeader>
+      {isAssigneeNone && (
+        <S.DropdownOption>
+          <S.OptionInfo>
+            <span>담당자가 없는 이슈</span>
+          </S.OptionInfo>
+          <input
+            type={inputType}
+            id={"none"}
+            name="label"
+            value={"none"}
+            checked={selectedUserList.includes("none")}
+            onChange={onChange}
+          />
+        </S.DropdownOption>
+      )}
       {userList.map((item) => {
         const { name, image_path } = item;
         return (
