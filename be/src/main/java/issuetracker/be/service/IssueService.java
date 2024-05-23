@@ -4,6 +4,8 @@ import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.CommentResponse;
+import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +92,33 @@ public class IssueService {
     }
     return result;
 
+  }
+
+  private Issue getIssue(Long issueId) {
+    Optional<Issue> optionalIssue = issueRepository.findById(issueId);
+    if(optionalIssue.isPresent()) {
+      return optionalIssue.get();
+    } else {
+      throw new IllegalArgumentException("없는 이슈야");
+    }
+  }
+
+  public IssueDetailResponse getDetailResponse(List<CommentResponse> comments, Long issueId) {
+    Issue issue = getIssue(issueId);
+    List<Label> label = issue.getLabels().isEmpty() ?
+        null : issue.getLabels().stream()
+        .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
+        .collect(Collectors.toList());
+
+    MilestoneWithIssueCountResponse milestone =
+        (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
+            issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+            : null;
+
+    User reporter = userRepository.findById(issue.getReporter())
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
+
+    return new IssueDetailResponse(issue, label, milestone, reporter, comments);
   }
 }
