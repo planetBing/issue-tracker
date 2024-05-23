@@ -1,10 +1,13 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Comment;
+import issuetracker.be.domain.User;
+import issuetracker.be.dto.CommentResponse;
 import issuetracker.be.dto.CommentSaveRequest;
 import issuetracker.be.dto.CommentUpdateRequest;
 import issuetracker.be.repository.CommentRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -17,10 +20,12 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
   private CommentRepository commentRepository;
+  private UserService userService;
 
   @Autowired
-  public CommentService(CommentRepository commentRepository) {
+  public CommentService(CommentRepository commentRepository, UserService userService) {
     this.commentRepository = commentRepository;
+    this.userService = userService;
   }
 
   public void saveComment(CommentSaveRequest commentSaveRequest) {
@@ -49,8 +54,21 @@ public class CommentService {
     }
   }
 
+  public List<CommentResponse> getCommentResponse(Long id) {
+    List<CommentResponse> commentResponses = new ArrayList<>();
+    List<Comment> comment = getComment(id);
+    for(Comment c : comment) {
+      User commentUser = userService.getCommentUsers(c.getReporter());
+      commentResponses.add(new CommentResponse(c, commentUser));
+    }
+    return commentResponses;
+  }
 
   public List<Comment> getComment(Long id) {
     return commentRepository.findByIssueId(id);
+  }
+
+  public List<String> getUser(Long id) {
+    return commentRepository.findByReporter(id);
   }
 }
