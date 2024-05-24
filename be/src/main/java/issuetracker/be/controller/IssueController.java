@@ -31,7 +31,6 @@ public class IssueController {
     issueService.save(issueSaveRequest);
   }
 
-  @ResponseStatus(HttpStatus.OK)
   @GetMapping("/issue")
   public IssueListResponse findAllIssues() {
     return issueService.getAllIssue();
@@ -43,8 +42,7 @@ public class IssueController {
    * @return 필터링된 열려있거나 닫혀있는 모든 이슈
    */
   @GetMapping("/issue/filter")
-  public IssueListResponse getAllFilteredIssues(
-      @ModelAttribute IssueFilterRequest filterRequest) {
+  public IssueListResponse getAllFilteredIssues(@ModelAttribute IssueFilterRequest filterRequest) {
     log.debug("필터링 요청 정보 : {}", filterRequest);
     return issueService.getFilteredIssue(filterRequest);
   }
