@@ -102,14 +102,15 @@ public class IssueService {
     List<Issue> openIssues = issueRepository.findByIsOpen(true);
 
     IssueFilters issueFilters = new IssueFilterFactory().createIssueFilters(
-        filterTypeRequest.assignee(),
-        filterTypeRequest.label(),
-        filterTypeRequest.milestone(),
-        filterTypeRequest.reporter()
+        filterRequest.assignee(),
+        filterRequest.label(),
+        filterRequest.milestone(),
+        filterRequest.reporter(),
+        commentRepository.findByReporter(filterRequest.comment())
     );
 
-    List<Issue> filteredCloseIssues = issueFilters.doFilter(reporter, closeIssues);
-    List<Issue> filteredOpenIssues = issueFilters.doFilter(reporter, openIssues);
+    List<Issue> filteredCloseIssues = issueFilters.doFilter(closeIssues);
+    List<Issue> filteredOpenIssues = issueFilters.doFilter(openIssues);
 
     List<IssueShowResponse> filteredCloseIssueResponses = generateIssueShowDto(filteredCloseIssues);
     List<IssueShowResponse> filteredOpenIssueResponses = generateIssueShowDto(filteredOpenIssues);

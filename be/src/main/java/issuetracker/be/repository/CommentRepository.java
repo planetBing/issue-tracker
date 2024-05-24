@@ -11,4 +11,7 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
 
   @Query("SELECT * FROM Comment WHERE issue_id = :id")
   List<Comment> findByIssueId(Long id);
+
+  @Query("SELECT * FROM Comment WHERE reporter = :reporter")
+  List<Comment> findByReporter(String reporter);
 }

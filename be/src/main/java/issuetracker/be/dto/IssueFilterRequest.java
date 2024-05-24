@@ -5,5 +5,6 @@ public record IssueFilterRequest(
     String label,
     String milestone,
     String reporter,
+    String comment,
     Boolean isOpen
 ){}
