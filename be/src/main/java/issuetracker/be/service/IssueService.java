@@ -58,9 +58,9 @@ public class IssueService {
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
 
-    if (issueSaveRequest.getComment() != null) {
+    if (issueSaveRequest.comment() != null) {
       Comment comment = new Comment(saveIssue.getId(), saveIssue.getReporter(),
-          saveIssue.getCreated_at(), issueSaveRequest.getComment());
+          saveIssue.getCreated_at(), issueSaveRequest.comment());
       Comment saveComment = commentRepository.save(comment);
       log.debug("저장된 코멘트 : {}", saveComment);
     }

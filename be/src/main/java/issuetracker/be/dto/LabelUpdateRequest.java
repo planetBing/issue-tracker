@@ -1,17 +1,14 @@
 package issuetracker.be.dto;
 
 import issuetracker.be.domain.Label;
-import lombok.Getter;
-import lombok.ToString;
 
-@ToString
-@Getter
-public class LabelUpdateRequest {
-  private Long id;
-  private String name;
-  private String background_color;
-  private String text_color;
-  private String description;
+public record LabelUpdateRequest(
+    Long id,
+    String name,
+    String background_color,
+    String text_color,
+    String description
+) {
 
   public Label toEntity() {
     return Label.builder().id(id)

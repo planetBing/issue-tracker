@@ -12,6 +12,7 @@ import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.exception.MilestoneDeletionException;
 import issuetracker.be.repository.MilestoneRepository;
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,8 @@ class MilestoneServiceTest {
 
   @Test
   void 정상적으로_마일스톤이_저장되는지_확인한다() {
-    MilestoneSaveRequest milestoneSaveRequest = new MilestoneSaveRequest();
-    milestoneSaveRequest.setName("first milestone");
+    MilestoneSaveRequest milestoneSaveRequest = new MilestoneSaveRequest("first milestone", null,
+        LocalDate.now());
     Milestone milestone = new Milestone();
     milestone.setName("first milestone");
 
@@ -88,11 +89,11 @@ class MilestoneServiceTest {
     milestone.setId(1L);
     milestone.setName("first milestone");
 
-    MilestoneUpdateRequest milestoneUpdateRequest = new MilestoneUpdateRequest();
-    milestoneUpdateRequest.setName("updated milestone");
-    milestoneUpdateRequest.setId(1L);
+    MilestoneUpdateRequest milestoneUpdateRequest = new MilestoneUpdateRequest(1L, "테스트 마일스톤",
+        LocalDate.now(), null);
 
-    when(milestoneRepository.save(any(Milestone.class))).thenReturn(milestoneUpdateRequest.toEntity());
+    when(milestoneRepository.save(any(Milestone.class))).thenReturn(
+        milestoneUpdateRequest.toEntity());
     when(milestoneRepository.findById(1L)).thenReturn(Optional.of(milestone));
 
     Milestone result = milestoneService.update(milestoneUpdateRequest);

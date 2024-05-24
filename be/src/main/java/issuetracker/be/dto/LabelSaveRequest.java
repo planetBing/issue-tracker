@@ -1,14 +1,13 @@
 package issuetracker.be.dto;
 
 import issuetracker.be.domain.Label;
-import lombok.Getter;
 
-@Getter
-public class LabelSaveRequest {
-  private String name;
-  private String background_color;
-  private String text_color;
-  private String description;
+public record LabelSaveRequest(
+    String name,
+    String background_color,
+    String text_color,
+    String description
+) {
 
   public Label toEntity() {
     return Label.builder().name(name)

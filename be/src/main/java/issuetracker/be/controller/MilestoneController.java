@@ -40,8 +40,7 @@ public class MilestoneController {
 
   @PutMapping("/milestone/{milestoneId}")
   public void update(@PathVariable Long milestoneId, @RequestBody MilestoneUpdateRequest milestoneUpdateRequest) {
-    milestoneUpdateRequest.setId(milestoneId);
-    Milestone result = milestoneService.update(milestoneUpdateRequest);
+    Milestone result = milestoneService.update(milestoneUpdateRequest.withId(milestoneId));
     log.debug("수정한 마일스톤 {}", result);
   }
 

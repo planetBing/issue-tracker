@@ -40,8 +40,8 @@ public class CommentService {
 
   @Transactional
   public Comment updateComment(CommentUpdateRequest commentUpdateRequest) {
-    Long commentId = commentUpdateRequest.getComment_id();
-    String contents = commentUpdateRequest.getContents();
+    Long commentId = commentUpdateRequest.comment_id();
+    String contents = commentUpdateRequest.contents();
     Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
     if (optionalComment.isPresent()) {

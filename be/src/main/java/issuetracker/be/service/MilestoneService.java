@@ -72,7 +72,7 @@ public class MilestoneService {
    */
   @Transactional
   public Milestone update(MilestoneUpdateRequest milestoneUpdateRequest) {
-    Long id = milestoneUpdateRequest.getId();
+    Long id = milestoneUpdateRequest.id();
     if (milestoneRepository.findById(id).isEmpty()) {
       throw new NoSuchElementException("존재하지 않는 마일스톤입니다.");
     }

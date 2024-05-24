@@ -39,7 +39,7 @@ public class LabelService {
 
   @Transactional
   public void update(LabelUpdateRequest request) {
-    Optional<Label> optOriginLabel = labelRepository.findById(request.getId());
+    Optional<Label> optOriginLabel = labelRepository.findById(request.id());
     log.debug("업데이트할 라벨 : {}", optOriginLabel.get());
     optOriginLabel.ifPresentOrElse(
         originLabel -> {
