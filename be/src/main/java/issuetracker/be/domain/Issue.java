@@ -2,6 +2,7 @@ package issuetracker.be.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -40,25 +41,37 @@ public class Issue {
     this.assignees = createAssigneeRef(assigneeNames);
   }
 
+  public boolean hasAssignee(String assigneeName) {
+    return assignees.contains(new AssigneeRef(assigneeName));
+  }
+
+  public boolean hasLabelId(long labelId) {
+    return labels.contains(new LabelRef(labelId));
+  }
+
+  public boolean hasMilestoneId(long milestoneId) {
+    return this.milestone_id == milestoneId;
+  }
+
+  public boolean hasReporter(String reporter) {
+    return Objects.equals(this.reporter, reporter);
+  }
+
   private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
-    return (assigneeNames == null) ? null : assigneeNames.stream()
+    if (assigneeNames == null) {
+      return null;
+    }
+    return assigneeNames.stream()
         .map(AssigneeRef::new)
         .collect(Collectors.toSet());
   }
 
   private Set<LabelRef> createLabelRef(List<Long> labelIds) {
-    return (labelIds == null) ?
-        null : labelIds.stream().map(LabelRef::new).collect(Collectors.toSet());
-  }
-
-  public boolean hasAssignee(String username) {
-    return assignees.stream()
-        .anyMatch(assignee -> assignee.getUser_name().equals(username));
-  }
-
-  public boolean hasLabel(Long id) {
-    labels.forEach(System.out::println);
-    return labels.stream()
-        .anyMatch(label -> label.getLabel_id().equals(id));
+    if (labelIds == null) {
+      return null;
+    }
+    return labelIds.stream()
+        .map(LabelRef::new)
+        .collect(Collectors.toSet());
   }
 }

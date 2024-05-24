@@ -38,5 +38,4 @@ public class CommentController {
   public void commentUpdate(@RequestBody CommentUpdateRequest commentUpdateRequest) {
     commentService.updateComment(commentUpdateRequest);
   }
-
 }
