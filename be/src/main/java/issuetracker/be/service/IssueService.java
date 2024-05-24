@@ -1,10 +1,12 @@
 package issuetracker.be.service;
 
+import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.issueFilter.IssueFilterFactory;
 import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
+import issuetracker.be.domain.LabelRef;
 import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
@@ -20,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +35,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class IssueService {
 
-  private IssueRepository issueRepository;
-  private MilestoneRepository milestoneRepository;
-  private LabelRepository labelRepository;
-  private UserRepository userRepository;
-  private CommentRepository commentRepository;
+  private final IssueRepository issueRepository;
+  private final MilestoneRepository milestoneRepository;
+  private final LabelRepository labelRepository;
+  private final UserRepository userRepository;
+  private final CommentRepository commentRepository;
 
   @Autowired
   public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,

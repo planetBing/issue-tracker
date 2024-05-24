@@ -11,18 +11,21 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class CommentService {
 
-  private CommentRepository commentRepository;
+  private final CommentRepository commentRepository;
 
   @Autowired
   public CommentService(CommentRepository commentRepository) {
     this.commentRepository = commentRepository;
   }
 
+  @Transactional
   public void saveComment(CommentSaveRequest commentSaveRequest) {
     Comment comment = commentSaveRequest.toEntity(LocalDateTime.now());
     Comment saveComment = commentRepository.save(comment);
@@ -30,10 +33,12 @@ public class CommentService {
     log.debug("저장된 코멘트 : {}", saveComment);
   }
 
+  @Transactional
   public void deleteComment(Long comment_id) {
     commentRepository.deleteById(comment_id);
   }
 
+  @Transactional
   public Comment updateComment(CommentUpdateRequest commentUpdateRequest) {
     Long commentId = commentUpdateRequest.getComment_id();
     String contents = commentUpdateRequest.getContents();
@@ -49,8 +54,11 @@ public class CommentService {
     }
   }
 
-
   public List<Comment> getComment(Long id) {
     return commentRepository.findByIssueId(id);
+  }
+
+  public List<Long> getIssueId(String name) {
+    return commentRepository.findIssueIdByName(name);
   }
 }
