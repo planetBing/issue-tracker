@@ -19,7 +19,7 @@ export default function LabelComponent({ labelInfo }: LabelProps) {
 }
 
 const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
-  padding: 4px 8px;
+  padding: 4px 16px;
   border-radius: 16px;
   background-color: ${(props) => props.$backgroundColor};
   color: ${(props) => props.$textColor};
