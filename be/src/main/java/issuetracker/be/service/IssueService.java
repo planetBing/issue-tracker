@@ -96,8 +96,7 @@ public class IssueService {
     return result;
   }
 
-  public IssueListResponse getFilteredIssue(String reporter,
-      IssueFilterRequest filterTypeRequest) {
+  public IssueListResponse getFilteredIssue(IssueFilterRequest filterRequest) {
 
     List<Issue> closeIssues = issueRepository.findByIsOpen(false);
     List<Issue> openIssues = issueRepository.findByIsOpen(true);

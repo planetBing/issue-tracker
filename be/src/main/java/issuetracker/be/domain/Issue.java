@@ -57,10 +57,6 @@ public class Issue {
     return Objects.equals(this.reporter, reporter);
   }
 
-  public boolean has(String reporter) {
-    return Objects.equals(this.reporter, reporter);
-  }
-
   private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
     if (assigneeNames == null) {
       return null;

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -40,15 +39,13 @@ public class IssueController {
 
   /**
    *
-   * @param userName : [내가 담당한 이슈, 내가 작성한 이슈, 내가 댓글 단 이슈] 에 대한 필터링
    * @param filterRequest : 부가적인 이슈 필터링(담당자, 라벨, 마일스톤, 작성자)
    * @return 필터링된 열려있거나 닫혀있는 모든 이슈
    */
-  @GetMapping("/issue/filter={userName}")
+  @GetMapping("/issue/filter")
   public IssueListResponse getAllFilteredIssues(
-      @PathVariable String userName,
       @ModelAttribute IssueFilterRequest filterRequest) {
     log.debug("필터링 요청 정보 : {}", filterRequest);
-    return issueService.getFilteredIssue(userName, filterRequest);
+    return issueService.getFilteredIssue(filterRequest);
   }
 }

@@ -10,9 +10,8 @@ public class IssueFilters {
     this.filters = filters;
   }
 
-  public List<Issue> doFilter(String value, List<Issue> issues) {
+  public List<Issue> doFilter(List<Issue> issues) {
     return issues.stream()
-        .filter(issue -> issue.has(value))
         .filter(issue ->
             filters.stream().allMatch(filter -> filter.canFilter(issue)))
         .collect(Collectors.toList());
