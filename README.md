@@ -4,7 +4,7 @@
 
 | team | members | repository URL |
 | ---- | ------- | -------------- |
-| 1    |         |                |
+| 1    |소프,이브이,에디,카이|https://github.com/codesquad-masters2024-team01/issue-tracker|
 | 2    |         |                |
 | 3    |         |                |
 | 4    |         |                |
