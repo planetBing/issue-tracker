@@ -5,7 +5,7 @@
 | team | members | repository URL |
 | ---- | ------- | -------------- |
 | 1    |         |                |
-| 2    |         |                |
+| 2    | 상추(BE), 짜왕(BE), 우디(FE)        |    https://github.com/codesquad-masters2024-team02/issue-tracker            |
 | 3    |         |                |
 | 4    |         |                |
 | 5    |         |                |
