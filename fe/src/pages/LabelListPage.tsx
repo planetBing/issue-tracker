@@ -43,23 +43,21 @@ export default function LabelListPage() {
     postData: postNewLabel,
     deleteData: deleteLabel,
   } = useApi<Label[]>("/label");
-  const [isShowLabelCreation, setIsShowLabelCreation] =
-    useState<boolean>(false);
-  const [labelCreation, setLabelCreation] =
-    useState<LabelForm>(initialLabelForm);
+  const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
+  const [labelForm, setLabelForm] = useState<LabelForm>(initialLabelForm);
 
   const handleInputLabel = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    setLabelCreation((prev) => ({
+    setLabelForm((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleRandomBackgroundColor = () => {
-    setLabelCreation((prev) => ({
+    setLabelForm((prev) => ({
       ...prev,
       background_color: getRandomHexColor(),
     }));
@@ -67,15 +65,15 @@ export default function LabelListPage() {
 
   const handleTextColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    setLabelCreation((prev) => ({
+    setLabelForm((prev) => ({
       ...prev,
       text_color: value,
     }));
   };
 
   const handleAddLabel = async () => {
-    await postNewLabel("/label", labelCreation);
-    setIsShowLabelCreation(false);
+    await postNewLabel("/label", labelForm);
+    setIsCreationMode(false);
     refetchLabelList();
   };
 
@@ -90,20 +88,20 @@ export default function LabelListPage() {
       <CommonS.Wrapper>
         <LabelPageHeader>
           <LabelMilestoneTap />
-          <AddLabelBtn onClick={() => setIsShowLabelCreation(true)}>
+          <AddLabelBtn onClick={() => setIsCreationMode(true)}>
             + 레이블 추가
           </AddLabelBtn>
         </LabelPageHeader>
-        {isShowLabelCreation && (
+        {isCreationMode && (
           <LabelCreationContainer>
             <h3>새로운 레이블 추가</h3>
             <CreateLabelInfoArea>
               <LabelDesignShowBox>
                 <LabelDiv
-                  $backgroundColor={labelCreation.background_color}
-                  $textColor={labelCreation.text_color}
+                  $backgroundColor={labelForm.background_color}
+                  $textColor={labelForm.text_color}
                 >
-                  {labelCreation.name === "" ? "Label" : labelCreation.name}
+                  {labelForm.name === "" ? "Label" : labelForm.name}
                 </LabelDiv>
               </LabelDesignShowBox>
               <CreateLabelTextArea>
@@ -134,7 +132,7 @@ export default function LabelListPage() {
                     </LabelBox>
                     <input
                       type="text"
-                      value={labelCreation.background_color}
+                      value={labelForm.background_color}
                       readOnly
                     />
                     <img
@@ -151,7 +149,7 @@ export default function LabelListPage() {
               </CreateLabelTextArea>
             </CreateLabelInfoArea>
             <CreateLabelButtonArea>
-              <CreateCancelButton onClick={() => setIsShowLabelCreation(false)}>
+              <CreateCancelButton onClick={() => setIsCreationMode(false)}>
                 X 취소
               </CreateCancelButton>
               <CreateDoneButton onClick={handleAddLabel}>
@@ -270,6 +268,7 @@ const LabelEditButton = styled(CommonS.Center)`
 const LabelDeleteButton = styled(CommonS.Center)`
   color: rgba(255, 59, 48, 1);
   font-size: 12px;
+  cursor: pointer;
 `;
 
 const LabelCreationContainer = styled.section`
