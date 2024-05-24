@@ -60,3 +60,10 @@ export interface issueDetails {
   comment: Comment[];
   assignee: User[];
 }
+
+export interface LabelForm {
+  name: string;
+  background_color: string;
+  text_color: string;
+  description: null | string;
+}
