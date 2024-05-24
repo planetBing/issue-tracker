@@ -6,7 +6,11 @@ export default function useApi<T>(apiPath: string) {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = useCallback(
-    async (method: "GET" | "PUT" | "POST", path: string, body?: any) => {
+    async (
+      method: "GET" | "PUT" | "POST" | "DELETE",
+      path: string,
+      body?: any
+    ) => {
       setIsLoading(true);
       try {
         const response = await axios({
@@ -47,5 +51,9 @@ export default function useApi<T>(apiPath: string) {
     await fetchData("POST", postPath, body);
   };
 
-  return { data, isLoading, refetch, putData, postData };
+  const deleteData = async (deletePath: string, body?: any) => {
+    await fetchData("DELETE", deletePath, body);
+  };
+
+  return { data, isLoading, refetch, putData, postData, deleteData };
 }

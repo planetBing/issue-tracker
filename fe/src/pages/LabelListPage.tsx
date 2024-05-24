@@ -18,6 +18,13 @@ interface LabelForm {
   description: null | string;
 }
 
+const initialLabelForm = {
+  name: "",
+  background_color: getRandomHexColor(),
+  text_color: "white",
+  description: null,
+};
+
 function getRandomHexColor() {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -34,15 +41,12 @@ export default function LabelListPage() {
     isLoading: isLabelDataLoading,
     refetch: refetchLabelList,
     postData: postNewLabel,
+    deleteData: deleteLabel,
   } = useApi<Label[]>("/label");
   const [isShowLabelCreation, setIsShowLabelCreation] =
     useState<boolean>(false);
-  const [labelCreation, setLabelCreation] = useState<LabelForm>({
-    name: "Label",
-    background_color: "#f86c13",
-    text_color: "white",
-    description: null,
-  });
+  const [labelCreation, setLabelCreation] =
+    useState<LabelForm>(initialLabelForm);
 
   const handleInputLabel = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement>
@@ -71,6 +75,12 @@ export default function LabelListPage() {
 
   const handleAddLabel = async () => {
     await postNewLabel("/label", labelCreation);
+    setIsShowLabelCreation(false);
+    refetchLabelList();
+  };
+
+  const handleDeleteLabel = async (labelId: number) => {
+    await deleteLabel(`/label/${labelId.toString()}`);
     refetchLabelList();
   };
 
@@ -93,7 +103,7 @@ export default function LabelListPage() {
                   $backgroundColor={labelCreation.background_color}
                   $textColor={labelCreation.text_color}
                 >
-                  {labelCreation.name}
+                  {labelCreation.name === "" ? "Label" : labelCreation.name}
                 </LabelDiv>
               </LabelDesignShowBox>
               <CreateLabelTextArea>
@@ -155,20 +165,21 @@ export default function LabelListPage() {
         </IssueTableTop>
         {isLabelDataLoading && <p>...loading</p>}
         {labeListData?.map((labelObj) => {
+          const { id, description } = labelObj;
           return (
-            <IssueTable key={`labelList-${labelObj.id}`}>
+            <IssueTable key={`labelList-${id}`}>
               <LabelInfo>
                 <LabelArea>
                   <LabelComponent labelInfo={labelObj}></LabelComponent>
                 </LabelArea>
-                <p>{labelObj.description}</p>
+                <p>{description}</p>
               </LabelInfo>
               <TableButtonArea>
                 <LabelEditButton>
                   <img src={greyEditIcon} alt="edit icon" />
                   편집
                 </LabelEditButton>
-                <LabelDeleteButton>
+                <LabelDeleteButton onClick={() => handleDeleteLabel(id)}>
                   <img src={trashIcon} alt="trash icon" />
                   삭제
                 </LabelDeleteButton>
