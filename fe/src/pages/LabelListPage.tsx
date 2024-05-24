@@ -18,24 +18,60 @@ interface LabelForm {
   description: null | string;
 }
 
+function getRandomHexColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 export default function LabelListPage() {
   const { currentUser } = useCurrentUser();
-  const { data: labeListData, isLoading: isLabelDataLoading } =
-    useApi<Label[]>("/label");
-  const [isLabelCreation, setIsLabelCreation] = useState<boolean>(false);
+  const {
+    data: labeListData,
+    isLoading: isLabelDataLoading,
+    refetch: refetchLabelList,
+    postData: postNewLabel,
+  } = useApi<Label[]>("/label");
+  const [isShowLabelCreation, setIsShowLabelCreation] =
+    useState<boolean>(false);
   const [labelCreation, setLabelCreation] = useState<LabelForm>({
     name: "Label",
-    background_color: "brown",
+    background_color: "#f86c13",
     text_color: "white",
     description: null,
   });
 
-  const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputLabel = (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
     setLabelCreation((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleRandomBackgroundColor = () => {
+    setLabelCreation((prev) => ({
+      ...prev,
+      background_color: getRandomHexColor(),
+    }));
+  };
+
+  const handleTextColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setLabelCreation((prev) => ({
+      ...prev,
+      text_color: value,
+    }));
+  };
+
+  const handleAddLabel = async () => {
+    await postNewLabel("/label", labelCreation);
+    refetchLabelList();
   };
 
   return (
@@ -44,11 +80,11 @@ export default function LabelListPage() {
       <CommonS.Wrapper>
         <LabelPageHeader>
           <LabelMilestoneTap />
-          <AddLabelBtn onClick={() => setIsLabelCreation(true)}>
+          <AddLabelBtn onClick={() => setIsShowLabelCreation(true)}>
             + 레이블 추가
           </AddLabelBtn>
         </LabelPageHeader>
-        {isLabelCreation && (
+        {isShowLabelCreation && (
           <LabelCreationContainer>
             <h3>새로운 레이블 추가</h3>
             <CreateLabelInfoArea>
@@ -61,29 +97,56 @@ export default function LabelListPage() {
                 </LabelDiv>
               </LabelDesignShowBox>
               <CreateLabelTextArea>
-                <InputText
-                  name="name"
-                  placeholder="레이블의 이름을 입력하세요"
-                  value={labelCreation.name}
-                  onChange={handleInputLabel}
-                />
-                <InputText
-                  name="description"
-                  placeholder="레이블에 대한 설명을 입력하세요"
-                  value={labelCreation.description || ""}
-                  onChange={handleInputLabel}
-                />
-                <BackgroundColorPicker
-                  type="text"
-                  value={labelCreation.background_color}
-                  readOnly
-                />
-                {/* <img src={IconRefresh} alt="refresh" /> */}
+                <InputContainer $width={"100%"}>
+                  <LabelBox>
+                    <label>이름</label>
+                  </LabelBox>
+                  <input
+                    name="name"
+                    placeholder="레이블의 이름을 입력하세요"
+                    onChange={handleInputLabel}
+                  />
+                </InputContainer>
+                <InputContainer $width={"100%"}>
+                  <LabelBox>
+                    <label>설명(선택)</label>
+                  </LabelBox>
+                  <input
+                    name="description"
+                    placeholder="레이블에 대한 설명을 입력하세요"
+                    onChange={handleInputLabel}
+                  />
+                </InputContainer>
+                <ColorPickerBox>
+                  <InputContainer $width={"240px"}>
+                    <LabelBox>
+                      <label>배경 색상</label>
+                    </LabelBox>
+                    <input
+                      type="text"
+                      value={labelCreation.background_color}
+                      readOnly
+                    />
+                    <img
+                      src={IconRefresh}
+                      alt="refresh"
+                      onClick={handleRandomBackgroundColor}
+                    />
+                  </InputContainer>
+                  <TextColorPicker onChange={handleTextColorChange}>
+                    <option value="white">밝은색</option>
+                    <option value="#6e7191">어두운 색</option>
+                  </TextColorPicker>
+                </ColorPickerBox>
               </CreateLabelTextArea>
             </CreateLabelInfoArea>
             <CreateLabelButtonArea>
-              <CreateCancelButton>X 취소</CreateCancelButton>
-              <CreateDoneButton>+ 완료</CreateDoneButton>
+              <CreateCancelButton onClick={() => setIsShowLabelCreation(false)}>
+                X 취소
+              </CreateCancelButton>
+              <CreateDoneButton onClick={handleAddLabel}>
+                + 완료
+              </CreateDoneButton>
             </CreateLabelButtonArea>
           </LabelCreationContainer>
         )}
@@ -93,7 +156,7 @@ export default function LabelListPage() {
         {isLabelDataLoading && <p>...loading</p>}
         {labeListData?.map((labelObj) => {
           return (
-            <IssueTable>
+            <IssueTable key={`labelList-${labelObj.id}`}>
               <LabelInfo>
                 <LabelArea>
                   <LabelComponent labelInfo={labelObj}></LabelComponent>
@@ -230,28 +293,13 @@ const LabelDiv = styled.div<{ $backgroundColor: string; $textColor: string }>`
   border-radius: 16px;
   background-color: ${(props) => props.$backgroundColor};
   color: ${(props) => props.$textColor};
+  height: 28.5px;
 `;
 
 const CreateLabelTextArea = styled(CommonS.ColumnFlex)`
   width: 904px;
   height: 153px;
   justify-content: space-between;
-`;
-
-const InputText = styled.input`
-  width: 100%;
-  height: 40px;
-  background-color: rgb(239, 240, 246);
-  border: none;
-  border-radius: 12px;
-`;
-
-const BackgroundColorPicker = styled.input`
-  width: 30%;
-  height: 40px;
-  background-color: rgb(239, 240, 246);
-  border: none;
-  border-radius: 12px;
 `;
 
 const CreateLabelButtonArea = styled.div`
@@ -276,4 +324,39 @@ const CreateDoneButton = styled.button`
   width: 128px;
   height: 40px;
   border-radius: 12px;
+`;
+
+const InputContainer = styled.div<{ $width: string }>`
+  display: flex;
+  align-items: center;
+  width: ${(props) => props.$width};
+  height: 40px;
+  background-color: rgba(239, 240, 246, 1);
+  border-radius: 12px;
+  padding: 0 15px;
+
+  & label {
+    color: rgba(110, 113, 145, 1);
+    font-size: 12px;
+  }
+
+  & input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+  }
+`;
+
+const LabelBox = styled.div`
+  width: 64px;
+  display: flex;
+`;
+
+const ColorPickerBox = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const TextColorPicker = styled.select`
+  border: none;
 `;

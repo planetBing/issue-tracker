@@ -38,21 +38,22 @@ const OnlyFilteringClosedState = {
 export default function IssueListPage() {
   const { currentUser } = useCurrentUser();
   const { popupState, dispatch: popupDispatch } = usePopup();
+
+  const [filteringState, setFilteringState] = useState<FilteringState>(
+    initialFilteringState
+  );
   const {
     data: issueList,
     isLoading: isIssueListLoading,
     refetch: isssueListRefetch,
     putData: updateIssueStatus,
   } = useApi<IssueData>("/issue");
-  const [filteringState, setFilteringState] = useState<FilteringState>(
-    initialFilteringState
-  );
   const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
 
-  useEffect(() => {
-    const paramString = queryString.stringify(filteringState);
-    // isssueListRefetch(`/issue/filter?${paramString}`);
-  }, [filteringState]);
+  // useEffect(() => {
+  //   const paramString = queryString.stringify(filteringState);
+  //   // isssueListRefetch(`/issue/filter?${paramString}`);
+  // }, [filteringState]);
 
   if (!issueList) {
     return null;
@@ -106,7 +107,6 @@ export default function IssueListPage() {
   const openOrCloseIssues = (status: string) => {
     const putPath = status === "open" ? "/issue/open" : "/issue/close";
     const selectedIssueIds = selectedIssue.map((id) => Number(id));
-    console.log(selectedIssueIds);
     // updateIssueStatus(putPath, { issueIds: selectedIssueIds });
   };
 

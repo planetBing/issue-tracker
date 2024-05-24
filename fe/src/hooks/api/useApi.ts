@@ -1,13 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-export default function useApi<T>(initialPath: string) {
+export default function useApi<T>(apiPath: string) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [apiPath, setApiPath] = useState(initialPath);
 
   const fetchData = useCallback(
-    async (method: "GET" | "PUT", path: string, body?: any) => {
+    async (method: "GET" | "PUT" | "POST", path: string, body?: any) => {
       setIsLoading(true);
       try {
         const response = await axios({
@@ -37,12 +36,16 @@ export default function useApi<T>(initialPath: string) {
   }, [apiPath, fetchData]);
 
   const refetch = (newPath?: string) => {
-    setApiPath(newPath || initialPath);
+    fetchData("GET", apiPath);
   };
 
-  const putData = (putPath: string, body: any) => {
-    fetchData("PUT", putPath, body);
+  const putData = async (putPath: string, body: any) => {
+    await fetchData("PUT", putPath, body);
   };
 
-  return { data, isLoading, refetch, putData };
+  const postData = async (postPath: string, body: any) => {
+    await fetchData("POST", postPath, body);
+  };
+
+  return { data, isLoading, refetch, putData, postData };
 }
