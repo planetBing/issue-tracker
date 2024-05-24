@@ -104,9 +104,7 @@ public class IssueService {
     List<Issue> issues = new ArrayList<>();
     for (Long id : issueIds) {
       Optional<Issue> optionalIssue = issueRepository.findById(id);
-      if (optionalIssue.isPresent()) {
-        issues.add(optionalIssue.get());
-      }
+      optionalIssue.ifPresent(issues::add);
     }
     return issues;
   }
@@ -143,7 +141,7 @@ public class IssueService {
     return generateIssueShowDto(filteredIssues);
   }
 
-  private static List<Issue> getLabelIssues(List<Issue> filteredIssues, String id) {
+  private List<Issue> getLabelIssues(List<Issue> filteredIssues, String id) {
     System.out.println("라벨필터작동");
     filteredIssues = filteredIssues.stream()
         .filter(issue -> {
@@ -166,7 +164,7 @@ public class IssueService {
     return filteredIssues;
   }
 
-  private static List<Issue> getMilestoneIssues(List<Issue> filteredIssues, String id) {
+  private List<Issue> getMilestoneIssues(List<Issue> filteredIssues, String id) {
     System.out.println("마일스톤필터작동");
     filteredIssues = filteredIssues.stream()
         .filter(issue -> {
@@ -189,7 +187,7 @@ public class IssueService {
     return filteredIssues;
   }
 
-  private static List<Issue> getAssigneeIssues(List<Issue> filteredIssues, String name) {
+  private List<Issue> getAssigneeIssues(List<Issue> filteredIssues, String name) {
     System.out.println("관리자필터작동");
     filteredIssues = filteredIssues.stream()
         .filter(issue -> {
@@ -206,7 +204,7 @@ public class IssueService {
     return filteredIssues;
   }
 
-  private static List<Issue> getReporterIssues(List<Issue> filteredIssues, String name) {
+  private List<Issue> getReporterIssues(List<Issue> filteredIssues, String name) {
     System.out.println("작성자필터작동");
     filteredIssues = filteredIssues.stream()
         .filter(issue -> {
