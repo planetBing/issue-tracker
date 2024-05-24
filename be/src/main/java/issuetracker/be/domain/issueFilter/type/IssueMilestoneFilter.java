@@ -14,7 +14,7 @@ public class IssueMilestoneFilter implements IssueFilter {
   @Override
   public boolean canFilter(Issue issue) {
     if (NO_FILTER_CONDITION.equals(milestoneId)) {
-      return false;
+      return issue.getMilestone_id() == null;
     }
     return issue.hasMilestoneId(Long.parseLong(milestoneId));
   }

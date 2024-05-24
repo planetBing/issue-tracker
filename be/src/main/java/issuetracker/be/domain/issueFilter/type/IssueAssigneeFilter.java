@@ -14,7 +14,7 @@ public class IssueAssigneeFilter implements IssueFilter {
   @Override
   public boolean canFilter(Issue issue) {
     if (NO_FILTER_CONDITION.equals(assignee)) {
-      return false;
+      return issue.getAssignees().isEmpty();
     }
     return issue.hasAssignee(assignee);
   }
