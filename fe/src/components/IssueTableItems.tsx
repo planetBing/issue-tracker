@@ -22,9 +22,10 @@ export default function TableItems({
       <NoneIssueNotification>등록된 이슈가 없습니다.</NoneIssueNotification>
     );
   }
+  const reversedItems = [...items].reverse();
   return (
     <>
-      {items.map((item: Issue) => {
+      {reversedItems.map((item: Issue) => {
         const { id, title, label, create_At, reporter, milestone } = item;
         return (
           <IssueTable key={`issueTableContent-${id}`}>
