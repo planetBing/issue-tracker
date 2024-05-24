@@ -53,12 +53,4 @@ public class CommentService {
       throw new NoSuchElementException("존재하지 않는 코멘트입니다.");
     }
   }
-
-  public List<Comment> getComment(Long id) {
-    return commentRepository.findByIssueId(id);
-  }
-
-  public List<Long> getIssueId(String name) {
-    return commentRepository.findIssueIdByName(name);
-  }
 }
