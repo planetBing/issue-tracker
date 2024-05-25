@@ -1,6 +1,7 @@
 package issuetracker.be.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -8,14 +9,12 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @Slf4j
 public class Issue {
@@ -59,7 +58,7 @@ public class Issue {
 
   private Set<AssigneeRef> createAssigneeRef(List<String> assigneeNames) {
     if (assigneeNames == null) {
-      return null;
+      return new HashSet<>();
     }
     return assigneeNames.stream()
         .map(AssigneeRef::new)
