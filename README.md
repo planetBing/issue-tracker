@@ -11,6 +11,6 @@
 | 5    |         |                |
 | 6    |         |                |
 | 7    |         |                |
-| 8    |         |                |
+| 8    |미메, 망고, 심바, 준마이|https://github.com/codesquad-masters2024-team08/issue-tracker|
 
 - 팀 정보를 업데이트해서 main 브랜치로 PR 보내 주세요.
