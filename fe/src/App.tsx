@@ -6,6 +6,7 @@ import IssueListPage from "./pages/IssueListPage";
 import { CurrentUserProvider } from "./contexts/CurrentUserProvider";
 import IssueDetailsPage from "./pages/IssueDetailsPage";
 import LabelListPage from "./pages/LabelListPage";
+import MilestoneListPage from "./pages/MilestoneListPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path={"/issue"} element={<IssueCreationPage />} />
             <Route path={"/issue/:id"} element={<IssueDetailsPage />} />
             <Route path={"/label"} element={<LabelListPage />} />
+            <Route path={"/milestone"} element={<MilestoneListPage />} />
           </Routes>
         </CurrentUserProvider>
       </BrowserRouter>
