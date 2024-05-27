@@ -54,4 +54,9 @@ public class LabelService {
     labelRefRepository.deleteById(labelId);
     labelRepository.deleteById(labelId);
   }
+
+  public Label findById(Long labelId) {
+    return labelRepository.findById(labelId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다."));
+  }
 }

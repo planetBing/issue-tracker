@@ -29,16 +29,14 @@ public class CommentController {
     commentService.saveComment(commentSaveRequest);
   }
 
-  @ResponseStatus(HttpStatus.OK)
   @DeleteMapping("comment/{comment_id}")
   public void commentDelete(@PathVariable Long comment_id) {
     commentService.deleteComment(comment_id);
   }
 
-  @ResponseStatus(HttpStatus.OK)
   @PutMapping("/comment")
   public void commentUpdate(@RequestBody CommentUpdateRequest commentUpdateRequest) {
-    commentService.updateComment(commentUpdateRequest);
+    commentService.update(commentUpdateRequest);
   }
 
 }

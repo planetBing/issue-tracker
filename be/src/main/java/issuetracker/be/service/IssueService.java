@@ -1,6 +1,5 @@
 package issuetracker.be.service;
 
-import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
@@ -10,16 +9,12 @@ import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
-import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
-import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
-import issuetracker.be.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +25,22 @@ import org.springframework.stereotype.Service;
 public class IssueService {
 
   private IssueRepository issueRepository;
+  private CommentService commentService;
+  private UserService userService;
+  private LabelService labelService;
   private MilestoneRepository milestoneRepository;
-  private LabelRepository labelRepository;
-  private UserRepository userRepository;
-  private CommentRepository commentRepository;
+
 
   @Autowired
-  public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,
-      LabelRepository labelRepository, UserRepository userRepository,
-      CommentRepository commentRepository) {
+  public IssueService(IssueRepository issueRepository, CommentService commentService,
+      UserService userService, LabelService labelService, MilestoneRepository milestoneRepository) {
     this.issueRepository = issueRepository;
+    this.commentService = commentService;
+    this.userService = userService;
+    this.labelService = labelService;
     this.milestoneRepository = milestoneRepository;
-    this.labelRepository = labelRepository;
-    this.userRepository = userRepository;
-    this.commentRepository = commentRepository;
   }
+
 
   public void save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
@@ -52,15 +48,9 @@ public class IssueService {
     log.debug("저장된 이슈 : {}", saveIssue);
 
     if (issueSaveRequest.getComment() != null) {
-      Comment comment = new Comment(saveIssue.getId(), saveIssue.getReporter(),
+      commentService.saveComment(saveIssue.getId(), saveIssue.getReporter(),
           saveIssue.getCreated_at(), issueSaveRequest.getComment());
-      Comment saveComment = commentRepository.save(comment);
-      log.debug("저장된 코멘트 : {}", saveComment);
     }
-  }
-
-  public boolean isIssueExistBy(Long milestoneId) {
-    return issueRepository.existsByMilestoneId(milestoneId);
   }
 
   public IssueListResponse getAllIssue() {
@@ -70,6 +60,23 @@ public class IssueService {
     return new IssueListResponse(closeIssues, openIssues);
   }
 
+  public IssueDetailResponse getDetailResponse(Long issueId) {
+    List<CommentResponse> commentResponse = commentService.getCommentResponse(issueId);
+
+    Issue issue = getIssue(issueId);
+    List<Label> label = getLabels(issue);
+
+    MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
+
+    User reporter = userService.getUser(issue.getReporter());
+
+    return new IssueDetailResponse(issue, label, milestone, reporter, commentResponse);
+  }
+
+  public boolean isIssueExistBy(Long milestoneId) {
+    return issueRepository.existsByMilestoneId(milestoneId);
+  }
+
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
     for (Issue issue : issues) {
@@ -77,7 +84,7 @@ public class IssueService {
 
       MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-      User reporter = getUser(issue);
+      User reporter = userService.getUser(issue.getReporter());
 
       IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
           reporter);
@@ -92,34 +99,16 @@ public class IssueService {
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
   }
 
-  public IssueDetailResponse getDetailResponse(List<CommentResponse> comments, Long issueId) {
-    Issue issue = getIssue(issueId);
-    List<Label> label = getLabels(issue);
-
-    MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
-
-    User reporter = getUser(issue);
-
-    return new IssueDetailResponse(issue, label, milestone, reporter, comments);
-  }
-
-  private User getUser(Issue issue) {
-    return userRepository.findById(issue.getReporter())
-        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
-  }
-
   private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
-    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
-                issue.getMilestone_id())
-            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-            : null;
+    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(issue.getMilestone_id())
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+        : null;
   }
 
   private List<Label> getLabels(Issue issue) {
     return issue.getLabels().isEmpty() ?
         null : issue.getLabels().stream()
-        .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
-            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
+        .map(labelRef -> labelService.findById(labelRef.getLabel_id()))
         .collect(Collectors.toList());
   }
 }
