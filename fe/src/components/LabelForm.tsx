@@ -70,10 +70,10 @@ export default function LabelFormBox({
           </ColorPickerBox>
         </CreateLabelTextArea>
       </CreateLabelInfoArea>
-      <CreateLabelButtonArea>
-        <CreateCancelButton onClick={handleCancel}>X 취소</CreateCancelButton>
-        <CreateDoneButton onClick={handleSubmit}>+ 완료</CreateDoneButton>
-      </CreateLabelButtonArea>
+      <ButtonArea>
+        <CancelButton onClick={handleCancel}>X 취소</CancelButton>
+        <DoneButton onClick={handleSubmit}>+ 완료</DoneButton>
+      </ButtonArea>
     </LabelCreationContainer>
   );
 }
@@ -119,12 +119,12 @@ const CreateLabelTextArea = styled(CommonS.ColumnFlex)`
   justify-content: space-between;
 `;
 
-const CreateLabelButtonArea = styled.div`
+const ButtonArea = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
 
-const CreateCancelButton = styled.button`
+const CancelButton = styled.button`
   width: 128px;
   height: 40px;
   border-radius: 12px;
@@ -134,7 +134,7 @@ const CreateCancelButton = styled.button`
   margin-right: 15px;
 `;
 
-const CreateDoneButton = styled.button`
+const DoneButton = styled.button`
   background-color: rgba(0, 122, 255, 1);
   border: none;
   color: white;

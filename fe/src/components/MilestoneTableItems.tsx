@@ -12,12 +12,22 @@ import MilestoneProgressBar from "./MilestoneProgressBar";
 
 interface MilestoneTableItemsProps {
   milestoneObj: Milestone;
+  handleDeleteMilestone: (id: number) => Promise<void>;
+  handleEditMode: (
+    milestoneId: number,
+    name: string,
+    description: string | null,
+    end_date: string
+  ) => void;
 }
 
 export default function MilestoneTableItems({
   milestoneObj,
+  handleDeleteMilestone,
+  handleEditMode,
 }: MilestoneTableItemsProps) {
-  const { name, end_date, description, close_issue, open_issue } = milestoneObj;
+  const { id, name, end_date, description, close_issue, open_issue } =
+    milestoneObj;
   const progressNum = calculateMilestoneProgress(open_issue, close_issue);
   return (
     <S.IssueTable>
@@ -40,11 +50,13 @@ export default function MilestoneTableItems({
             <img src={archiveIcon} alt="archive icon" />
             닫기
           </S.LabelEditButton>
-          <S.LabelEditButton>
+          <S.LabelEditButton
+            onClick={() => handleEditMode(id, name, description, end_date)}
+          >
             <img src={editIcon} alt="edit icon" />
             편집
           </S.LabelEditButton>
-          <S.LabelDeleteButton>
+          <S.LabelDeleteButton onClick={() => handleDeleteMilestone(id)}>
             <img src={trashIcon} alt="trash icon" />
             삭제
           </S.LabelDeleteButton>

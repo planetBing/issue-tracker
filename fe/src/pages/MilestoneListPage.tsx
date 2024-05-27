@@ -5,17 +5,35 @@ import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import * as S from "../styles/tableItems";
 import LabelMilestoneTap from "../components/LabelMilestoneTap";
-import { Milestone } from "../Model/types";
+import MilestoneFormBox from "../components/MilestoneFormBox";
+import { Milestone, MilestoneForm } from "../Model/types";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
 
 import { useState } from "react";
 import MilestoneTableItems from "../components/MilestoneTableItems";
 
+const initialMilestoneForm = {
+  name: "",
+  description: "",
+  end_date: "",
+};
+
 export default function MilestoneListPage() {
   const { currentUser } = useCurrentUser();
-  const { data: milestoneListData } = useApi<Milestone[]>("/milestone");
+  const {
+    data: milestoneListData,
+    postData: addNewMilestone,
+    refetch: refetchMilestoneList,
+    deleteData: deleteMilestone,
+    putData: updateMilestone,
+  } = useApi<Milestone[]>("/milestone");
   const [isOpenMode, setIsOpenMode] = useState<boolean>(true);
+  const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [milestoneForm, setMilestoneForm] =
+    useState<MilestoneForm>(initialMilestoneForm);
+  const [editMilestoneId, setEditMilestoneId] = useState<number | null>(null);
 
   const openMilestones = milestoneListData?.filter(
     (milestone) => milestone.is_open
@@ -23,14 +41,72 @@ export default function MilestoneListPage() {
   const closedMilestones = milestoneListData?.filter(
     (milestone) => !milestone.is_open
   );
+
+  const handleCancel = () => {
+    setIsCreationMode(false);
+    setIsEditMode(false);
+    setMilestoneForm(initialMilestoneForm);
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setMilestoneForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (isEditMode && editMilestoneId !== null) {
+      await updateMilestone(
+        `/milestone/${editMilestoneId.toString()}`,
+        milestoneForm
+      );
+    } else {
+      await addNewMilestone("/milestone", milestoneForm);
+    }
+    setIsCreationMode(false);
+    setIsEditMode(false);
+    setEditMilestoneId(null);
+    setMilestoneForm(initialMilestoneForm);
+    refetchMilestoneList();
+  };
+
+  const handleDeleteMilestone = async (milestoneId: number) => {
+    await deleteMilestone(`/milestone/${milestoneId.toString()}`);
+    refetchMilestoneList();
+  };
+
+  const handleEditMode = (
+    milestoneId: number,
+    name: string,
+    description: string | null,
+    end_date: string
+  ) => {
+    const editMilestoneForm = { name, description, end_date };
+    setEditMilestoneId(milestoneId);
+    setIsEditMode(true);
+    setMilestoneForm(editMilestoneForm);
+  };
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
       <CommonS.Wrapper>
         <S.LabelPageHeader>
           <LabelMilestoneTap />
-          <S.AddLabelBtn>+ 마일스톤 추가</S.AddLabelBtn>
+          <S.AddLabelBtn onClick={() => setIsCreationMode(true)}>
+            + 마일스톤 추가
+          </S.AddLabelBtn>
         </S.LabelPageHeader>
+        {isCreationMode && (
+          <MilestoneFormBox
+            milestoneForm={milestoneForm}
+            handleCancel={handleCancel}
+            handleInput={handleInput}
+            handleSubmit={handleSubmit}
+          />
+        )}
         <S.IssueTableTop>
           <OpenIssueTap
             onClick={() => setIsOpenMode(true)}
@@ -50,10 +126,22 @@ export default function MilestoneListPage() {
         {isOpenMode &&
           openMilestones?.map((milestoneObj) => {
             const { id } = milestoneObj;
+            if (isEditMode && editMilestoneId === id) {
+              return (
+                <MilestoneFormBox
+                  milestoneForm={milestoneForm}
+                  handleCancel={handleCancel}
+                  handleInput={handleInput}
+                  handleSubmit={handleSubmit}
+                />
+              );
+            }
             return (
               <MilestoneTableItems
                 key={`milestoneList-${id}`}
                 milestoneObj={milestoneObj}
+                handleDeleteMilestone={handleDeleteMilestone}
+                handleEditMode={handleEditMode}
               />
             );
           })}
@@ -64,6 +152,8 @@ export default function MilestoneListPage() {
               <MilestoneTableItems
                 key={`milestoneList-${id}`}
                 milestoneObj={milestoneObj}
+                handleDeleteMilestone={handleDeleteMilestone}
+                handleEditMode={handleEditMode}
               />
             );
           })}

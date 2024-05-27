@@ -67,3 +67,9 @@ export interface LabelForm {
   text_color: string;
   description: null | string;
 }
+
+export interface MilestoneForm {
+  name: string;
+  description: string | null;
+  end_date: string;
+}
