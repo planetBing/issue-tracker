@@ -42,18 +42,14 @@ export default function IssueListPage() {
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
   );
+  const paramString = queryString.stringify(filteringState);
   const {
     data: issueList,
     isLoading: isIssueListLoading,
     refetch: isssueListRefetch,
     putData: updateIssueStatus,
-  } = useApi<IssueData>("/issue");
+  } = useApi<IssueData>(`/issue/filter?${paramString}`);
   const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //   const paramString = queryString.stringify(filteringState);
-  //   // isssueListRefetch(`/issue/filter?${paramString}`);
-  // }, [filteringState]);
 
   if (!issueList) {
     return null;
