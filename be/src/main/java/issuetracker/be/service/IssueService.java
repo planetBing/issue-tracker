@@ -1,11 +1,12 @@
 package issuetracker.be.service;
 
-import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.issueFilter.IssueFilterFactory;
 import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.CommentResponse;
+import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
@@ -14,9 +15,7 @@ import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
-import issuetracker.be.repository.LabelRepository;
 import issuetracker.be.repository.MilestoneRepository;
-import issuetracker.be.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +30,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class IssueService {
-
-  private final IssueRepository issueRepository;
-  private final MilestoneRepository milestoneRepository;
-  private final LabelRepository labelRepository;
-  private final UserRepository userRepository;
-  private final CommentRepository commentRepository;
+  private IssueRepository issueRepository;
+  private CommentService commentService;
+  private UserService userService;
+  private LabelService labelService;
+  private MilestoneRepository milestoneRepository;
 
   @Autowired
-  public IssueService(IssueRepository issueRepository, MilestoneRepository milestoneRepository,
-      LabelRepository labelRepository, UserRepository userRepository,
-      CommentRepository commentRepository) {
+  public IssueService(IssueRepository issueRepository, CommentService commentService,
+      UserService userService, LabelService labelService, MilestoneRepository milestoneRepository) {
     this.issueRepository = issueRepository;
+    this.commentService = commentService;
+    this.userService = userService;
+    this.labelService = labelService;
     this.milestoneRepository = milestoneRepository;
-    this.labelRepository = labelRepository;
-    this.userRepository = userRepository;
-    this.commentRepository = commentRepository;
   }
 
   @Transactional
@@ -55,17 +52,11 @@ public class IssueService {
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
 
-    if (issueSaveRequest.comment() != null) {
-      Comment comment = new Comment(saveIssue.getId(), saveIssue.getReporter(),
-          saveIssue.getCreated_at(), issueSaveRequest.comment());
-      Comment saveComment = commentRepository.save(comment);
-      log.debug("저장된 코멘트 : {}", saveComment);
+    if (issueSaveRequest.getComment() != null) {
+      commentService.saveComment(saveIssue.getId(), saveIssue.getReporter(),
+          saveIssue.getCreated_at(), issueSaveRequest.getComment());
     }
     return issue.getId();
-  }
-
-  public boolean isIssueExistBy(Long milestoneId) {
-    return issueRepository.existsByMilestoneId(milestoneId);
   }
 
   public IssueListResponse getAllIssue() {
@@ -75,23 +66,31 @@ public class IssueService {
     return new IssueListResponse(closeIssues, openIssues);
   }
 
+  public IssueDetailResponse getDetailResponse(Long issueId) {
+    List<CommentResponse> commentResponse = commentService.getCommentResponse(issueId);
+
+    Issue issue = getIssue(issueId);
+    List<Label> label = getLabels(issue);
+
+    MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
+
+    User reporter = userService.getUser(issue.getReporter());
+
+    return new IssueDetailResponse(issue, label, milestone, reporter, commentResponse);
+  }
+
+  public boolean isIssueExistBy(Long milestoneId) {
+    return issueRepository.existsByMilestoneId(milestoneId);
+  }
+
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
     for (Issue issue : issues) {
-      List<Label> label = issue.getLabels().isEmpty() ?
-          null : issue.getLabels().stream()
-          .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
-              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
-          .collect(Collectors.toList());
+      List<Label> label = getLabels(issue);
 
-      MilestoneWithIssueCountResponse milestone =
-          (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
-                  issue.getMilestone_id())
-              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-              : null;
+      MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-      User reporter = userRepository.findById(issue.getReporter())
-          .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
+      User reporter = userService.getUser(issue.getReporter());
 
       IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
           reporter);
@@ -136,5 +135,23 @@ public class IssueService {
           i.setIs_open(status);
           issueRepository.save(i);
         });
+  }
+
+  private Issue getIssue(Long issueId) {
+    return issueRepository.findById(issueId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
+  }
+
+  private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
+    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(issue.getMilestone_id())
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+        : null;
+  }
+
+  private List<Label> getLabels(Issue issue) {
+    return issue.getLabels().isEmpty() ?
+        null : issue.getLabels().stream()
+        .map(labelRef -> labelService.findById(labelRef.getLabel_id()))
+        .collect(Collectors.toList());
   }
 }

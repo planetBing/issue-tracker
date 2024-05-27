@@ -5,6 +5,7 @@ import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.exception.MilestoneDeletionException;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,6 +29,7 @@ public class MilestoneService {
 
   /**
    * 전체 마일스톤의 정보를 조회한다
+   *
    * @return 마일스톤 조회 DTO List
    */
   public List<MilestoneWithIssueCountResponse> getAllMilestone() {
@@ -36,6 +38,7 @@ public class MilestoneService {
 
   /**
    * 마일스톤을 생성한다.
+   *
    * @param milestoneSaveRequest 마일스톤 생성 내용이 담긴 DTO
    * @return 생성한 마일스톤 객체
    */
@@ -47,6 +50,7 @@ public class MilestoneService {
 
   /**
    * 마일스톤을 삭제한다.
+   *
    * @param id 삭제하고자 하는 마일스톤의 id
    * @return 삭제된 마일스톤의 id
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
@@ -66,8 +70,9 @@ public class MilestoneService {
 
   /**
    * 마일스톤의 내용을 수정한다.
-   * @return 수정을 성공한 마일스톤 객체
+   *
    * @param milestoneUpdateRequest 마일스톤 수정 내용이 담긴 DTO
+   * @return 수정을 성공한 마일스톤 객체
    * @throws NoSuchElementException 해당하는 마일스톤의 번호가 없을 경우 예외가 발생한다.
    */
   @Transactional
