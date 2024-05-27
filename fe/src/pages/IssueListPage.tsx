@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -236,36 +236,6 @@ const ButtonsWrapper = styled(CommonS.SpaceBetween)`
   align-items: center;
   width: 465px;
   height: 100%;
-`;
-
-const TapBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 320px;
-  height: 100%;
-  border: 1px solid rgba(217, 219, 233, 1);
-  border-radius: 12px;
-  overflow: hidden;
-`;
-
-const TapButton = styled.div`
-  width: 159.5px;
-  height: 100%;
-  background-color: rgba(247, 247, 252, 1);
-  font-size: 16px;
-  border-right: 1px solid rgba(217, 219, 233, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:last-child {
-    border: none;
-  }
-
-  img {
-    margin-right: 4px;
-  }
 `;
 
 const IssueCreationButton = styled(Link)`

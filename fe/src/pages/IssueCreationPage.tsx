@@ -8,6 +8,7 @@ import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
+import CommentArea from "../components/CommentArea";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
@@ -110,25 +111,11 @@ export default function IssueCreationPage() {
               placeholder="제목"
               onChange={handleInputIssueTitle}
             ></IssueTitle>
-            <TextAreaWrapper>
-              <StyledTextArea
-                name="comment"
-                placeholder="코멘트를 입력하세요"
-                onChange={handleInputComment}
-              ></StyledTextArea>
-              {comment && (
-                <CharCount>띄어쓰기 포함 {comment?.length}자</CharCount>
-              )}
-            </TextAreaWrapper>
-            <FileAttach>
-              <label htmlFor="file">
-                <FileAttachBtn>
-                  <img src={paperclipSvg} alt="paperclip" />
-                  <div>파일 첨부하기</div>
-                </FileAttachBtn>
-              </label>
-              <input type="file" id="file" />
-            </FileAttach>
+            <CommentArea
+              handleInputComment={handleInputComment}
+              comment={comment}
+              height={"448px"}
+            />
           </TextContainer>
           <SideBar
             handleInputLabel={handleInputLabel}
