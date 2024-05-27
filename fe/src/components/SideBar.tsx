@@ -6,6 +6,7 @@ import MilestonePopup from "./popup/MilestonePopup";
 import { Label, Milestone, User } from "../Model/types";
 import LabelComponent from "./Label";
 import useApi from "../hooks/api/useApi";
+import MilestoneProgressBar from "./MilestoneProgressBar";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -72,7 +73,6 @@ export default function SideBar({
     close_issue: 0,
     open_issue: 0,
   };
-  const selectedMilestoneProgressNum = close_issue / (close_issue + open_issue);
 
   return (
     <SideBarWrapper>
@@ -147,9 +147,10 @@ export default function SideBar({
           selectedMilestoneObj &&
           selectedMilestoneObj.length > 0 && (
             <SelectedMilestoneWrapper>
-              <ProgressBar>
-                <FilledProgressBar $length={selectedMilestoneProgressNum} />
-              </ProgressBar>
+              <MilestoneProgressBar
+                closedIsseusNum={close_issue}
+                openIssuesNum={open_issue}
+              />
               <MilestoneTitle>{selectedMilestoneObj[0]?.name}</MilestoneTitle>
             </SelectedMilestoneWrapper>
           )}
@@ -247,21 +248,6 @@ const Overlay = styled.div`
 
 const SelectedMilestoneWrapper = styled.div`
   width: 224px;
-`;
-
-const ProgressBar = styled.div`
-  width: 100%;
-  background-color: rgba(239, 240, 246, 1);
-  border-radius: 10px;
-  height: 8px;
-  margin-bottom: 8px;
-`;
-
-const FilledProgressBar = styled.div<{ $length: number }>`
-  width: ${(props) => 224 * props.$length}px;
-  height: 100%;
-  border-radius: 10px;
-  background-color: rgba(0, 122, 255, 1);
 `;
 
 const MilestoneTitle = styled.div`
