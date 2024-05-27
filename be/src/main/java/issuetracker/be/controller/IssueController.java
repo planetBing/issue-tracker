@@ -21,12 +21,9 @@ public class IssueController {
 
   private IssueService issueService;
 
-  private CommentService commentService;
-
   @Autowired
-  public IssueController(IssueService issueService, CommentService commentService) {
+  public IssueController(IssueService issueService) {
     this.issueService = issueService;
-    this.commentService = commentService;
   }
 
   @ResponseStatus(HttpStatus.CREATED)
@@ -35,7 +32,6 @@ public class IssueController {
     issueService.save(issueSaveRequest);
   }
 
-  @ResponseStatus(HttpStatus.OK)
   @GetMapping("/issue")
   public IssueListResponse findAllIssue() {
     IssueListResponse result = issueService.getAllIssue();
@@ -44,9 +40,6 @@ public class IssueController {
 
   @GetMapping("issue/{issueId}")
   public IssueDetailResponse issueDetail(@PathVariable Long issueId) {
-
-    List<CommentResponse> commentResponse = commentService.getCommentResponse(issueId);
-
-    return issueService.getDetailResponse(commentResponse, issueId);
+    return issueService.getDetailResponse(issueId);
   }
 }
