@@ -72,7 +72,6 @@ export default function IssueCreationPage() {
         ? Number(selectedMilestone[0])
         : null,
     };
-    console.log(issueCreationData);
     try {
       const response = await fetch(`${SERVER}/issue`, {
         method: "POST",
