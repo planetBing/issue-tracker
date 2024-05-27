@@ -13,11 +13,12 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class CommentService {
-
   private CommentRepository commentRepository;
   private UserService userService;
 
@@ -27,6 +28,7 @@ public class CommentService {
     this.userService = userService;
   }
 
+  @Transactional
   public void saveComment(CommentSaveRequest commentSaveRequest) {
     Comment comment = commentSaveRequest.toEntity(LocalDateTime.now());
     Comment saveComment = commentRepository.save(comment);
@@ -34,13 +36,16 @@ public class CommentService {
     log.debug("저장된 코멘트 : {}", saveComment);
   }
 
-  public void deleteComment(Long commentId) {
-    commentRepository.deleteById(commentId);
+
+  @Transactional
+  public void deleteComment(Long comment_id) {
+    commentRepository.deleteById(comment_id);
   }
 
-  public void update(CommentUpdateRequest commentUpdateRequest) {
-    Long commentId = commentUpdateRequest.getComment_id();
-    String contents = commentUpdateRequest.getContents();
+  @Transactional
+  public Comment updateComment(CommentUpdateRequest commentUpdateRequest) {
+    Long commentId = commentUpdateRequest.comment_id();
+    String contents = commentUpdateRequest.contents();
     Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
     if (optionalComment.isPresent()) {

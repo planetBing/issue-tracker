@@ -1,14 +1,17 @@
 package issuetracker.be.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
+import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("issue_assignee")
 @Getter
+@ToString
+@EqualsAndHashCode(of = "user_name")
 public class AssigneeRef {
-  @Id
-  private String user_name;
+  private Long issue_id;
+  private final String user_name;
 
   public AssigneeRef(String user_name) {
     this.user_name = user_name;

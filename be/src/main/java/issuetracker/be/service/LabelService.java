@@ -15,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class LabelService {
 
-  private LabelRepository labelRepository;
-  private LabelRefRepository labelRefRepository;
+  private final LabelRepository labelRepository;
+  private final LabelRefRepository labelRefRepository;
 
   @Autowired
   public LabelService(LabelRepository labelRepository, LabelRefRepository labelRefRepository) {
@@ -30,13 +31,15 @@ public class LabelService {
     return labelRepository.findAll();
   }
 
+  @Transactional
   public void save(LabelSaveRequest labelSaveRequest) {
     Label savedLabel = labelRepository.save(labelSaveRequest.toEntity());
     log.debug("저장된 라벨 정보 : {}", savedLabel);
   }
 
+  @Transactional
   public void update(LabelUpdateRequest request) {
-    Optional<Label> optOriginLabel = labelRepository.findById(request.getId());
+    Optional<Label> optOriginLabel = labelRepository.findById(request.id());
     log.debug("업데이트할 라벨 : {}", optOriginLabel.get());
     optOriginLabel.ifPresentOrElse(
         originLabel -> {

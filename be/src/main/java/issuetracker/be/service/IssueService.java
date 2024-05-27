@@ -1,14 +1,19 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Issue;
+import issuetracker.be.domain.issueFilter.IssueFilterFactory;
+import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
 import issuetracker.be.dto.CommentResponse;
 import issuetracker.be.dto.IssueDetailResponse;
+import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.OpenStatusChangeRequest;
+import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import java.time.LocalDateTime;
@@ -19,17 +24,17 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class IssueService {
-
   private IssueRepository issueRepository;
   private CommentService commentService;
   private UserService userService;
   private LabelService labelService;
   private MilestoneRepository milestoneRepository;
-
 
   @Autowired
   public IssueService(IssueRepository issueRepository, CommentService commentService,
@@ -41,8 +46,8 @@ public class IssueService {
     this.milestoneRepository = milestoneRepository;
   }
 
-
-  public void save(IssueSaveRequest issueSaveRequest) {
+  @Transactional
+  public Long save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
@@ -51,6 +56,7 @@ public class IssueService {
       commentService.saveComment(saveIssue.getId(), saveIssue.getReporter(),
           saveIssue.getCreated_at(), issueSaveRequest.getComment());
     }
+    return issue.getId();
   }
 
   public IssueListResponse getAllIssue() {
@@ -91,7 +97,44 @@ public class IssueService {
       result.add(issueShowResponse);
     }
     return result;
+  }
 
+  public IssueListResponse getFilteredIssue(IssueFilterRequest filterRequest) {
+
+    List<Issue> closeIssues = issueRepository.findByIsOpen(false);
+    List<Issue> openIssues = issueRepository.findByIsOpen(true);
+
+    IssueFilters issueFilters = new IssueFilterFactory().createIssueFilters(
+        filterRequest.assignee(),
+        filterRequest.label(),
+        filterRequest.milestone(),
+        filterRequest.reporter(),
+        commentRepository.findByReporter(filterRequest.comment())
+    );
+
+    List<Issue> filteredCloseIssues = issueFilters.doFilter(closeIssues);
+    List<Issue> filteredOpenIssues = issueFilters.doFilter(openIssues);
+
+    List<IssueShowResponse> filteredCloseIssueResponses = generateIssueShowDto(filteredCloseIssues);
+    List<IssueShowResponse> filteredOpenIssueResponses = generateIssueShowDto(filteredOpenIssues);
+
+    return new IssueListResponse(filteredCloseIssueResponses, filteredOpenIssueResponses);
+  }
+
+  /**
+   * 이슈의 열림/닫힘 상태를 변경합니다.
+   * @param openStatusChangeRequest 상태 수정 대상 이슈 ID가 담긴 DTO
+   * @param status 바꾸려는 상태
+   * @throws NoSuchElementException 해당하는 이슈가 없는 경우 예외가 발생한다.
+   */
+  @Transactional
+  public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
+    openStatusChangeRequest.id().stream()
+        .map(i -> issueRepository.findById(i).orElseThrow())
+        .forEach(i -> {
+          i.setIs_open(status);
+          issueRepository.save(i);
+        });
   }
 
   private Issue getIssue(Long issueId) {

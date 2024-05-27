@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommentController {
 
-  private CommentService commentService;
+  private final CommentService commentService;
 
   @Autowired
   public CommentController(CommentService commentService) {
@@ -24,12 +24,12 @@ public class CommentController {
   }
 
   @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping("comment")
+  @PostMapping("/comment")
   public void commentSave(@RequestBody CommentSaveRequest commentSaveRequest) {
     commentService.saveComment(commentSaveRequest);
   }
 
-  @DeleteMapping("comment/{comment_id}")
+  @DeleteMapping("/comment/{comment_id}")
   public void commentDelete(@PathVariable Long comment_id) {
     commentService.deleteComment(comment_id);
   }
@@ -38,5 +38,4 @@ public class CommentController {
   public void commentUpdate(@RequestBody CommentUpdateRequest commentUpdateRequest) {
     commentService.update(commentUpdateRequest);
   }
-
 }
