@@ -43,7 +43,7 @@ public class CommentService {
   }
 
   @Transactional
-  public Comment updateComment(CommentUpdateRequest commentUpdateRequest) {
+  public void update(CommentUpdateRequest commentUpdateRequest) {
     Long commentId = commentUpdateRequest.comment_id();
     String contents = commentUpdateRequest.contents();
     Optional<Comment> optionalComment = commentRepository.findById(commentId);
@@ -69,5 +69,9 @@ public class CommentService {
   public void saveComment(Long issueId, String reporter, LocalDateTime createdAt, String comment) {
     Comment saveComment = commentRepository.save(new Comment(issueId, reporter, createdAt, comment));
     log.debug("저장된 코멘트 : {}", saveComment);
+  }
+
+  public List<Comment> getComments(String reporter) {
+    return commentRepository.findByReporter(reporter);
   }
 }

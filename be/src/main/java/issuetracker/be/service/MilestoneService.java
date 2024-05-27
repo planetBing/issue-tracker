@@ -5,7 +5,6 @@ import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
-import issuetracker.be.exception.MilestoneDeletionException;
 import issuetracker.be.repository.MilestoneRepository;
 import java.util.List;
 import java.util.NoSuchElementException;

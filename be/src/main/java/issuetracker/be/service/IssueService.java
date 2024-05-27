@@ -13,7 +13,6 @@ import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.dto.OpenStatusChangeRequest;
-import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import java.time.LocalDateTime;
@@ -52,9 +51,9 @@ public class IssueService {
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
 
-    if (issueSaveRequest.getComment() != null) {
+    if (issueSaveRequest.comment() != null) {
       commentService.saveComment(saveIssue.getId(), saveIssue.getReporter(),
-          saveIssue.getCreated_at(), issueSaveRequest.getComment());
+          saveIssue.getCreated_at(), issueSaveRequest.comment());
     }
     return issue.getId();
   }
@@ -109,7 +108,7 @@ public class IssueService {
         filterRequest.label(),
         filterRequest.milestone(),
         filterRequest.reporter(),
-        commentRepository.findByReporter(filterRequest.comment())
+        commentService.getComments(filterRequest.commentReporter())
     );
 
     List<Issue> filteredCloseIssues = issueFilters.doFilter(closeIssues);
