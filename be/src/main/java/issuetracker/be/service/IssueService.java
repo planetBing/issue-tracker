@@ -73,21 +73,14 @@ public class IssueService {
   private List<IssueShowResponse> generateIssueShowDto(List<Issue> issues) {
     List<IssueShowResponse> result = new ArrayList<>();
     for (Issue issue : issues) {
-      List<Label> label = issue.getLabels().isEmpty() ?
-          null : issue.getLabels().stream()
-              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
-                  .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
-              .collect(Collectors.toList());
+      List<Label> label = getLabels(issue);
 
-      MilestoneWithIssueCountResponse milestone =
-          (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
-              issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-              : null;
+      MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-      User reporter = userRepository.findById(issue.getReporter())
-          .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
+      User reporter = getUser(issue);
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
+          reporter);
       result.add(issueShowResponse);
     }
     return result;
@@ -95,30 +88,38 @@ public class IssueService {
   }
 
   private Issue getIssue(Long issueId) {
-    Optional<Issue> optionalIssue = issueRepository.findById(issueId);
-    if(optionalIssue.isPresent()) {
-      return optionalIssue.get();
-    } else {
-      throw new IllegalArgumentException("없는 이슈야");
-    }
+    return issueRepository.findById(issueId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
   }
 
   public IssueDetailResponse getDetailResponse(List<CommentResponse> comments, Long issueId) {
     Issue issue = getIssue(issueId);
-    List<Label> label = issue.getLabels().isEmpty() ?
+    List<Label> label = getLabels(issue);
+
+    MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
+
+    User reporter = getUser(issue);
+
+    return new IssueDetailResponse(issue, label, milestone, reporter, comments);
+  }
+
+  private User getUser(Issue issue) {
+    return userRepository.findById(issue.getReporter())
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
+  }
+
+  private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
+    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
+                issue.getMilestone_id())
+            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+            : null;
+  }
+
+  private List<Label> getLabels(Issue issue) {
+    return issue.getLabels().isEmpty() ?
         null : issue.getLabels().stream()
         .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
             .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
         .collect(Collectors.toList());
-
-    MilestoneWithIssueCountResponse milestone =
-        (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
-            issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-            : null;
-
-    User reporter = userRepository.findById(issue.getReporter())
-        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
-
-    return new IssueDetailResponse(issue, label, milestone, reporter, comments);
   }
 }
