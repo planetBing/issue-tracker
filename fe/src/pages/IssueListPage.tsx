@@ -46,7 +46,7 @@ export default function IssueListPage() {
   const {
     data: issueList,
     isLoading: isIssueListLoading,
-    refetch: isssueListRefetch,
+    refetch: refetchIssueList,
     putData: updateIssueStatus,
   } = useApi<IssueData>(`/issue/filter?${paramString}`);
   const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
@@ -100,10 +100,12 @@ export default function IssueListPage() {
     }
   };
 
-  const openOrCloseIssues = (status: string) => {
+  const openOrCloseIssues = async (status: string) => {
     const putPath = status === "open" ? "/issue/open" : "/issue/close";
     const selectedIssueIds = selectedIssue.map((id) => Number(id));
-    // updateIssueStatus(putPath, { issueIds: selectedIssueIds });
+    await updateIssueStatus(putPath, { id: selectedIssueIds });
+    setSelectedIssue([]);
+    refetchIssueList();
   };
 
   const isFilteringChanged =

@@ -24,7 +24,7 @@ interface IssueTableHeaderProps {
     key: string
   ) => void;
   selectedIssue: string[];
-  openOrCloseIssues: (status: string) => void;
+  openOrCloseIssues: (status: string) => Promise<void>;
   handleCheckAllIssues: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -44,6 +44,11 @@ export default function IssueTableHeader({
   const { data: userListData } = useApi<User[]>("/user");
   const { data: labelListData } = useApi<Label[]>("/label");
   const { data: milestoneListData } = useApi<Milestone[]>("/milestone");
+
+  const handleOpenOrCloseIssues = async (status: string) => {
+    await openOrCloseIssues(status);
+    handleClosePopup();
+  };
 
   return (
     <IssueTableTop>
@@ -66,7 +71,7 @@ export default function IssueTableHeader({
             <TableFilterBtn onClick={() => handleOpenPopup("issueStatus")}>
               상태 변경 <img src={dropdownIcon} alt="dropdown icon" />
               {popupState.issueStatus && (
-                <IssueStatusPopup openOrCloseIssues={openOrCloseIssues} />
+                <IssueStatusPopup openOrCloseIssues={handleOpenOrCloseIssues} />
               )}
             </TableFilterBtn>
           </>

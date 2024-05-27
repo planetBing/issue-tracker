@@ -1,7 +1,7 @@
 import * as S from "./popupStyle";
 
 interface IssueStatusPopupProps {
-  openOrCloseIssues: (status: string) => void;
+  openOrCloseIssues: (status: string) => Promise<void>;
 }
 
 export default function IssueStatusPopup({
@@ -14,7 +14,12 @@ export default function IssueStatusPopup({
         <S.OptionInfo>
           <span>선택한 이슈 열기</span>
         </S.OptionInfo>
-        <input type="radio" onChange={() => openOrCloseIssues("open")} />
+        <input
+          type="radio"
+          onChange={() => {
+            openOrCloseIssues("open");
+          }}
+        />
       </S.DropdownOption>
       <S.DropdownOption>
         <S.OptionInfo>
