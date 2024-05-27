@@ -50,7 +50,7 @@ public class IssueService {
   }
 
   @Transactional
-  public void save(IssueSaveRequest issueSaveRequest) {
+  public Long save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
@@ -61,6 +61,7 @@ public class IssueService {
       Comment saveComment = commentRepository.save(comment);
       log.debug("저장된 코멘트 : {}", saveComment);
     }
+    return issue.getId();
   }
 
   public boolean isIssueExistBy(Long milestoneId) {

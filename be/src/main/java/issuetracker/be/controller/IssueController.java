@@ -1,5 +1,6 @@
 package issuetracker.be.controller;
 
+import issuetracker.be.domain.Issue;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
@@ -29,8 +30,8 @@ public class IssueController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/issue")
-  public void saveIssue(@RequestBody IssueSaveRequest issueSaveRequest) {
-    issueService.save(issueSaveRequest);
+  public Long saveIssue(@RequestBody IssueSaveRequest issueSaveRequest) {
+    return issueService.save(issueSaveRequest);
   }
 
   @GetMapping("/issue")
