@@ -16,7 +16,9 @@ export default function LabelMilestoneTap() {
       </TapButton>
       <TapButton>
         <img src={milestoneIcon} alt="milestone icon" />
-        마일스톤({milestoneListData?.length})
+        <StyledLink to="/milestone">
+          마일스톤({milestoneListData?.length})
+        </StyledLink>
       </TapButton>
     </TapBox>
   );
