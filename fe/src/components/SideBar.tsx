@@ -6,7 +6,6 @@ import MilestonePopup from "./popup/MilestonePopup";
 import { Label, Milestone, User } from "../Model/types";
 import LabelComponent from "./Label";
 import useApi from "../hooks/api/useApi";
-import { milestone } from "./sideBarData";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;

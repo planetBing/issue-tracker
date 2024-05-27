@@ -65,12 +65,6 @@ export default function LabelListPage() {
     },
   };
 
-  // const handleAddLabel = async () => {
-  //   await postNewLabel("/label", labelForm);
-  //   setIsCreationMode(false);
-  //   refetchLabelList();
-  // };
-
   const handleDeleteLabel = async (labelId: number) => {
     await deleteLabel(`/label/${labelId.toString()}`);
     refetchLabelList();
