@@ -49,8 +49,8 @@ public class Issue {
     return labels.contains(new LabelRef(labelId));
   }
 
-  public boolean hasMilestoneId(long milestoneId) {
-    return this.milestone_id == milestoneId;
+  public boolean hasMilestoneId(Long milestoneId) {
+    return milestoneId.equals(this.milestone_id);
   }
 
   public boolean hasReporter(String reporter) {
