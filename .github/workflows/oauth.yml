@@ -1,17 +1,31 @@
 name: OAuth workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - be-release
 
 jobs:
-  example_job:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Use OAUTH secret
+    - name: SSH로 EC2에 접속하기
+      uses: appleboy/ssh-action@v1.0.3
       env:
-        OAUTH: ${{ secrets.OAUTH }}
-      run: |
-        echo "Using OAUTH: $OAUTH"
+          APPLICATION_PROPERTIES: ${{ secrets.OAUTH }}
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        envs: APPLICATION_PROPERTIES
+        script_stop: true
+        script: |
+            cd /home/ubuntu/instagram-server # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
+            rm -rf src/main/resources/application-github.properties
+            git pull origin main
+            echo "$APPLICATION_PROPERTIES" > src/main/resources/application-github.properties
+            ./gradlew clean build
+            sudo fuser -k -n tcp 8080 || true # || true를 붙인 이유는 8080에 종료시킬 프로세스가 없더라도 실패로 처리하지 않기 위해서이다. 
+            # jar 파일을 실행시키는 명령어이다. 그리고 발생하는 로그들을 ./output.log 파일에 남기는 명령어이다.
+            nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 & 
+
