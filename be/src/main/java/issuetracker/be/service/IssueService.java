@@ -1,18 +1,17 @@
 package issuetracker.be.service;
 
-import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.Comment;
 import issuetracker.be.domain.Issue;
 import issuetracker.be.domain.issueFilter.IssueFilterFactory;
 import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
-import issuetracker.be.domain.LabelRef;
 import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.LabelRepository;
@@ -22,8 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +50,7 @@ public class IssueService {
   }
 
   @Transactional
-  public void save(IssueSaveRequest issueSaveRequest) {
+  public Long save(IssueSaveRequest issueSaveRequest) {
     Issue issue = issueSaveRequest.toEntity(LocalDateTime.now());
     Issue saveIssue = issueRepository.save(issue);
     log.debug("저장된 이슈 : {}", saveIssue);
@@ -64,6 +61,7 @@ public class IssueService {
       Comment saveComment = commentRepository.save(comment);
       log.debug("저장된 코멘트 : {}", saveComment);
     }
+    return issue.getId();
   }
 
   public boolean isIssueExistBy(Long milestoneId) {
@@ -82,19 +80,21 @@ public class IssueService {
     for (Issue issue : issues) {
       List<Label> label = issue.getLabels().isEmpty() ?
           null : issue.getLabels().stream()
-              .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
-                  .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
-              .collect(Collectors.toList());
+          .map(labelRef -> labelRepository.findById(labelRef.getLabel_id())
+              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다.")))
+          .collect(Collectors.toList());
 
       MilestoneWithIssueCountResponse milestone =
           (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
-              issue.getMilestone_id()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+                  issue.getMilestone_id())
+              .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
               : null;
 
       User reporter = userRepository.findById(issue.getReporter())
           .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
+          reporter);
       result.add(issueShowResponse);
     }
     return result;
@@ -120,5 +120,21 @@ public class IssueService {
     List<IssueShowResponse> filteredOpenIssueResponses = generateIssueShowDto(filteredOpenIssues);
 
     return new IssueListResponse(filteredCloseIssueResponses, filteredOpenIssueResponses);
+  }
+
+  /**
+   * 이슈의 열림/닫힘 상태를 변경합니다.
+   * @param openStatusChangeRequest 상태 수정 대상 이슈 ID가 담긴 DTO
+   * @param status 바꾸려는 상태
+   * @throws NoSuchElementException 해당하는 이슈가 없는 경우 예외가 발생한다.
+   */
+  @Transactional
+  public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
+    openStatusChangeRequest.id().stream()
+        .map(i -> issueRepository.findById(i).orElseThrow())
+        .forEach(i -> {
+          i.setIs_open(status);
+          issueRepository.save(i);
+        });
   }
 }
