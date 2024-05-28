@@ -22,7 +22,7 @@ public class OAuthService {
   @Transactional
   public void save(GithubUserProfileDto dto) {
     User githubUser = dto.toEntity();
-    Optional<User> existUser = userRepository.findByNameEquals(githubUser.getName());
+    Optional<User> existUser = userRepository.findByNameEquals(githubUser.getId());
 
     existUser.orElseGet(() -> userRepository.save(githubUser));
   }
