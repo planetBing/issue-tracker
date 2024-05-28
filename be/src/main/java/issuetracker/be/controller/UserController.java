@@ -2,11 +2,14 @@ package issuetracker.be.controller;
 
 
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.IssueAssigneeUpdateRequest;
 import issuetracker.be.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -24,5 +27,10 @@ public class UserController {
   @GetMapping("/user")
   public List<User> showAssignees() {
     return userService.getAllUsers();
+  }
+
+  @PatchMapping("/issue/assignee")
+  public void updateAssignee(@RequestBody IssueAssigneeUpdateRequest issueAssigneeUpdateRequest) {
+    userService.updateAssignee(issueAssigneeUpdateRequest);
   }
 }
