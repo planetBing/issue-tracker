@@ -2,6 +2,7 @@ package issuetracker.be.service;
 
 import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.IssueAssigneeUpdateRequest;
 import issuetracker.be.repository.AssigneeRefRepository;
 import issuetracker.be.repository.UserRepository;
 import java.util.List;
@@ -38,5 +39,23 @@ public class UserService {
     return allUser.stream()
         .map(assigneeRef -> getUser(assigneeRef.getUser_name()))
         .collect(Collectors.toList());
+  }
+
+
+  @Transactional
+  public void updateAssignee(IssueAssigneeUpdateRequest issueAssigneeUpdateRequest) {
+    Long id = issueAssigneeUpdateRequest.id();
+    List<String> names = issueAssigneeUpdateRequest.name();
+    System.out.println("names = " + names);
+
+    if (names != null) {
+      assigneeRefRepository.deleteAllAssignee(id);
+      System.out.println("Deleted all assignees for issue id: " + id);
+      names.forEach(name -> assigneeRefRepository.addAssignee(id, name));
+      System.out.println("수정완");
+    } else {
+      assigneeRefRepository.deleteAllAssignee(id);
+      System.out.println("Deleted all assignees for issue id: " + id);
+    }
   }
 }
