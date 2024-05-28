@@ -1,10 +1,10 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Issue;
-import issuetracker.be.domain.issueFilter.IssueFilterFactory;
 import issuetracker.be.domain.IssueFilters;
 import issuetracker.be.domain.Label;
 import issuetracker.be.domain.User;
+import issuetracker.be.domain.issueFilter.IssueFilterFactory;
 import issuetracker.be.dto.CommentResponse;
 import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class IssueService {
+
   private IssueRepository issueRepository;
   private CommentService commentService;
   private UserService userService;
@@ -71,11 +72,13 @@ public class IssueService {
     Issue issue = getIssue(issueId);
     List<Label> label = getLabels(issue);
 
+    List<User> assignee = getAssignees(issue);
+
     MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
     User reporter = userService.getUser(issue.getReporter());
 
-    return new IssueDetailResponse(issue, label, milestone, reporter, commentResponse);
+    return new IssueDetailResponse(issue, assignee, label, milestone, reporter, commentResponse);
   }
 
   public boolean isIssueExistBy(Long milestoneId) {
@@ -122,8 +125,9 @@ public class IssueService {
 
   /**
    * 이슈의 열림/닫힘 상태를 변경합니다.
+   *
    * @param openStatusChangeRequest 상태 수정 대상 이슈 ID가 담긴 DTO
-   * @param status 바꾸려는 상태
+   * @param status                  바꾸려는 상태
    * @throws NoSuchElementException 해당하는 이슈가 없는 경우 예외가 발생한다.
    */
   @Transactional
@@ -142,7 +146,8 @@ public class IssueService {
   }
 
   private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
-    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(issue.getMilestone_id())
+    return (issue.getMilestone_id() != null) ? milestoneRepository.findWithIssueCountBy(
+            issue.getMilestone_id())
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
         : null;
   }
@@ -152,5 +157,10 @@ public class IssueService {
         null : issue.getLabels().stream()
         .map(labelRef -> labelService.findById(labelRef.getLabel_id()))
         .collect(Collectors.toList());
+  }
+
+  private List<User> getAssignees(Issue issue) {
+    return issue.getAssignees().isEmpty() ?
+        null : userService.findByIssueId(issue.getId());
   }
 }
