@@ -46,6 +46,7 @@ export const IssueTable = styled.div`
 `;
 
 export const LabelEditButton = styled(CommonS.Center)`
+  cursor: pointer;
   color: rgba(78, 75, 102, 1);
   font-size: 12px;
   img {
