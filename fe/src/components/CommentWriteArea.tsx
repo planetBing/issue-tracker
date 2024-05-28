@@ -7,7 +7,7 @@ interface CommentAreaProps {
   height: string;
 }
 
-export default function CommentArea({
+export default function CommentWriteArea({
   handleInputComment,
   comment,
   height,

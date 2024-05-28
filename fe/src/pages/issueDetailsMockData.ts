@@ -1,20 +1,22 @@
 export const issueDetails = {
   id: 4,
   title: "이슈2",
-  create_at: "3분 전",
+  create_At: "3분 전",
   isOpen: true,
   reporter: {
     name: "day",
     image_path:
       "https://s3-alpha-sig.figma.com/img/7b24/29f6/547baecd15e3ec2fa41ea8c7c9493922?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qFpo7APODRn9EsXC0lyrEqfck-ivWgirdI8gwte4NsYoelV25nJQ08oENJKDOPc0rDpK3VqavdeNnwjvziY7qnrkDfk~GkMeAatrOIuezqreU2JzYIkgtfPLptskIhnvCRliVVvrzr9rprVdrGPQDdLJ~YRIlgdGh~skeHAjcgcUmIIhi2HcRnYbIskqdaRugdE-LHvXU~CldYxHiM0vqoaMXkrXY8BsQKx8gSNEv4AF2if4btaR2X~l~6gnX43fuaC7i8fw-qSA-3Y8gTtlxNRxcQhrru-2pM05jby9cBKaGTCwHnYdS3NSPtCUgxDJZxTxfSAghbsxoK94FLHbYg__",
   },
-  label: {
-    id: 1,
-    name: "a",
-    background_color: "pink",
-    text_color: "white",
-    description: null,
-  },
+  label: [
+    {
+      id: 1,
+      name: "a",
+      background_color: "pink",
+      text_color: "white",
+      description: null,
+    },
+  ],
   milestone: {
     id: 1,
     name: "Test Milestone 1",
@@ -27,6 +29,7 @@ export const issueDetails = {
   comment: [
     {
       id: 1,
+      issue_id: 4,
       reporter: {
         name: "day",
         image_path:
@@ -37,6 +40,7 @@ export const issueDetails = {
     },
     {
       id: 2,
+      issue_id: 4,
       reporter: {
         name: "asher",
         image_path:

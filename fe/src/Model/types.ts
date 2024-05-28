@@ -46,7 +46,9 @@ export interface FilteringState {
 
 export interface Comment {
   id: number;
-  reporter: string;
+  issue_id: number;
+  reporter: User;
+  create_at: string;
   contents: string;
 }
 

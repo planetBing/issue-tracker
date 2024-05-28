@@ -8,7 +8,7 @@ import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
-import CommentArea from "../components/CommentArea";
+import CommentWriteArea from "../components/CommentWriteArea";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
@@ -111,7 +111,7 @@ export default function IssueCreationPage() {
               placeholder="제목"
               onChange={handleInputIssueTitle}
             ></IssueTitle>
-            <CommentArea
+            <CommentWriteArea
               handleInputComment={handleInputComment}
               comment={comment}
               height={"448px"}
