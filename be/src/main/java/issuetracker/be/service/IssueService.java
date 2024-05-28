@@ -11,6 +11,7 @@ import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
+import issuetracker.be.dto.IssueTitleUpdateRequest;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.repository.IssueRepository;
@@ -57,6 +58,13 @@ public class IssueService {
           saveIssue.getCreated_at(), issueSaveRequest.comment());
     }
     return issue.getId();
+  }
+
+  @Transactional
+  public void updateTitle(IssueTitleUpdateRequest issueTitleUpdateRequest) {
+    String title = issueTitleUpdateRequest.title();
+    Long id = issueTitleUpdateRequest.id();
+    issueRepository.updateTitle(title, id);
   }
 
   public IssueListResponse getAllIssue() {

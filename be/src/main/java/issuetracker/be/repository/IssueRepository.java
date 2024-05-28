@@ -12,5 +12,9 @@ public interface IssueRepository extends CrudRepository<Issue, Long> {
   boolean existsByMilestoneId(@Param("milestoneId") Long milestoneId);
 
   @Query("SELECT * FROM issue WHERE is_open = :isOpen")
-  List<Issue> findByIsOpen(@Param("isOpen")boolean isOpen);
+  List<Issue> findByIsOpen(@Param("isOpen") boolean isOpen);
+
+  @Query("UPDATE issue SET title = :title WHERE id = :id")
+  void updateTitle(@Param("title") String title, @Param("id") Long id);
+
 }
