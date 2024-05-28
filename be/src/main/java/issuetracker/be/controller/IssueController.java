@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,12 +56,12 @@ public class IssueController {
     return issueService.getFilteredIssue(filterRequest);
   }
 
-  @PutMapping("/issue/open")
+  @PatchMapping("/issue/open")
   public void openIssues(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
     issueService.changeIssueStatus(openStatusChangeRequest, true);
   }
 
-  @PutMapping("/issue/close")
+  @PatchMapping("/issue/close")
   public void closeIssue(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
     issueService.changeIssueStatus(openStatusChangeRequest, false);
   }
