@@ -1,0 +1,17 @@
+name: OAuth workflow
+
+on: [push]
+
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Use OAUTH secret
+      env:
+        OAUTH: ${{ secrets.OAUTH }}
+      run: |
+        echo "Using OAUTH: $OAUTH"
