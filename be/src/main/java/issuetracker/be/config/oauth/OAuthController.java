@@ -2,6 +2,7 @@ package issuetracker.be.config.oauth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import issuetracker.be.config.oauth.dto.GithubUserProfileDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -21,17 +22,19 @@ import org.springframework.web.client.RestTemplate;
 public class OAuthController {
 
   private final Environment environment;
+  private final OAuthService oAuthService;
 
   @Autowired
-  public OAuthController(Environment environment) {
+  public OAuthController(Environment environment, OAuthService oAuthService) {
     this.environment = environment;
+    this.oAuthService = oAuthService;
   }
 
   @GetMapping("/login/oauth2/code/github")
-  public GithubUserProfile getGithubUserProfile(@RequestParam String code) throws JsonProcessingException {
+  public void getGithubUserProfile(@RequestParam String code) throws JsonProcessingException {
     OAuthToken oAuthToken = getOAuthToken(code);
-    GithubUserProfile githupProfile = getGithubUserProfile(oAuthToken);
-    return githupProfile;
+    GithubUserProfileDto githupProfileDto = getGithubUserProfile(oAuthToken);
+    oAuthService.save(githupProfileDto);
   }
 
   private OAuthToken getOAuthToken(String code) throws JsonProcessingException {
@@ -59,7 +62,7 @@ public class OAuthController {
     return new HttpEntity<>(params, headers);
   }
 
-  private GithubUserProfile getGithubUserProfile(OAuthToken oAuthToken) throws JsonProcessingException{
+  private GithubUserProfileDto getGithubUserProfile(OAuthToken oAuthToken) throws JsonProcessingException{
     RestTemplate profileRequestTemplate = new RestTemplate();
     ResponseEntity<String> profileResponse = profileRequestTemplate.exchange(
         "https://api.github.com/user",
@@ -69,7 +72,7 @@ public class OAuthController {
     );
     log.debug("프로필 정보 : {}", profileResponse.getBody());
     ObjectMapper objectMapper = new ObjectMapper();
-    return objectMapper.readValue(profileResponse.getBody(), GithubUserProfile.class);
+    return objectMapper.readValue(profileResponse.getBody(), GithubUserProfileDto.class);
   }
 
   private HttpEntity<MultiValueMap<String, String>> getProfileRequestEntity(OAuthToken oAuthToken) {
