@@ -129,7 +129,7 @@ public class IssueService {
   @Transactional
   public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
     openStatusChangeRequest.id().stream()
-        .map(i -> issueRepository.findById(i).orElseThrow())
+        .map(this::getIssue)
         .forEach(i -> {
           i.setIs_open(status);
           issueRepository.save(i);
@@ -138,7 +138,7 @@ public class IssueService {
 
   private Issue getIssue(Long issueId) {
     return issueRepository.findById(issueId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 이슈입니다."));
   }
 
   private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
