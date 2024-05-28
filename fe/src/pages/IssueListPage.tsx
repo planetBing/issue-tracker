@@ -109,7 +109,7 @@ export default function IssueListPage() {
     const selectedIssueIds = selectedIssue.map((id) => Number(id));
     await updateIssueStatus(putPath, { id: selectedIssueIds });
     setSelectedIssue([]);
-    refetchIssueList();
+    refetchIssueList(`/issue/filter?${paramString}`);
   };
 
   const isFilteringChanged =
