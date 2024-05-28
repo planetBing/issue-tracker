@@ -32,11 +32,12 @@ public class FileUploadController {
 
     try {
       String fileName = file.getOriginalFilename();
-      String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileName;
+      String fileKey = "img/" + fileName;
+      String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileKey;
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(file.getContentType());
       metadata.setContentLength(file.getSize());
-      amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+      amazonS3Client.putObject(bucket, fileKey, file.getInputStream(), metadata);
       return ResponseEntity.ok(fileUrl);
     } catch (IOException e) {
       e.printStackTrace();
