@@ -30,7 +30,7 @@ public class UserService {
   }
 
   public User getUser(String name) {
-    return userRepository.findByName(name)
+    return userRepository.findByNameEquals(name)
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
   }
 
