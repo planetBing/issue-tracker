@@ -62,12 +62,12 @@ public class IssueController {
     issueService.changeIssueStatus(openStatusChangeRequest, false);
   }
 
-  @GetMapping("issue/{issueId}")
+  @GetMapping("/issue/{issueId}")
   public IssueDetailResponse issueDetail(@PathVariable Long issueId) {
     return issueService.getDetailResponse(issueId);
   }
 
-  @PatchMapping("issue/title")
+  @PatchMapping("/issue/title")
   public void issueTitleUpdate(@RequestBody IssueTitleUpdateRequest issueTitleUpdateRequest) {
     issueService.updateTitle(issueTitleUpdateRequest);
   }
