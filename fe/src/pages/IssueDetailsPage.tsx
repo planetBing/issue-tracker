@@ -14,7 +14,17 @@ import SideBar from "../components/SideBar";
 
 export default function IssueDetailsPage() {
   const { currentUser } = useCurrentUser();
-  const { title, id, isOpen, create_At, reporter, comment } = issueDetails;
+  const {
+    title,
+    id,
+    isOpen,
+    create_At,
+    reporter,
+    comment,
+    label,
+    assignee,
+    milestone,
+  } = issueDetails;
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -75,9 +85,9 @@ export default function IssueDetailsPage() {
               handleInputAssignee={console.log}
               handleInputMilestone={console.log}
               handleInputLabel={console.log}
-              assigneeList={[]}
-              selectedLabel={[]}
-              selectedMilestone={""}
+              assigneeList={assignee.map((userObj) => userObj.name)}
+              selectedLabel={label.map((labelObj) => labelObj.id.toString())}
+              selectedMilestone={milestone.id.toString()}
             />
             <DeleteButton>
               <img src={trashIcon} alt="trash icon" />

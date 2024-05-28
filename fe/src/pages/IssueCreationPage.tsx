@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
-import paperclipSvg from "../assets/paperclip.svg";
-import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -180,66 +178,6 @@ const IssueTitle = styled.input`
 
   &:focus {
     outline: none;
-  }
-`;
-
-const TextAreaWrapper = styled.div`
-  position: relative;
-  margin-bottom: -3px;
-`;
-
-const StyledTextArea = styled.textarea`
-  height: 350px;
-  border: none;
-  padding: 16px;
-  background-color: rgba(239, 240, 246, 1);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  border-bottom: 1px dashed rgba(217, 219, 233, 1);
-  width: 100%;
-
-  &:focus {
-    outline-color: black;
-    background-color: white;
-  }
-`;
-
-const CharCount = styled.div`
-  text-align: right;
-  font-size: 12px;
-  color: gray;
-  margin-top: 4px;
-  position: absolute;
-  width: 100%;
-  top: 310px;
-  padding-right: 25px;
-`;
-
-const FileAttach = styled.div`
-  display: flex;
-  align-items: center;
-  height: 52px;
-  border: none;
-  padding: 0 16px;
-  background-color: rgba(239, 240, 246, 1);
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-
-  & input {
-    display: none;
-  }
-`;
-
-const FileAttachBtn = styled.div`
-  display: flex;
-  cursor: pointer;
-
-  & div {
-    margin-left: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(78, 75, 102, 1);
-    line-height: 16px;
   }
 `;
 
