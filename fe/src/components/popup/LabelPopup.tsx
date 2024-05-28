@@ -7,6 +7,7 @@ interface LabelPopupProps {
   selectedLabel: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isLabelNone: boolean;
+  inputType: string;
 }
 
 export default function LabelPopup({
@@ -14,6 +15,7 @@ export default function LabelPopup({
   selectedLabel,
   onChange,
   isLabelNone,
+  inputType,
 }: LabelPopupProps) {
   return (
     <S.DropdownPanel>
@@ -24,7 +26,7 @@ export default function LabelPopup({
             <span>라벨이 없는 이슈</span>
           </S.OptionInfo>
           <input
-            type="radio"
+            type={inputType}
             id={"none"}
             name="label"
             value={"none"}
@@ -42,11 +44,11 @@ export default function LabelPopup({
               <span>{name}</span>
             </S.OptionInfo>
             <input
-              type="radio"
+              type={inputType}
               id={name}
               name="label"
               value={id.toString()}
-              checked={selectedLabel.includes(name)}
+              checked={selectedLabel.includes(id.toString())}
               onChange={onChange}
             />
           </S.DropdownOption>

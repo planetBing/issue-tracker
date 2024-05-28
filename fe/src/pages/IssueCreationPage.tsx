@@ -53,7 +53,13 @@ export default function IssueCreationPage() {
   };
 
   const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLabel([e.target.value]);
+    const value = e.target.value;
+    if (selectedLabel.includes(value)) {
+      const newSelectedLabel = selectedLabel.filter((label) => label !== value);
+      setSelectedLabel(newSelectedLabel);
+    } else {
+      setSelectedLabel([...selectedLabel, e.target.value]);
+    }
   };
 
   const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {

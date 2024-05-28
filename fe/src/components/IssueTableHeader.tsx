@@ -126,6 +126,7 @@ export default function IssueTableHeader({
                       handleClosePopup();
                     }}
                     isLabelNone={true}
+                    inputType={"radio"}
                   />
                 )}
               </TableFilterBtn>
