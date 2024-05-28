@@ -23,4 +23,4 @@ jobs:
               cd build/libs
               java -jar be-0.0.1-SNAPSHOT.jar
               pkill -f 'be-0.0.1-SNAPSHOT.jar'
-              nohup java -jar be-0.0.1-SNAPSHOT.jar &
+              nohup java -jar be-0.0.1-SNAPSHOT.jar > /home/ubuntu/issue5/be/build/libs/log.out 2>&1 &
