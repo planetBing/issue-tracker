@@ -21,7 +21,6 @@ jobs:
         script_stop: true
         script: |
             cd /home/ubuntu/issue5 # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
-            rm -rf src/main/resources/application-github.properties
             git pull origin main
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application-github.properties
             ./gradlew clean build
