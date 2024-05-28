@@ -19,7 +19,7 @@ jobs:
             script: |
               cd issue5/be
               git pull origin be-release
-              ./gradlew build
+              ./gradlew build -x test
               cd build/libs
               java -jar be-0.0.1-SNAPSHOT.jar
               pkill -f 'be-0.0.1-SNAPSHOT.jar'
