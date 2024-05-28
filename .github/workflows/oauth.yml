@@ -21,7 +21,7 @@ jobs:
         script_stop: true
         script: |
             cd /home/ubuntu/issue5 # 여기 경로는 자신의 EC2에 맞는 경로로 재작성하기
-            git pull origin main
+            git pull origin be-release
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application-github.properties
             ./gradlew clean build
             sudo fuser -k -n tcp 8080 || true # || true를 붙인 이유는 8080에 종료시킬 프로세스가 없더라도 실패로 처리하지 않기 위해서이다. 
