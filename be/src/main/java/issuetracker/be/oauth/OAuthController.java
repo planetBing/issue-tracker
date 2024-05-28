@@ -59,5 +59,22 @@ public class OAuthController {
     return new HttpEntity<>(params, headers);
   }
 
+  private GithubUserProfile getGithubUserProfile(OAuthToken oAuthToken) throws JsonProcessingException{
+    RestTemplate profileRequestTemplate = new RestTemplate();
+    ResponseEntity<String> profileResponse = profileRequestTemplate.exchange(
+        "https://api.github.com/user",
+        HttpMethod.GET,
+        getProfileRequestEntity(oAuthToken),
+        String.class
+    );
+    log.debug("프로필 정보 : {}", profileResponse.getBody());
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.readValue(profileResponse.getBody(), GithubUserProfile.class);
+  }
 
+  private HttpEntity<MultiValueMap<String, String>> getProfileRequestEntity(OAuthToken oAuthToken) {
+    HttpHeaders profileRequestHeaders = new HttpHeaders();
+    profileRequestHeaders.add("Authorization", "token " + oAuthToken.getAccessToken());
+    return new HttpEntity<>(profileRequestHeaders);
+  }
 }
