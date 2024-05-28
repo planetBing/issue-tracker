@@ -6,32 +6,32 @@ import issuetracker.be.domain.User;
 import issuetracker.be.utils.TimeLapseCalculator;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class IssueDetailResponse {
+public record IssueDetailResponse(
+    Long id,
+    String title,
+    String created_At,
+    User reporter,
+    Boolean is_open,
+    List<User> assignee,
+    List<Label> label,
+    MilestoneWithIssueCountResponse milestone,
+    List<CommentResponse> comment
 
-  private Long id;
-  private String title;
-  private String create_At;
-  private User reporter;
-  private Boolean is_open;
-  private List<Label> label;
-  private MilestoneWithIssueCountResponse milestone;
-  private List<CommentResponse> comment;
+) {
 
-
-  public IssueDetailResponse(Issue issue, List<Label> label,
+  public IssueDetailResponse(Issue issue, List<User> assignee ,List<Label> label,
       MilestoneWithIssueCountResponse milestone, User reporter, List<CommentResponse> comment) {
-    this.id = issue.getId();
-    this.title = issue.getTitle();
-    this.create_At = TimeLapseCalculator.between(issue.getCreated_at(), LocalDateTime.now());
-    this.label = label;
-    this.reporter = reporter;
-    this.is_open = issue.getIs_open();
-    this.milestone = milestone;
-    this.comment = comment;
+    this(
+        issue.getId(),
+        issue.getTitle(),
+        TimeLapseCalculator.between(issue.getCreated_at(), LocalDateTime.now()),
+        reporter,
+        issue.getIs_open(),
+        assignee,
+        label,
+        milestone,
+        comment
+    );
   }
 }
