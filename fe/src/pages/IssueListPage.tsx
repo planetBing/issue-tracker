@@ -21,7 +21,7 @@ const initialFilteringState = {
   isOpen: true,
   assignee: [],
   label: [],
-  milestone: [],
+  milestone: "",
   reporter: [],
   comment: [],
 };
@@ -30,7 +30,7 @@ const OnlyFilteringClosedState = {
   isOpen: false,
   assignee: [],
   label: [],
-  milestone: [],
+  milestone: "",
   reporter: [],
   comment: [],
 };
@@ -42,7 +42,11 @@ export default function IssueListPage() {
   const [filteringState, setFilteringState] = useState<FilteringState>(
     initialFilteringState
   );
-  const paramString = queryString.stringify(filteringState);
+  const adjustedFilteringState = {
+    ...filteringState,
+    milestone: filteringState.milestone === "" ? [] : filteringState.milestone,
+  };
+  const paramString = queryString.stringify(adjustedFilteringState);
   const {
     data: issueList,
     isLoading: isIssueListLoading,

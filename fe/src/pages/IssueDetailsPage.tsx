@@ -77,7 +77,7 @@ export default function IssueDetailsPage() {
               handleInputLabel={console.log}
               assigneeList={[]}
               selectedLabel={[]}
-              selectedMilestone={[]}
+              selectedMilestone={""}
             />
             <DeleteButton>
               <img src={trashIcon} alt="trash icon" />

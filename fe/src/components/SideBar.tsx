@@ -14,7 +14,7 @@ interface SideBarProps {
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
   selectedLabel: string[];
-  selectedMilestone: string[];
+  selectedMilestone: string;
 }
 
 interface PopupState {

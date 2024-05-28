@@ -39,7 +39,7 @@ export interface FilteringState {
   isOpen: boolean;
   assignee: string[];
   label: string[];
-  milestone: string[];
+  milestone: string;
   reporter: string[];
   comment: string[];
 }
