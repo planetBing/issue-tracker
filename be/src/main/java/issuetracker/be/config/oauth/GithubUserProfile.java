@@ -1,4 +1,4 @@
-package issuetracker.be.oauth;
+package issuetracker.be.config.oauth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

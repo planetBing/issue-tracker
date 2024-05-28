@@ -1,8 +1,7 @@
-package issuetracker.be.oauth;
+package issuetracker.be.config.oauth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 public class OAuthToken {

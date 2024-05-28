@@ -1,4 +1,4 @@
-package issuetracker.be.oauth;
+package issuetracker.be.config.oauth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
