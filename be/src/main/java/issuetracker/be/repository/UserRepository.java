@@ -12,5 +12,5 @@ public interface UserRepository extends CrudRepository<User, String> {
   @Override
   List<User> findAll();
 
-  Optional<User> findByNameEquals(String name);
+  Optional<User> findByNameEquals(String userName);
 }
