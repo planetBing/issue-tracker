@@ -2,6 +2,7 @@ package issuetracker.be.repository;
 
 import issuetracker.be.domain.Issue;
 import java.util.List;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,7 @@ public interface IssueRepository extends CrudRepository<Issue, Long> {
   @Query("UPDATE issue SET title = :title WHERE id = :id")
   void updateTitle(@Param("title") String title, @Param("id") Long id);
 
+  @Modifying
+  @Query("DELETE FROM issue WHERE id = :id")
+  void deleteIssue(@Param("id") Long id);
 }

@@ -67,6 +67,14 @@ public class IssueService {
     issueRepository.updateTitle(title, id);
   }
 
+  @Transactional
+  public void deleteIssue(Long id) {
+    labelService.deleteLabelRef(id);
+    userService.deleteAssigneeRef(id);
+    commentService.deleteIssue(id);
+    issueRepository.deleteIssue(id);
+  }
+
   public IssueListResponse getAllIssue() {
     List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
     List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
