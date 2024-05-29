@@ -130,6 +130,7 @@ export default function MilestoneListPage() {
             if (isEditMode && editMilestoneId === id) {
               return (
                 <MilestoneFormBox
+                  key={`editMiletone-${id}`}
                   milestoneForm={milestoneForm}
                   handleCancel={handleCancel}
                   handleInput={handleInput}
