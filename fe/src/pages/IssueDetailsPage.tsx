@@ -1,4 +1,3 @@
-import { issueDetails } from "./issueDetailsMockData";
 import { styled } from "styled-components";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
@@ -23,6 +22,7 @@ export default function IssueDetailsPage() {
     refetch: refetchIssueDetails,
     putData: updateIssueDetails,
   } = useApi<IssueDetails>(`/issue/${issueId}`);
+
   if (!issueDetails) return null;
   const {
     title,
@@ -89,7 +89,7 @@ export default function IssueDetailsPage() {
               );
             })}
             <CommentWriteArea
-              setComment={console.log}
+              handleInputComment={console.log}
               comment={""}
               height="160px"
             />

@@ -52,17 +52,6 @@ export interface Comment {
   contents: string;
 }
 
-export interface issueDetails {
-  id: number;
-  title: string;
-  create_At: string;
-  reporter: User;
-  label: Label;
-  milestone: Milestone;
-  comment: Comment[];
-  assignee: User[];
-}
-
 export interface LabelForm {
   name: string;
   background_color: string;
@@ -74,4 +63,16 @@ export interface MilestoneForm {
   name: string;
   description: string | null;
   end_date: string;
+}
+
+export interface IssueDetails {
+  id: number;
+  title: string;
+  created_At: string;
+  is_open: boolean;
+  reporter: User;
+  label: Label[];
+  milestone: Milestone;
+  comment: Comment[];
+  assignee: User[];
 }
