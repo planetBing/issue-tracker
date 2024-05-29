@@ -49,7 +49,7 @@ public class UserService {
 
   @Transactional
   public void updateAssignee(IssueAssigneeUpdateRequest issueAssigneeUpdateRequest) {
-    Long id = issueAssigneeUpdateRequest.id();
+    Long id = issueAssigneeUpdateRequest.issue_id();
     List<String> names = issueAssigneeUpdateRequest.name();
 
     if (names != null) {
