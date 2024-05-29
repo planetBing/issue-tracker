@@ -23,8 +23,6 @@ export default function useApi<T>(apiPath: string) {
         });
         if (method === "GET") {
           setData(response.data);
-        } else {
-          refetch();
         }
       } catch (error) {
         console.error(`Error with ${method} request:`, error);
