@@ -25,11 +25,10 @@ public class FileUploadController {
   private String bucket;
 
   @PostMapping("/upload")
-  public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+  public String uploadFile(@RequestParam("file") MultipartFile file) {
     if (file.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("파일이 포함되지 않았습니다.");
+      throw new IllegalArgumentException("파일이 포함되지 않았습니다.");
     }
-
     try {
       String fileName = file.getOriginalFilename();
       String fileKey = "img/" + fileName;
@@ -38,10 +37,10 @@ public class FileUploadController {
       metadata.setContentType(file.getContentType());
       metadata.setContentLength(file.getSize());
       amazonS3Client.putObject(bucket, fileKey, file.getInputStream(), metadata);
-      return ResponseEntity.ok(fileUrl);
+      return fileUrl;
     } catch (IOException e) {
       e.printStackTrace();
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      throw new RuntimeException("파일 업로드 중 오류가 발생했습니다.");
     }
   }
 
