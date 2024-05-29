@@ -1,6 +1,6 @@
 package issuetracker.be.controller;
 
-
+import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueAssigneeUpdateRequest;
 import issuetracker.be.dto.UserResponse;
 import issuetracker.be.service.UserService;
