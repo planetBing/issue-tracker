@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import paperclipSvg from "../assets/paperclip.svg";
 
@@ -12,18 +13,24 @@ export default function CommentWriteArea({
   comment,
   height,
 }: CommentAreaProps) {
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const handleFileAttachFocus = () => setIsFocused(true);
+  const handleFileAttachBlur = () => setIsFocused(false);
   return (
     <>
       <TextAreaWrapper>
         <StyledTextArea
           name="comment"
           placeholder="코멘트를 입력하세요"
+          value={comment ? comment : ""}
           onChange={handleInputComment}
           $height={height}
+          onFocus={handleFileAttachFocus}
+          onBlur={handleFileAttachBlur}
         ></StyledTextArea>
         {comment && <CharCount>띄어쓰기 포함 {comment?.length}자</CharCount>}
       </TextAreaWrapper>
-      <FileAttach>
+      <FileAttach isfocused={isFocused.toString()}>
         <label htmlFor="file">
           <FileAttachBtn>
             <img src={paperclipSvg} alt="paperclip" />
@@ -35,6 +42,7 @@ export default function CommentWriteArea({
     </>
   );
 }
+
 const TextAreaWrapper = styled.div`
   position: relative;
   margin-bottom: -3px;
@@ -63,17 +71,18 @@ const CharCount = styled.div`
   margin-top: 4px;
   position: absolute;
   width: 100%;
-  top: 310px;
+  bottom: 50px;
   padding-right: 25px;
 `;
 
-const FileAttach = styled.div`
+const FileAttach = styled.div<{ isfocused: string }>`
   display: flex;
   align-items: center;
   height: 52px;
   border: none;
   padding: 0 16px;
-  background-color: rgba(239, 240, 246, 1);
+  background-color: ${({ isfocused }) =>
+    isfocused === "true" ? "white" : "rgba(239, 240, 246, 1)"};
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 

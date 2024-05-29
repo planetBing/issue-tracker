@@ -7,7 +7,7 @@ export default function useApi<T>(apiPath: string) {
 
   const fetchData = useCallback(
     async (
-      method: "GET" | "PUT" | "POST" | "DELETE",
+      method: "GET" | "PUT" | "POST" | "DELETE" | "PATCH",
       path: string,
       body?: any
     ) => {
@@ -55,5 +55,9 @@ export default function useApi<T>(apiPath: string) {
     await fetchData("DELETE", deletePath, body);
   };
 
-  return { data, isLoading, refetch, putData, postData, deleteData };
+  const patchData = async (patchPath: string, body: any) => {
+    await fetchData("PATCH", patchPath, body);
+  };
+
+  return { data, isLoading, refetch, putData, postData, deleteData, patchData };
 }

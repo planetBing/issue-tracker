@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
@@ -8,6 +9,7 @@ import trashIcon from "../assets/trash.svg";
 import { useParams } from "react-router-dom";
 import useApi from "../hooks/api/useApi";
 import { IssueDetails } from "../Model/types";
+import { useNavigate } from "react-router-dom";
 
 import PageHeader from "../components/PageHeader";
 import WrittenComment from "../components/WrittenComment";
@@ -20,8 +22,13 @@ export default function IssueDetailsPage() {
   const {
     data: issueDetails,
     refetch: refetchIssueDetails,
-    putData: updateIssueDetails,
+    putData,
+    postData,
+    patchData,
+    deleteData,
   } = useApi<IssueDetails>(`/issue/${issueId}`);
+  const [commentText, setCommentText] = useState<string>("");
+  const navigte = useNavigate();
 
   if (!issueDetails) return null;
   const {
@@ -38,8 +45,77 @@ export default function IssueDetailsPage() {
 
   const openOrCloseIssue = async () => {
     const putPath = is_open ? "/issue/close" : "/issue/open";
-    await updateIssueDetails(`${putPath}`, { id: [id] });
+    await putData(`${putPath}`, { id: [id] });
     refetchIssueDetails();
+  };
+
+  const handleInputComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCommentText(e.target.value);
+  };
+
+  const handleSubmitComment = async () => {
+    const commentForm = {
+      reporter: currentUser?.name,
+      contents: commentText,
+      issue_id: id,
+    };
+    await postData("/comment", commentForm);
+    setCommentText("");
+    refetchIssueDetails();
+  };
+
+  const handleInputAssignee = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    const selectedAssignee = assignee ? assignee.map((item) => item.name) : [];
+    if (selectedAssignee.includes(value)) {
+      const newSelectedLabel = selectedAssignee.filter(
+        (name) => name !== value
+      );
+      const bodyValue = { id: id, name: newSelectedLabel };
+      console.log(bodyValue);
+      await patchData("/issue/assignee", bodyValue);
+    } else {
+      const newSelectedAssignee = [...selectedAssignee, value];
+      const bodyValue = { id: id, name: newSelectedAssignee };
+      console.log(bodyValue);
+      await patchData("/issue/assignee", bodyValue);
+    }
+    refetchIssueDetails();
+  };
+
+  const handleInputLabel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    const selectedLabel = label ? label.map((item) => item.id) : [];
+    if (selectedLabel.includes(value)) {
+      const newSelectedLabel = selectedLabel.filter(
+        (labelId) => labelId !== value
+      );
+      const bodyValue = { issue_id: id, label_id: newSelectedLabel };
+      console.log(bodyValue);
+      await patchData("/issue/label", bodyValue);
+    } else {
+      const newSelectedLabel = [...selectedLabel, value];
+      const bodyValue = { issue_id: id, label_id: newSelectedLabel };
+      console.log(bodyValue);
+      await patchData("/issue/label", bodyValue);
+    }
+    refetchIssueDetails();
+  };
+
+  const handleInputMilestone = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = { issue_id: id, milestone_id: Number(e.target.value) };
+    console.log(value);
+    await patchData(`/issue/milestoneId`, value);
+    refetchIssueDetails();
+  };
+
+  const handleDeleteIssue = async () => {
+    await deleteData(`/issue/${id.toString()}`);
+    navigte("/");
   };
 
   return (
@@ -89,19 +165,21 @@ export default function IssueDetailsPage() {
               );
             })}
             <CommentWriteArea
-              handleInputComment={console.log}
-              comment={""}
+              handleInputComment={handleInputComment}
+              comment={commentText}
               height="160px"
             />
             <CommentDoneButtonContainer>
-              <CommentDoneButton>+ 코멘트 작성</CommentDoneButton>
+              <CommentDoneButton onClick={() => handleSubmitComment()}>
+                + 코멘트 작성
+              </CommentDoneButton>
             </CommentDoneButtonContainer>
           </CommentContainer>
           <CommonS.ColumnFlex>
             <SideBar
-              handleInputAssignee={console.log}
-              handleInputMilestone={console.log}
-              handleInputLabel={console.log}
+              handleInputAssignee={handleInputAssignee}
+              handleInputMilestone={handleInputMilestone}
+              handleInputLabel={handleInputLabel}
               assigneeList={
                 assignee ? assignee.map((userObj) => userObj.name) : []
               }
@@ -110,7 +188,7 @@ export default function IssueDetailsPage() {
               }
               selectedMilestone={milestone ? milestone.id.toString() : ""}
             />
-            <DeleteButton>
+            <DeleteButton onClick={() => handleDeleteIssue()}>
               <img src={trashIcon} alt="trash icon" />
               이슈 삭제
             </DeleteButton>
@@ -233,4 +311,5 @@ const DeleteButton = styled.div`
   font-size: 12px;
   padding: 0 16px;
   margin-top: 24px;
+  cursor: pointer;
 `;
