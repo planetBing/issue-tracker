@@ -2,11 +2,9 @@ package issuetracker.be.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
 @Getter
-@ToString
 @Builder
 public class Label {
 

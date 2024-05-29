@@ -74,4 +74,9 @@ public class CommentService {
   public List<Comment> getComments(String reporter) {
     return commentRepository.findByReporter(reporter);
   }
+
+  @Transactional
+  public void deleteIssue(Long issueId) {
+    commentRepository.deleteIssue(issueId);
+  }
 }

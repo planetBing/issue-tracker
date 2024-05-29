@@ -1,6 +1,7 @@
 package issuetracker.be.controller;
 
 import issuetracker.be.domain.Label;
+import issuetracker.be.dto.IssueLabelUpdateRequest;
 import issuetracker.be.dto.LabelSaveRequest;
 import issuetracker.be.dto.LabelUpdateRequest;
 import issuetracker.be.service.LabelService;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,5 +46,10 @@ public class LabelController {
   @DeleteMapping("/label/{id}")
   public void delete(@PathVariable Long id) {
     labelService.delete(id);
+  }
+
+  @PatchMapping("/issue/label")
+  public void updateAssignee(@RequestBody IssueLabelUpdateRequest issueLabelUpdateRequest) {
+    labelService.updateLabel(issueLabelUpdateRequest);
   }
 }
