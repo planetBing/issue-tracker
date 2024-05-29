@@ -57,7 +57,7 @@ jobs:
         
       - name: Pull new image and Run
         run: |
-          cd /home/ubuntu/issue6/be/build/libs
+          cd issue6/be/build/libs
           pwd
           sudo docker pull seondays/issue-tracker:latest
           sudo docker-compose down
