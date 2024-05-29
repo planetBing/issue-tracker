@@ -43,6 +43,7 @@ jobs:
 
       - name: Docker image Processing
         run: |
+          cd ./be
           docker build -t seondays/issue-tracker:latest .
           docker push seondays/issue-tracker:latest
 
