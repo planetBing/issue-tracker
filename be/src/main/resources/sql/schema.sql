@@ -30,9 +30,7 @@ CREATE TABLE issue
     reporter     VARCHAR(255) NOT NULL,
     created_at   DATETIME     NOT NULL,
     is_open      TINYINT(1) default 1 NOT NULL,
-    label_id     BIGINT,
     foreign key (milestone_id) references milestone (id),
-    foreign key (label_id) references label (id),
     foreign key (reporter) references user (name)
 );
 
@@ -54,7 +52,7 @@ CREATE TABLE issue_assignee
     PRIMARY KEY (issue_id, user_name),
     foreign key (issue_id) references issue (id),
     foreign key (user_name) references user (name)
-)
+);
 
 CREATE TABLE issue_label
 (
@@ -63,4 +61,4 @@ CREATE TABLE issue_label
     PRIMARY KEY (issue_id, label_id),
     foreign key (issue_id) references issue (id),
     foreign key (label_id) references label (id)
-)
+);
