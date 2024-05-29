@@ -41,6 +41,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.s3_access_key }}
+          aws-secret-access-key: ${{ secrets.s3_secret_key }}
+          aws-region: ${{ secrets.s3_region }}
+        
       - name: Docker image Processing
         run: |
           cd ./be
