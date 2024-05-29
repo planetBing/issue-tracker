@@ -4,8 +4,10 @@ import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueAssigneeUpdateRequest;
 import issuetracker.be.repository.AssigneeRefRepository;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,11 @@ public class UserService {
     this.assigneeRefRepository = assigneeRefRepository;
   }
 
-  public List<User> getAllUsers() {
-    return userRepository.findAll();
+  public List<UserResponse> getAllUsers() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+        .map(UserResponse::toDto)
+        .collect(Collectors.toList());
   }
 
   public User getUser(String name) {

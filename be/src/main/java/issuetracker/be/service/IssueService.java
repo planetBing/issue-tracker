@@ -14,6 +14,8 @@ import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.IssueTitleUpdateRequest;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.UserResponse;
+import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
@@ -122,8 +124,7 @@ public class IssueService {
 
       User reporter = userService.getUser(issue.getReporter());
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
-          reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, UserResponse.toDto(reporter));
       result.add(issueShowResponse);
     }
     return result;
@@ -161,7 +162,7 @@ public class IssueService {
   @Transactional
   public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
     openStatusChangeRequest.id().stream()
-        .map(i -> issueRepository.findById(i).orElseThrow())
+        .map(this::getIssue)
         .forEach(i -> {
           i.setIs_open(status);
           issueRepository.save(i);
@@ -170,7 +171,7 @@ public class IssueService {
 
   private Issue getIssue(Long issueId) {
     return issueRepository.findById(issueId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 이슈입니다."));
   }
 
   private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {

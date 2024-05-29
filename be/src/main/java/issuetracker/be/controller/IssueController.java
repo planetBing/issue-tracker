@@ -54,12 +54,12 @@ public class IssueController {
     return issueService.getFilteredIssue(filterRequest);
   }
 
-  @PutMapping("/issue/open")
+  @PatchMapping("/issue/open")
   public void openIssues(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
     issueService.changeIssueStatus(openStatusChangeRequest, true);
   }
 
-  @PutMapping("/issue/close")
+  @PatchMapping("/issue/close")
   public void closeIssue(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
     issueService.changeIssueStatus(openStatusChangeRequest, false);
   }
