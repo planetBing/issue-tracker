@@ -50,9 +50,9 @@ jobs:
       - name: SSH Processing
         uses: appleboy/ssh-action@v0.1.6
         with: 
-          key: ${{secrets.GROMIT_KEY}}
-          host: ${{secrets.GROMIT_EC2_HOST}}
-          username: ${{secrets.GROMIT_USER_NAME}}
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USER}}
           port: ${{secrets.SSH_PORT}}
         
       - name: Pull new image and Run
