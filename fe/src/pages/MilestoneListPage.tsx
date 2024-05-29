@@ -105,6 +105,7 @@ export default function MilestoneListPage() {
             handleCancel={handleCancel}
             handleInput={handleInput}
             handleSubmit={handleSubmit}
+            isCreation={true}
           />
         )}
         <S.IssueTableTop>
@@ -133,6 +134,7 @@ export default function MilestoneListPage() {
                   handleCancel={handleCancel}
                   handleInput={handleInput}
                   handleSubmit={handleSubmit}
+                  isCreation={false}
                 />
               );
             }
