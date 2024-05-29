@@ -126,7 +126,7 @@ public class IssueService {
 
       UserResponse reporter = userService.getUser(issue.getReporter());
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, UserResponse.toDto(reporter));
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
       result.add(issueShowResponse);
     }
     return result;
