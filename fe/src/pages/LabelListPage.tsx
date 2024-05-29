@@ -114,6 +114,7 @@ export default function LabelListPage() {
             inputHandler={inputHandlers}
             handleCancel={() => setIsCreationMode(false)}
             handleSubmit={handleSubmit}
+            isCreation={true}
           />
         )}
         <S.IssueTableTop>
@@ -130,6 +131,7 @@ export default function LabelListPage() {
                 inputHandler={inputHandlers}
                 handleCancel={handleCancel}
                 handleSubmit={handleSubmit}
+                isCreation={false}
               />
             );
           }
