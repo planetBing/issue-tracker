@@ -4,6 +4,7 @@ import * as CommonS from "../styles/common";
 import { Comment } from "../Model/types";
 import smileIcon from "../assets/smile.svg";
 import greyEditIcon from "../assets/greyEdit.svg";
+import { marked } from "marked";
 
 interface WrittenCommentProps {
   commentObj: Comment;
@@ -15,6 +16,8 @@ export default function WrittenComment({
   issueReporter,
 }: WrittenCommentProps) {
   const { id, reporter: commentReporter, contents, create_at } = commentObj;
+  const convertedHtml = marked.parse(contents) as string;
+
   return (
     <WrittenCommentBox key={id}>
       <CommentHeader>
@@ -39,7 +42,7 @@ export default function WrittenComment({
           </div>
         </CommentButtonBox>
       </CommentHeader>
-      <CommentBody>{contents}</CommentBody>
+      <CommentBody dangerouslySetInnerHTML={{ __html: convertedHtml }} />
     </WrittenCommentBox>
   );
 }
@@ -73,6 +76,11 @@ const CommentBody = styled.div`
   white-space: pre-line;
   font-size: 16px;
   line-height: 24px;
+
+  & img {
+    max-width: 50%;
+    height: auto;
+  }
 `;
 
 const UserInfoAndTimeStamp = styled.div`
