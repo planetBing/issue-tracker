@@ -58,4 +58,9 @@ public class UserService {
       System.out.println("Deleted all assignees for issue id: " + id);
     }
   }
+
+  @Transactional
+  public void deleteAssigneeRef(Long issueId) {
+    assigneeRefRepository.deleteAllAssignee(issueId);
+  }
 }
