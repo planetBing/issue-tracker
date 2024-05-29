@@ -17,6 +17,13 @@ jobs:
           java-version: '17'
           distribution: 'oracle'
 
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
       - name: create properties
         run: touch ./be/src/main/resources/application-prod.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./be/src/main/resources/application-prod.properties
@@ -41,12 +48,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.s3_access_key }}
-          aws-secret-access-key: ${{ secrets.s3_secret_key }}
-          aws-region: ${{ secrets.s3_region }}
+      - name: Deploy to AWS
+        env:
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         
       - name: Docker image Processing
         run: |
