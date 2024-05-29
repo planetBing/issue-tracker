@@ -17,6 +17,7 @@ import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.dto.OpenStatusChangeRequest;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import java.time.LocalDateTime;
@@ -102,13 +103,14 @@ public class IssueService {
     Issue issue = getIssue(issueId);
     List<Label> label = getLabels(issue);
 
-    List<User> assignee = getAssignees(issue);
+    List<UserResponse> assignees = getAssignees(issue);
+
 
     MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-    User reporter = userService.getUser(issue.getReporter());
+    UserResponse reporter = userService.getUser(issue.getReporter());
 
-    return new IssueDetailResponse(issue, assignee, label, milestone, reporter, commentResponse);
+    return new IssueDetailResponse(issue, assignees, label, milestone, reporter, commentResponse);
   }
 
   public boolean isIssueExistBy(Long milestoneId) {
@@ -122,7 +124,7 @@ public class IssueService {
 
       MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-      User reporter = userService.getUser(issue.getReporter());
+      UserResponse reporter = userService.getUser(issue.getReporter());
 
       IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, UserResponse.toDto(reporter));
       result.add(issueShowResponse);
@@ -188,7 +190,7 @@ public class IssueService {
         .collect(Collectors.toList());
   }
 
-  private List<User> getAssignees(Issue issue) {
+  private List<UserResponse> getAssignees(Issue issue) {
     return issue.getAssignees().isEmpty() ?
         null : userService.findByIssueId(issue.getId());
   }
