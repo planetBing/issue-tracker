@@ -58,7 +58,6 @@ jobs:
       - name: Pull new image and Run
         run: |
           sudo docker pull seondays/issue-tracker:latest
-          cd /home/ubuntu
           pwd
           sudo docker-compose down
           sudo docker-compose -f up -d
