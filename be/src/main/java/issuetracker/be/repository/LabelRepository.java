@@ -10,5 +10,4 @@ public interface LabelRepository extends CrudRepository<Label, Long> {
 
   @Override
   List<Label> findAll();
-
 }
