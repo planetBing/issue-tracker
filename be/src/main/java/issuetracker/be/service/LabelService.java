@@ -55,8 +55,8 @@ public class LabelService {
 
   @Transactional
   public void delete(Long labelId) {
-    labelRefRepository.deleteById(labelId);
-    labelRepository.deleteById(labelId);
+    labelRefRepository.deleteByLabel(labelId);
+    labelRepository.deleteLabel(labelId);
   }
 
   @Transactional
