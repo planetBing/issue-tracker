@@ -46,16 +46,12 @@ public class UserService {
   public void updateAssignee(IssueAssigneeUpdateRequest issueAssigneeUpdateRequest) {
     Long id = issueAssigneeUpdateRequest.id();
     List<String> names = issueAssigneeUpdateRequest.name();
-    System.out.println("names = " + names);
 
     if (names != null) {
       assigneeRefRepository.deleteAllAssignee(id);
-      System.out.println("Deleted all assignees for issue id: " + id);
       names.forEach(name -> assigneeRefRepository.addAssignee(id, name));
-      System.out.println("수정완");
     } else {
       assigneeRefRepository.deleteAllAssignee(id);
-      System.out.println("Deleted all assignees for issue id: " + id);
     }
   }
 
