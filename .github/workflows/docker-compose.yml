@@ -17,6 +17,13 @@ jobs:
           java-version: '17'
           distribution: 'oracle'
 
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
       - name: create properties
         run: touch ./be/src/main/resources/application-prod.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./be/src/main/resources/application-prod.properties
@@ -41,6 +48,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Deploy to AWS
+        env:
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+        
       - name: Docker image Processing
         run: |
           cd ./be
@@ -50,17 +65,15 @@ jobs:
       - name: SSH Processing
         uses: appleboy/ssh-action@v0.1.6
         with: 
-          key: ${{secrets.GROMIT_KEY}}
-          host: ${{secrets.GROMIT_EC2_HOST}}
-          username: ${{secrets.GROMIT_USER_NAME}}
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USER}}
           port: ${{secrets.SSH_PORT}}
-        
-      - name: Pull new image and Run
-        run: |
-          sudo docker pull seondays/issue-tracker:latest
-          pwd
-          sudo docker-compose down
-          sudo docker-compose -f up -d
+          script: |
+            cd issue6/be/build/libs
+            sudo docker pull seondays/issue-tracker:latest
+            sudo docker-compose down
+            sudo docker-compose up -d
     
 
     
