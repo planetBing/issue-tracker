@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { styled } from "styled-components";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import editIcon from "../assets/edit.svg";
+import whiteEditIcon from "../assets/whiteEdit.svg";
 import archiveIcon from "../assets/archive.svg";
 import alertIcon from "../assets/alertCircle.svg";
 import trashIcon from "../assets/trash.svg";
@@ -26,7 +27,9 @@ export default function IssueDetailsPage() {
     patchData,
     deleteData,
   } = useApi<IssueDetails>(`/issue/${issueId}`);
+  const [isTitleEditMode, setIsTitleEditMode] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const navigte = useNavigate();
 
   if (!issueDetails) return null;
@@ -112,26 +115,59 @@ export default function IssueDetailsPage() {
     navigte("/");
   };
 
+  const handleTitleEdit = async () => {
+    if (titleInputRef.current) {
+      const newTitle = titleInputRef.current.value;
+      await patchData(`/issue/title`, { id: id, title: newTitle });
+      setIsTitleEditMode(false);
+      refetchIssueDetails();
+    }
+  };
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
       <CommonS.Wrapper>
         <PostInfo>
           <IssueTitleBox>
-            <IssueTitle>
-              {title}
-              <span>#{id}</span>
-            </IssueTitle>
-            <IssueButtonsBox>
-              <TitleEditBtn>
-                <img src={editIcon} alt="edit icon" />
-                제목 편집
-              </TitleEditBtn>
-              <OpenIssueBtn onClick={() => openOrCloseIssue()}>
-                <img src={archiveIcon} alt="archive icon" />
-                {is_open ? "이슈 닫기" : "이슈 열기"}
-              </OpenIssueBtn>
-            </IssueButtonsBox>
+            {isTitleEditMode ? (
+              <>
+                <InputContainer $width={"78%"}>
+                  <label>제목</label>
+                  <input
+                    ref={titleInputRef}
+                    placeholder="마일스톤의 이름을 입력하세요"
+                    defaultValue={title}
+                  />
+                </InputContainer>
+                <IssueButtonsBox>
+                  <TitleEditBtn onClick={() => setIsTitleEditMode(false)}>
+                    X 편집 취소
+                  </TitleEditBtn>
+                  <CommentDoneButton onClick={handleTitleEdit}>
+                    <img src={whiteEditIcon} alt="edit icon" />
+                    편집 완료
+                  </CommentDoneButton>
+                </IssueButtonsBox>
+              </>
+            ) : (
+              <>
+                <IssueTitle>
+                  {title}
+                  <span>#{id}</span>
+                </IssueTitle>
+                <IssueButtonsBox>
+                  <TitleEditBtn onClick={() => setIsTitleEditMode(true)}>
+                    <img src={editIcon} alt="edit icon" />
+                    제목 편집
+                  </TitleEditBtn>
+                  <OpenIssueBtn onClick={() => openOrCloseIssue()}>
+                    <img src={archiveIcon} alt="archive icon" />
+                    {is_open ? "이슈 닫기" : "이슈 열기"}
+                  </OpenIssueBtn>
+                </IssueButtonsBox>
+              </>
+            )}
           </IssueTitleBox>
           <StatesInfoBox>
             <InfoTag>
@@ -295,6 +331,9 @@ const CommentDoneButton = styled.button`
   padding: 0 16px;
   border: none;
   border-radius: 12px;
+  & img {
+    margin-right: 8px;
+  }
 `;
 
 const DeleteButton = styled.div`
@@ -306,4 +345,26 @@ const DeleteButton = styled.div`
   padding: 0 16px;
   margin-top: 24px;
   cursor: pointer;
+`;
+
+const InputContainer = styled.div<{ $width: string }>`
+  display: flex;
+  align-items: center;
+  width: ${(props) => props.$width};
+  height: 40px;
+  background-color: rgba(239, 240, 246, 1);
+  border-radius: 12px;
+  padding: 0 15px;
+
+  & label {
+    color: rgba(110, 113, 145, 1);
+    font-size: 12px;
+    width: 75px;
+  }
+
+  & input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+  }
 `;
