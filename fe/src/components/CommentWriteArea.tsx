@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import paperclipSvg from "../assets/paperclip.svg";
+import axios from "axios";
 
 interface CommentAreaProps {
   handleInputComment: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -14,8 +15,41 @@ export default function CommentWriteArea({
   height,
 }: CommentAreaProps) {
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}/files/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const imageUrl = response.data;
+      const markdownImage = `![alt text](${imageUrl})`;
+
+      handleInputComment({
+        target: {
+          name: "comment",
+          value: comment ? comment + "\n" + markdownImage : markdownImage,
+        },
+      } as React.ChangeEvent<HTMLTextAreaElement>);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const handleFileAttachFocus = () => setIsFocused(true);
   const handleFileAttachBlur = () => setIsFocused(false);
+
   return (
     <>
       <TextAreaWrapper>
@@ -37,7 +71,7 @@ export default function CommentWriteArea({
             <div>파일 첨부하기</div>
           </FileAttachBtn>
         </label>
-        <input type="file" id="file" />
+        <input type="file" id="file" onChange={handleFileChange} />
       </FileAttach>
     </>
   );
