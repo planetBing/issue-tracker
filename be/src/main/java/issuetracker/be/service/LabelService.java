@@ -1,6 +1,7 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.Label;
+import issuetracker.be.dto.IssueLabelUpdateRequest;
 import issuetracker.be.dto.LabelSaveRequest;
 import issuetracker.be.dto.LabelUpdateRequest;
 import issuetracker.be.repository.LabelRefRepository;
@@ -66,5 +67,18 @@ public class LabelService {
   public Label findById(Long labelId) {
     return labelRepository.findById(labelId)
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 라벨입니다."));
+  }
+
+  @Transactional
+  public void updateLabel(IssueLabelUpdateRequest issueLabelUpdateRequest) {
+    Long id = issueLabelUpdateRequest.issue_id();
+    List<Long> labels = issueLabelUpdateRequest.label_id();
+
+    if (labels != null) {
+      deleteLabelRef(id);
+      labels.forEach(label -> labelRefRepository.addLabelRef(id, label));
+    } else {
+      deleteLabelRef(id);
+    }
   }
 }
