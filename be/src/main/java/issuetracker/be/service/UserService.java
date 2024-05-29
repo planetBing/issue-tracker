@@ -1,8 +1,10 @@
 package issuetracker.be.service;
 
 import issuetracker.be.domain.User;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,10 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public List<User> getAllUsers() {
-    return userRepository.findAll();
+  public List<UserResponse> getAllUsers() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+        .map(UserResponse::toDto)
+        .collect(Collectors.toList());
   }
 }
