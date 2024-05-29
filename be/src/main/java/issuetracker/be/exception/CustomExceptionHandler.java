@@ -15,14 +15,14 @@ public class CustomExceptionHandler {
       NoSuchElementException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ExceptionResponse handleBusinessLogicException(Exception e) {
-    log.error("{} : {}", e.getClass().getName(), e.getMessage());
+    log.error("ERROR : {}", e.getStackTrace()[0]);
     return new ExceptionResponse(e.getMessage());
   }
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ExceptionResponse handleGlobalException(Exception e) {
-    log.error("{} : {}", e.getClass().getName(), e.getMessage());
-    return new ExceptionResponse("예상하지 못한 오류입니다. 다시 시도해 주세요.");
+    log.error("ERROR : {}", e.getStackTrace()[0]);
+    return new ExceptionResponse(e.getMessage() + " : 예상하지 못한 오류입니다. 다시 시도해 주세요.");
   }
 }
