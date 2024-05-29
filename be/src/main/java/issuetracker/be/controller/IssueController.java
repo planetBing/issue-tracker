@@ -3,6 +3,7 @@ package issuetracker.be.controller;
 import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
+import issuetracker.be.dto.IssueMilestoneUpdateRequest;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueTitleUpdateRequest;
 import issuetracker.be.dto.OpenStatusChangeRequest;
@@ -76,5 +77,10 @@ public class IssueController {
   @DeleteMapping("/issue/{issueId}")
   public void deleteIssue(@PathVariable Long issueId) {
     issueService.deleteIssue(issueId);
+  }
+
+  @PatchMapping("/issue/milestoneId")
+  public void issueTitleUpdate(@RequestBody IssueMilestoneUpdateRequest issueMilestoneUpdateRequest) {
+    issueService.updateMilestoneId(issueMilestoneUpdateRequest);
   }
 }

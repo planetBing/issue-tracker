@@ -9,6 +9,7 @@ import issuetracker.be.dto.CommentResponse;
 import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
+import issuetracker.be.dto.IssueMilestoneUpdateRequest;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.IssueTitleUpdateRequest;
@@ -65,6 +66,17 @@ public class IssueService {
     String title = issueTitleUpdateRequest.title();
     Long id = issueTitleUpdateRequest.id();
     issueRepository.updateTitle(title, id);
+  }
+
+  @Transactional
+  public void updateMilestoneId(IssueMilestoneUpdateRequest issueMilestoneUpdateRequest){
+    Long id = issueMilestoneUpdateRequest.issue_id();
+    Long milestoneId = issueMilestoneUpdateRequest.milestone_id();
+    if(milestoneId != null) {
+      issueRepository.updateMilestoneId(milestoneId, id);
+    } else {
+      issueRepository.deleteMilestoneId(id);
+    }
   }
 
   @Transactional
