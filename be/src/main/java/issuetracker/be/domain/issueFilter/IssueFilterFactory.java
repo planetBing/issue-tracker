@@ -14,25 +14,27 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class IssueFilterFactory {
-  private final List<IssueFilter> issueFilters = new ArrayList<>();
 
   public IssueFilters createIssueFilters(String assignee, String label, String milestone,
       String reporter, List<Comment> comments) {
-    addFilter(assignee, IssueAssigneeFilter::new);
-    addFilter(label, IssueLabelFilter::new);
-    addFilter(milestone, IssueMilestoneFilter::new);
-    addFilter(reporter, IssueReporterFilter::new);
-    addFilter(comments, IssueCommentFilter::new);
+    List<IssueFilter> issueFilters = new ArrayList<>();
+    addFilter(assignee, IssueAssigneeFilter::new, issueFilters);
+    addFilter(label, IssueLabelFilter::new, issueFilters);
+    addFilter(milestone, IssueMilestoneFilter::new, issueFilters);
+    addFilter(reporter, IssueReporterFilter::new, issueFilters);
+    addFilter(comments, IssueCommentFilter::new, issueFilters);
     return new IssueFilters(issueFilters);
   }
 
-  private void addFilter(String value, Function<String, IssueFilter> valueToIssueFilter) {
+  private void addFilter(String value, Function<String, IssueFilter> valueToIssueFilter,
+      List<IssueFilter> issueFilters) {
     Optional.ofNullable(value)
         .map(valueToIssueFilter)
         .ifPresent(issueFilters::add);
   }
 
-  private void addFilter(List<Comment> comments, Function<List<Comment>, IssueFilter> commentToIssueFilter) {
+  private void addFilter(List<Comment> comments, Function<List<Comment>, IssueFilter> commentToIssueFilter,
+      List<IssueFilter> issueFilters) {
     if (!comments.isEmpty()) {
       issueFilters.add(commentToIssueFilter.apply(comments));
     }
