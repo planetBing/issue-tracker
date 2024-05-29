@@ -3,6 +3,7 @@ package issuetracker.be.controller;
 import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
+import issuetracker.be.dto.IssueMilestoneUpdateRequest;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueTitleUpdateRequest;
 import issuetracker.be.dto.OpenStatusChangeRequest;
@@ -10,6 +11,7 @@ import issuetracker.be.service.IssueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -70,5 +72,15 @@ public class IssueController {
   @PatchMapping("/issue/title")
   public void issueTitleUpdate(@RequestBody IssueTitleUpdateRequest issueTitleUpdateRequest) {
     issueService.updateTitle(issueTitleUpdateRequest);
+  }
+
+  @DeleteMapping("/issue/{issueId}")
+  public void deleteIssue(@PathVariable Long issueId) {
+    issueService.deleteIssue(issueId);
+  }
+
+  @PatchMapping("/issue/milestoneId")
+  public void issueTitleUpdate(@RequestBody IssueMilestoneUpdateRequest issueMilestoneUpdateRequest) {
+    issueService.updateMilestoneId(issueMilestoneUpdateRequest);
   }
 }
