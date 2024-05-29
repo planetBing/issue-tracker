@@ -101,4 +101,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Ignore application.yml
+application.yml
+
+## Ignore application.properties
+#application.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows
