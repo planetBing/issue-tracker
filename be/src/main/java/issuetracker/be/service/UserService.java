@@ -3,6 +3,7 @@ package issuetracker.be.service;
 import issuetracker.be.domain.AssigneeRef;
 import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueAssigneeUpdateRequest;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.AssigneeRefRepository;
 import issuetracker.be.repository.UserRepository;
 import java.util.List;
@@ -25,16 +26,20 @@ public class UserService {
     this.assigneeRefRepository = assigneeRefRepository;
   }
 
-  public List<User> getAllUsers() {
-    return userRepository.findAll();
+  public List<UserResponse> getAllUsers() {
+    List<User> users = userRepository.findAll();
+    return users.stream()
+        .map(user -> new UserResponse(user.getId(), user.getImage_path()))
+        .collect(Collectors.toList());
   }
 
-  public User getUser(String name) {
+  public UserResponse getUser(String name) {
     return userRepository.findByNameEquals(name)
+        .map(user -> new UserResponse(user.getId(), user.getImage_path()))
         .orElseThrow(() -> new NoSuchElementException("존재하지 않는 작성자입니다."));
   }
 
-  public List<User> findByIssueId(Long issueId) {
+  public List<UserResponse> findByIssueId(Long issueId) {
     List<AssigneeRef> allUser = assigneeRefRepository.findAllUser(issueId);
     return allUser.stream()
         .map(assigneeRef -> getUser(assigneeRef.getUser_name()))

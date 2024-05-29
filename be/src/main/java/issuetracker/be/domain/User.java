@@ -19,6 +19,10 @@ public class User implements Persistable<String> {
     return name;
   }
 
+  public String getImage_path() {
+    return image_path;
+  }
+
   @Override
   public boolean isNew() {
     return isNew;

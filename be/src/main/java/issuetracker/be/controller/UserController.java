@@ -1,8 +1,8 @@
 package issuetracker.be.controller;
 
 
-import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueAssigneeUpdateRequest;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class UserController {
   }
 
   @GetMapping("/user")
-  public List<User> showAssignees() {
+  public List<UserResponse> showAssignees() {
     return userService.getAllUsers();
   }
 
