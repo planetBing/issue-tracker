@@ -2,12 +2,10 @@ package issuetracker.be.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("issue_assignee")
 @Getter
-@ToString
 @EqualsAndHashCode(of = "user_name")
 public class AssigneeRef {
   private Long issue_id;

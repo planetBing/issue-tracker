@@ -12,6 +12,8 @@ import issuetracker.be.dto.IssueListResponse;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.UserResponse;
+import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
@@ -91,8 +93,7 @@ public class IssueService {
 
       User reporter = userService.getUser(issue.getReporter());
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
-          reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, UserResponse.toDto(reporter));
       result.add(issueShowResponse);
     }
     return result;
