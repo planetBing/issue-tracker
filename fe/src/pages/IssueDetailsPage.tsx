@@ -22,7 +22,6 @@ export default function IssueDetailsPage() {
   const {
     data: issueDetails,
     refetch: refetchIssueDetails,
-    putData,
     postData,
     patchData,
     deleteData,
@@ -45,7 +44,7 @@ export default function IssueDetailsPage() {
 
   const openOrCloseIssue = async () => {
     const putPath = is_open ? "/issue/close" : "/issue/open";
-    await putData(`${putPath}`, { id: [id] });
+    await patchData(`${putPath}`, { id: [id] });
     refetchIssueDetails();
   };
 
@@ -74,12 +73,10 @@ export default function IssueDetailsPage() {
         (name) => name !== value
       );
       const bodyValue = { id: id, name: newSelectedLabel };
-      console.log(bodyValue);
       await patchData("/issue/assignee", bodyValue);
     } else {
       const newSelectedAssignee = [...selectedAssignee, value];
       const bodyValue = { id: id, name: newSelectedAssignee };
-      console.log(bodyValue);
       await patchData("/issue/assignee", bodyValue);
     }
     refetchIssueDetails();
@@ -93,12 +90,10 @@ export default function IssueDetailsPage() {
         (labelId) => labelId !== value
       );
       const bodyValue = { issue_id: id, label_id: newSelectedLabel };
-      console.log(bodyValue);
       await patchData("/issue/label", bodyValue);
     } else {
       const newSelectedLabel = [...selectedLabel, value];
       const bodyValue = { issue_id: id, label_id: newSelectedLabel };
-      console.log(bodyValue);
       await patchData("/issue/label", bodyValue);
     }
     refetchIssueDetails();
@@ -108,7 +103,6 @@ export default function IssueDetailsPage() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = { issue_id: id, milestone_id: Number(e.target.value) };
-    console.log(value);
     await patchData(`/issue/milestoneId`, value);
     refetchIssueDetails();
   };

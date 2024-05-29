@@ -51,7 +51,7 @@ export default function IssueListPage() {
     data: issueList,
     isLoading: isIssueListLoading,
     refetch: refetchIssueList,
-    putData: updateIssueStatus,
+    patchData: updateIssueStatus,
   } = useApi<IssueData>(`/issue/filter?${paramString}`);
   const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
 
