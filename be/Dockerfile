@@ -1,7 +1,7 @@
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-ARG JAR_FILE=be-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=./build/libs/be-0.0.1-SNAPSHOT.jar
 
 COPY $JAR_FILE /app/be.jar
 
