@@ -16,8 +16,7 @@ public record IssueShowResponse(
     MilestoneWithIssueCountResponse milestone
 ) {
 
-  public IssueShowResponse(Issue issue, List<Label> label,
-      MilestoneWithIssueCountResponse milestone, UserResponse reporter) {
+  public IssueShowResponse(Issue issue, List<Label> label, MilestoneWithIssueCountResponse milestone, UserResponse reporter) {
     this(
         issue.getId(),
         issue.getTitle(),

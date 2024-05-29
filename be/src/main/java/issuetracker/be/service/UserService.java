@@ -5,8 +5,10 @@ import issuetracker.be.domain.User;
 import issuetracker.be.dto.IssueAssigneeUpdateRequest;
 import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.AssigneeRefRepository;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public class UserService {
   public List<UserResponse> getAllUsers() {
     List<User> users = userRepository.findAll();
     return users.stream()
-        .map(user -> new UserResponse(user.getId(), user.getImage_path()))
+        .map(UserResponse::toDto)
         .collect(Collectors.toList());
   }
 
@@ -49,7 +51,7 @@ public class UserService {
 
   @Transactional
   public void updateAssignee(IssueAssigneeUpdateRequest issueAssigneeUpdateRequest) {
-    Long id = issueAssigneeUpdateRequest.id();
+    Long id = issueAssigneeUpdateRequest.issue_id();
     List<String> names = issueAssigneeUpdateRequest.name();
 
     if (names != null) {
