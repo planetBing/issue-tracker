@@ -54,14 +54,11 @@ jobs:
           host: ${{secrets.EC2_HOST}}
           username: ${{secrets.EC2_USER}}
           port: ${{secrets.SSH_PORT}}
-        
-      - name: Pull new image and Run
-        run: |
-          cd issue6/be/build/libs
-          pwd
-          sudo docker pull seondays/issue-tracker:latest
-          sudo docker-compose down
-          sudo docker-compose -f up -d
+          script: |
+            cd issue6/be/build/libs
+            sudo docker pull seondays/issue-tracker:latest
+            sudo docker-compose down
+            sudo docker-compose -f up -d
     
 
     
