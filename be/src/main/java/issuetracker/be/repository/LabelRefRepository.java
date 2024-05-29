@@ -12,6 +12,10 @@ public interface LabelRefRepository extends CrudRepository<LabelRef, Long> {
   void deleteIssue(@Param("id") Long id);
 
   @Modifying
+  @Query("DELETE FROM issue_label WHERE label_id = :id")
+  void deleteByLabel(@Param("id") Long id);
+
+  @Modifying
   @Query("INSERT INTO issue_label (issue_id, label_id) VALUES (:issueId, :id)")
   void addLabelRef(@Param("issueId") Long issueId, @Param("id") Long id);
 }
