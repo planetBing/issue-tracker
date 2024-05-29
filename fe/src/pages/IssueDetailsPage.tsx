@@ -6,6 +6,9 @@ import editIcon from "../assets/edit.svg";
 import archiveIcon from "../assets/archive.svg";
 import alertIcon from "../assets/alertCircle.svg";
 import trashIcon from "../assets/trash.svg";
+import { useParams } from "react-router-dom";
+import useApi from "../hooks/api/useApi";
+import { IssueDetails } from "../Model/types";
 
 import PageHeader from "../components/PageHeader";
 import WrittenComment from "../components/WrittenComment";
@@ -14,17 +17,31 @@ import SideBar from "../components/SideBar";
 
 export default function IssueDetailsPage() {
   const { currentUser } = useCurrentUser();
+  const { issueId } = useParams<{ issueId: string }>();
+  const {
+    data: issueDetails,
+    refetch: refetchIssueDetails,
+    putData: updateIssueDetails,
+  } = useApi<IssueDetails>(`/issue/${issueId}`);
+  if (!issueDetails) return null;
   const {
     title,
     id,
-    isOpen,
-    create_At,
+    is_open,
+    created_At,
     reporter,
     comment,
     label,
     assignee,
     milestone,
   } = issueDetails;
+
+  const openOrCloseIssue = async () => {
+    const putPath = is_open ? "/issue/close" : "/issue/open";
+    await updateIssueDetails(`${putPath}`, { id: [id] });
+    refetchIssueDetails();
+  };
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -40,9 +57,9 @@ export default function IssueDetailsPage() {
                 <img src={editIcon} alt="edit icon" />
                 제목 편집
               </TitleEditBtn>
-              <OpenIssueBtn>
+              <OpenIssueBtn onClick={() => openOrCloseIssue()}>
                 <img src={archiveIcon} alt="archive icon" />
-                {isOpen ? "이슈 닫기" : "이슈 열기"}
+                {is_open ? "이슈 닫기" : "이슈 열기"}
               </OpenIssueBtn>
             </IssueButtonsBox>
           </IssueTitleBox>
@@ -50,12 +67,12 @@ export default function IssueDetailsPage() {
             <InfoTag>
               <CommonS.Center>
                 <img src={alertIcon} alt="alert icon" />
-                <span>{isOpen ? "열린 이슈" : "닫힌 이슈"}</span>
+                <span>{is_open ? "열린 이슈" : "닫힌 이슈"}</span>
               </CommonS.Center>
             </InfoTag>
             <OpenInfo>
-              이 이슈가 {create_At}에 {reporter.name}에 의해 열렸습니다 ∙ 코멘트{" "}
-              {comment.length}개
+              이 이슈가 {created_At}에 {reporter.name}에 의해 열렸습니다 ∙
+              코멘트 {comment.length}개
             </OpenInfo>
           </StatesInfoBox>
         </PostInfo>
@@ -72,7 +89,7 @@ export default function IssueDetailsPage() {
               );
             })}
             <CommentWriteArea
-              handleInputComment={console.log}
+              setComment={console.log}
               comment={""}
               height="160px"
             />
@@ -85,9 +102,13 @@ export default function IssueDetailsPage() {
               handleInputAssignee={console.log}
               handleInputMilestone={console.log}
               handleInputLabel={console.log}
-              assigneeList={assignee.map((userObj) => userObj.name)}
-              selectedLabel={label.map((labelObj) => labelObj.id.toString())}
-              selectedMilestone={milestone.id.toString()}
+              assigneeList={
+                assignee ? assignee.map((userObj) => userObj.name) : []
+              }
+              selectedLabel={
+                label ? label.map((labelObj) => labelObj.id.toString()) : []
+              }
+              selectedMilestone={milestone ? milestone.id.toString() : ""}
             />
             <DeleteButton>
               <img src={trashIcon} alt="trash icon" />
@@ -139,6 +160,7 @@ const TitleEditBtn = styled.button`
 `;
 
 const OpenIssueBtn = styled(TitleEditBtn)`
+  cursor: pointer;
   & img {
     filter: invert(30%) sepia(99%) saturate(2526%) hue-rotate(199deg)
       brightness(101%) contrast(105%);
