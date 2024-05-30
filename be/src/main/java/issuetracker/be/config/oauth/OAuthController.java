@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import issuetracker.be.config.jwt.JwtUtil;
 import issuetracker.be.config.oauth.dto.GithubUserProfileDto;
-import issuetracker.be.domain.User;
-import jakarta.servlet.http.HttpServletResponse;
+import issuetracker.be.config.oauth.dto.UserInfoWithTokenResponse;
+import issuetracker.be.dto.UserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -35,13 +35,12 @@ public class OAuthController {
     this.jwtUtil = jwtUtil;
   }
 
-  @GetMapping("/login/oauth2/code/github")
-  public String getGithubUserProfile(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+  @GetMapping("/login/github")
+  public UserInfoWithTokenResponse getGithubUserProfile(@RequestParam String code) throws JsonProcessingException {
     OAuthToken oAuthToken = getOAuthToken(code);
     GithubUserProfileDto githupProfileDto = getGithubUserProfile(oAuthToken);
-    User user = oAuthService.save(githupProfileDto);
-
-    return jwtUtil.createToken(user.getId());
+    UserResponse userResponse = oAuthService.save(githupProfileDto);
+    return new UserInfoWithTokenResponse(jwtUtil.createToken(userResponse.name()), userResponse);
   }
 
   private OAuthToken getOAuthToken(String code) throws JsonProcessingException {
