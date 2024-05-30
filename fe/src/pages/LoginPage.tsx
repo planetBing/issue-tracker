@@ -18,7 +18,7 @@ const initialState = {
 export default function LoginPage() {
   const { setCurrentUser } = useCurrentUser();
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(initialState);
-  const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_OAUTH_CLIENT_ID}&redirect_uri=http://localhost:3000/callback`;
+  const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_OAUTH_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_OAUTH_REDIRECT_URI}`;
   const navigate = useNavigate();
 
   const handleLogin = () => {
