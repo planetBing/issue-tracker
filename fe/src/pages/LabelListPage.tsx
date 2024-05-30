@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
+import * as S from "../styles/tableItems";
 import useApi from "../hooks/api/useApi";
 import LabelMilestoneTap from "../components/LabelMilestoneTap";
 import { Label, LabelForm } from "../Model/types";
@@ -101,23 +102,24 @@ export default function LabelListPage() {
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
       <CommonS.Wrapper>
-        <LabelPageHeader>
+        <S.LabelPageHeader>
           <LabelMilestoneTap />
-          <AddLabelBtn onClick={() => setIsCreationMode(true)}>
+          <S.AddLabelBtn onClick={() => setIsCreationMode(true)}>
             + 레이블 추가
-          </AddLabelBtn>
-        </LabelPageHeader>
+          </S.AddLabelBtn>
+        </S.LabelPageHeader>
         {isCreationMode && (
           <LabelFormBox
             labelObj={labelForm}
             inputHandler={inputHandlers}
             handleCancel={() => setIsCreationMode(false)}
             handleSubmit={handleSubmit}
+            isCreation={true}
           />
         )}
-        <IssueTableTop>
+        <S.IssueTableTop>
           <LabelNum>{labeListData?.length}개의 레이블</LabelNum>
-        </IssueTableTop>
+        </S.IssueTableTop>
         {isLabelDataLoading && <p>...loading</p>}
         {labeListData?.map((labelObj) => {
           const { id, description } = labelObj;
@@ -129,11 +131,12 @@ export default function LabelListPage() {
                 inputHandler={inputHandlers}
                 handleCancel={handleCancel}
                 handleSubmit={handleSubmit}
+                isCreation={false}
               />
             );
           }
           return (
-            <IssueTable key={`labelList-${id}`}>
+            <S.IssueTable key={`labelList-${id}`}>
               <LabelInfo>
                 <LabelArea>
                   <LabelComponent labelInfo={labelObj}></LabelComponent>
@@ -141,16 +144,16 @@ export default function LabelListPage() {
                 <p>{description}</p>
               </LabelInfo>
               <TableButtonArea>
-                <LabelEditButton onClick={() => handleEditLabel(labelObj)}>
+                <S.LabelEditButton onClick={() => handleEditLabel(labelObj)}>
                   <img src={greyEditIcon} alt="edit icon" />
                   편집
-                </LabelEditButton>
-                <LabelDeleteButton onClick={() => handleDeleteLabel(id)}>
+                </S.LabelEditButton>
+                <S.LabelDeleteButton onClick={() => handleDeleteLabel(id)}>
                   <img src={trashIcon} alt="trash icon" />
                   삭제
-                </LabelDeleteButton>
+                </S.LabelDeleteButton>
               </TableButtonArea>
-            </IssueTable>
+            </S.IssueTable>
           );
         })}
       </CommonS.Wrapper>
@@ -158,54 +161,10 @@ export default function LabelListPage() {
   );
 }
 
-const LabelPageHeader = styled(CommonS.SpaceBetween)`
-  height: 40px;
-`;
-
-const AddLabelBtn = styled.button`
-  background-color: rgba(0, 122, 255, 1);
-  color: white;
-  font-size: 12px;
-  border: none;
-  padding: 0 16px;
-  height: 100%;
-  width: 128px;
-  border-radius: 12px;
-`;
-
-const IssueTableTop = styled.div`
-  display: flex;
-  align-items: center;
-  height: 64px;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  border: 1px solid rgba(217, 219, 233, 1);
-  margin-top: 25px;
-  padding: 0 32px;
-`;
-
 const LabelNum = styled.span`
   color: rgba(78, 75, 102, 1);
   font-weight: 700;
   font-size: 16px;
-`;
-
-const IssueTable = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 96px;
-  background-color: rgba(254, 254, 254, 1);
-  padding: 16px 32px;
-  border-left: 1px solid rgba(217, 219, 233, 1);
-  border-right: 1px solid rgba(217, 219, 233, 1);
-  border-bottom: 1px solid rgba(217, 219, 233, 1);
-
-  &:last-child {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-  }
 `;
 
 const LabelArea = styled.div`
@@ -226,15 +185,4 @@ const LabelInfo = styled.div`
 const TableButtonArea = styled.div`
   display: flex;
   gap: 24px;
-`;
-
-const LabelEditButton = styled(CommonS.Center)`
-  color: rgba(78, 75, 102, 1);
-  font-size: 12px;
-`;
-
-const LabelDeleteButton = styled(CommonS.Center)`
-  color: rgba(255, 59, 48, 1);
-  font-size: 12px;
-  cursor: pointer;
 `;

@@ -12,6 +12,7 @@ interface LabelFormProps {
   };
   handleCancel: () => void;
   handleSubmit: () => Promise<void>;
+  isCreation: boolean;
 }
 
 export default function LabelFormBox({
@@ -19,11 +20,12 @@ export default function LabelFormBox({
   inputHandler,
   handleCancel,
   handleSubmit,
+  isCreation,
 }: LabelFormProps) {
   const { background_color, text_color, name } = labelObj;
   return (
-    <LabelCreationContainer>
-      <h3>새로운 레이블 추가</h3>
+    <LabelCreationContainer iscreation={isCreation.toString()}>
+      {isCreation ? <h3>새로운 레이블 추가</h3> : <h3>레이블 편집</h3>}
       <CreateLabelInfoArea>
         <LabelDesignShowBox>
           <LabelDiv $backgroundColor={background_color} $textColor={text_color}>
@@ -78,14 +80,19 @@ export default function LabelFormBox({
   );
 }
 
-const LabelCreationContainer = styled.section`
+const LabelCreationContainer = styled.section<{ iscreation: string }>`
   width: 100%;
   height: 337px;
   background-color: white;
-  margin-top: 25px;
-  border-radius: 16px;
+  margin-top: ${({ iscreation }) => (iscreation === "true" ? "25px" : "0")};
+  border-radius: ${({ iscreation }) => (iscreation === "true" ? "26px" : "0")};
   padding: 32px;
-
+  border-bottom: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
+  border-left: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
+  border-right: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
   & h3 {
     margin-top: 0;
     font-size: 20px;

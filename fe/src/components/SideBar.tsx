@@ -14,7 +14,7 @@ interface SideBarProps {
   handleInputAssignee: (e: React.ChangeEvent<HTMLInputElement>) => void;
   assigneeList: string[];
   selectedLabel: string[];
-  selectedMilestone: string[];
+  selectedMilestone: string;
 }
 
 interface PopupState {
@@ -136,6 +136,7 @@ export default function SideBar({
             dispatch({ type: "closePopup" });
           }}
           isLabelNone={false}
+          inputType={"checkbox"}
         />
       )}
 
@@ -192,6 +193,10 @@ const SelectedAssignee = styled.div`
 const SelectedOptionWrapper = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
 `;
 
 const SideBarItem = styled.div`

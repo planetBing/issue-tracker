@@ -7,6 +7,7 @@ interface MilestoneFormProps {
   handleCancel: () => void;
   handleInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => Promise<void>;
+  isCreation: boolean;
 }
 
 export default function MilestoneFormBox({
@@ -14,10 +15,11 @@ export default function MilestoneFormBox({
   handleCancel,
   handleInput,
   handleSubmit,
+  isCreation,
 }: MilestoneFormProps) {
   return (
-    <LabelCreationContainer>
-      <h3>새로운 마일스톤 추가</h3>
+    <LabelCreationContainer iscreation={isCreation.toString()}>
+      {isCreation ? <h3>새로운 마일스톤 추가</h3> : <h3>마일스톤 편집</h3>}
       <NameAndEndDateArea>
         <InputContainer $width={"600px"}>
           <label>이름</label>
@@ -55,14 +57,19 @@ export default function MilestoneFormBox({
   );
 }
 
-const LabelCreationContainer = styled.section`
+const LabelCreationContainer = styled.section<{ iscreation: string }>`
   width: 100%;
   height: 284px;
   background-color: white;
-  margin-top: 25px;
-  border-radius: 16px;
+  margin-top: ${({ iscreation }) => (iscreation === "true" ? "25px" : "0")};
+  border-radius: ${({ iscreation }) => (iscreation === "true" ? "26px" : "0")};
   padding: 32px;
-
+  border-bottom: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
+  border-left: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
+  border-right: ${({ iscreation }) =>
+    iscreation === "true" ? "none" : "1px solid rgb(218, 219, 233)"};
   & h3 {
     margin-top: 0;
     font-size: 20px;

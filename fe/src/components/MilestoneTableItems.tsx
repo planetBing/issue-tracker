@@ -67,7 +67,7 @@ export default function MilestoneTableItems({
             openIssuesNum={open_issue}
           />
           <ProgressInfo>
-            <span>{progressNum * 100}</span>
+            <span>{Math.round(progressNum * 100 * 10) / 10}%</span>
             <span>
               열린 이슈{open_issue} 닫힌 이슈{close_issue}
             </span>

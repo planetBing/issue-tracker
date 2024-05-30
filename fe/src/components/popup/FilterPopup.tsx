@@ -30,7 +30,7 @@ export default function FilterPopup({
               isOpen: true,
               assignee: [],
               label: [],
-              milestone: [],
+              milestone: "",
               reporter: [],
               comment: [],
             });
@@ -51,7 +51,7 @@ export default function FilterPopup({
               isOpen: true,
               assignee: [],
               label: [],
-              milestone: [],
+              milestone: "",
               reporter: [e.target.value],
               comment: [],
             });
@@ -72,7 +72,7 @@ export default function FilterPopup({
               isOpen: true,
               assignee: [e.target.value],
               label: [],
-              milestone: [],
+              milestone: "",
               reporter: [],
               comment: [],
             });
@@ -93,7 +93,7 @@ export default function FilterPopup({
               isOpen: true,
               assignee: [],
               label: [],
-              milestone: [],
+              milestone: "",
               reporter: [],
               comment: [e.target.value],
             });
@@ -112,7 +112,7 @@ export default function FilterPopup({
               isOpen: false,
               assignee: [],
               label: [],
-              milestone: [],
+              milestone: "",
               reporter: [],
               comment: [],
             });

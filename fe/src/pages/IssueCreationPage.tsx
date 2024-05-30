@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import SideBar from "../components/SideBar";
-import paperclipSvg from "../assets/paperclip.svg";
-import { Label, Milestone } from "../Model/types";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
+import CommentWriteArea from "../components/CommentWriteArea";
 
 const SERVER = process.env.REACT_APP_SERVER;
 
@@ -18,7 +17,7 @@ export default function IssueCreationPage() {
   //담당자, 라벨, 마일스톤 상태 관리 방식 변경 예정
   const [assigneeList, setAssigneeList] = useState<string[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<string[]>([]);
-  const [selectedMilestone, setSelectedMilestone] = useState<string[]>([]);
+  const [selectedMilestone, setSelectedMilestone] = useState<string>("");
   const [isIssueTitleFilled, setIsIssueTitleFilled] = useState(false);
 
   const navigate = useNavigate();
@@ -52,11 +51,17 @@ export default function IssueCreationPage() {
   };
 
   const handleInputLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLabel([e.target.value]);
+    const value = e.target.value;
+    if (selectedLabel.includes(value)) {
+      const newSelectedLabel = selectedLabel.filter((label) => label !== value);
+      setSelectedLabel(newSelectedLabel);
+    } else {
+      setSelectedLabel([...selectedLabel, e.target.value]);
+    }
   };
 
   const handleInputMilestone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedMilestone([e.target.value]);
+    setSelectedMilestone(e.target.value);
   };
 
   const postIssue = async () => {
@@ -68,9 +73,7 @@ export default function IssueCreationPage() {
       label_id: selectedLabel.length
         ? selectedLabel.map((labelId) => Number(labelId))
         : null,
-      milestone_id: selectedMilestone.length
-        ? Number(selectedMilestone[0])
-        : null,
+      milestone_id: selectedMilestone.length ? Number(selectedMilestone) : null,
     };
     try {
       const response = await fetch(`${SERVER}/issue`, {
@@ -84,10 +87,8 @@ export default function IssueCreationPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      console.log("Issue created successfully");
-      console.log(issueCreationData);
-      navigate("/");
+      const data = await response.json();
+      navigate(`/issue/${data}`);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -110,25 +111,11 @@ export default function IssueCreationPage() {
               placeholder="제목"
               onChange={handleInputIssueTitle}
             ></IssueTitle>
-            <TextAreaWrapper>
-              <StyledTextArea
-                name="comment"
-                placeholder="코멘트를 입력하세요"
-                onChange={handleInputComment}
-              ></StyledTextArea>
-              {comment && (
-                <CharCount>띄어쓰기 포함 {comment?.length}자</CharCount>
-              )}
-            </TextAreaWrapper>
-            <FileAttach>
-              <label htmlFor="file">
-                <FileAttachBtn>
-                  <img src={paperclipSvg} alt="paperclip" />
-                  <div>파일 첨부하기</div>
-                </FileAttachBtn>
-              </label>
-              <input type="file" id="file" />
-            </FileAttach>
+            <CommentWriteArea
+              handleInputComment={handleInputComment}
+              comment={comment}
+              height={"448px"}
+            />
           </TextContainer>
           <SideBar
             handleInputLabel={handleInputLabel}
@@ -189,66 +176,6 @@ const IssueTitle = styled.input`
 
   &:focus {
     outline: none;
-  }
-`;
-
-const TextAreaWrapper = styled.div`
-  position: relative;
-  margin-bottom: -3px;
-`;
-
-const StyledTextArea = styled.textarea`
-  height: 350px;
-  border: none;
-  padding: 16px;
-  background-color: rgba(239, 240, 246, 1);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  border-bottom: 1px dashed rgba(217, 219, 233, 1);
-  width: 100%;
-
-  &:focus {
-    outline-color: black;
-    background-color: white;
-  }
-`;
-
-const CharCount = styled.div`
-  text-align: right;
-  font-size: 12px;
-  color: gray;
-  margin-top: 4px;
-  position: absolute;
-  width: 100%;
-  top: 310px;
-  padding-right: 25px;
-`;
-
-const FileAttach = styled.div`
-  display: flex;
-  align-items: center;
-  height: 52px;
-  border: none;
-  padding: 0 16px;
-  background-color: rgba(239, 240, 246, 1);
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-
-  & input {
-    display: none;
-  }
-`;
-
-const FileAttachBtn = styled.div`
-  display: flex;
-  cursor: pointer;
-
-  & div {
-    margin-left: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(78, 75, 102, 1);
-    line-height: 16px;
   }
 `;
 

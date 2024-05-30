@@ -105,6 +105,7 @@ export default function MilestoneListPage() {
             handleCancel={handleCancel}
             handleInput={handleInput}
             handleSubmit={handleSubmit}
+            isCreation={true}
           />
         )}
         <S.IssueTableTop>
@@ -129,10 +130,12 @@ export default function MilestoneListPage() {
             if (isEditMode && editMilestoneId === id) {
               return (
                 <MilestoneFormBox
+                  key={`editMiletone-${id}`}
                   milestoneForm={milestoneForm}
                   handleCancel={handleCancel}
                   handleInput={handleInput}
                   handleSubmit={handleSubmit}
+                  isCreation={false}
                 />
               );
             }
