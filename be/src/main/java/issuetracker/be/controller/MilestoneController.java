@@ -4,12 +4,14 @@ import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.service.MilestoneService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,5 +49,15 @@ public class MilestoneController {
   @DeleteMapping("/milestone/{milestoneId}")
   public void delete(@PathVariable Long milestoneId) {
     milestoneService.delete(milestoneId);
+  }
+
+  @PatchMapping("/milestone/open")
+  public void openIssues(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
+    milestoneService.changeIssueStatus(openStatusChangeRequest, true);
+  }
+
+  @PatchMapping("/milestone/close")
+  public void closeIssue(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
+    milestoneService.changeIssueStatus(openStatusChangeRequest, false);
   }
 }
