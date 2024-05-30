@@ -53,7 +53,7 @@ export default function useApi<T>(apiPath: string) {
     await fetchData("DELETE", deletePath, body);
   };
 
-  const patchData = async (patchPath: string, body: any) => {
+  const patchData = async (patchPath: string, body?: any) => {
     await fetchData("PATCH", patchPath, body);
   };
 
