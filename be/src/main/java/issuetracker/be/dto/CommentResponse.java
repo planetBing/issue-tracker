@@ -1,6 +1,7 @@
 package issuetracker.be.dto;
 
 import issuetracker.be.domain.Comment;
+import issuetracker.be.utils.TimeLapseCalculator;
 import java.time.LocalDateTime;
 
 public record CommentResponse(
@@ -8,7 +9,7 @@ public record CommentResponse(
     Long id,
     Long issue_id,
     UserResponse reporter,
-    LocalDateTime created_at,
+    String created_at,
     String contents
 ) {
 
@@ -16,7 +17,7 @@ public record CommentResponse(
     this(comment.getId(),
         comment.getIssue_id(),
         user,
-        comment.getCreated_at(),
+        TimeLapseCalculator.between(comment.getCreated_at(), LocalDateTime.now()),
         comment.getContents()
     );
   }
