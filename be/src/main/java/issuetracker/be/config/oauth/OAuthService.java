@@ -20,10 +20,10 @@ public class OAuthService {
 
   // 깃헙으로 로그인한 사용자가 회원가입 하지 않았으면 자동으로 회원가입되도록 설정
   @Transactional
-  public void save(GithubUserProfileDto dto) {
+  public User save(GithubUserProfileDto dto) {
     User githubUser = dto.toEntity();
     Optional<User> existUser = userRepository.findByNameEquals(githubUser.getId());
 
-    existUser.orElseGet(() -> userRepository.save(githubUser));
+    return existUser.orElseGet(() -> userRepository.save(githubUser));
   }
 }
