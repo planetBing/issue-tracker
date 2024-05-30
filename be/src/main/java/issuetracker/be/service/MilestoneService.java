@@ -3,7 +3,6 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
-import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.MilestoneRepository;
@@ -85,13 +84,10 @@ public class MilestoneService {
   }
 
   @Transactional
-  public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
-    openStatusChangeRequest.id().stream()
-        .map(this::getMilestone)
-        .forEach(i -> {i.set_open(status);
-//          i.setIs_open(status);
-          milestoneRepository.save(i);
-        });
+  public void changeMilestoneStatus(Long id, boolean status) {
+    Milestone milestone = getMilestone(id);
+    milestone.set_open(status);
+    milestoneRepository.save(milestone);
   }
 
   private Milestone getMilestone(Long issueId) {
