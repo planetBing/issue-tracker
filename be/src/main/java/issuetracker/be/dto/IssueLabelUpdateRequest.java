@@ -2,9 +2,9 @@ package issuetracker.be.dto;
 
 import java.util.List;
 
-public record IssueAssigneeUpdateRequest(
+public record IssueLabelUpdateRequest(
     Long issue_id,
-    List<String> name
+    List<Long> label_id
 ) {
 
 }

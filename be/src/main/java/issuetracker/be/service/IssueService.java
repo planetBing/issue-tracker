@@ -9,11 +9,15 @@ import issuetracker.be.dto.CommentResponse;
 import issuetracker.be.dto.IssueDetailResponse;
 import issuetracker.be.dto.IssueFilterRequest;
 import issuetracker.be.dto.IssueListResponse;
+import issuetracker.be.dto.IssueMilestoneUpdateRequest;
 import issuetracker.be.dto.IssueSaveRequest;
 import issuetracker.be.dto.IssueShowResponse;
 import issuetracker.be.dto.IssueTitleUpdateRequest;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
+import issuetracker.be.dto.UserResponse;
+import issuetracker.be.repository.CommentRepository;
 import issuetracker.be.dto.OpenStatusChangeRequest;
+import issuetracker.be.dto.UserResponse;
 import issuetracker.be.repository.IssueRepository;
 import issuetracker.be.repository.MilestoneRepository;
 import java.time.LocalDateTime;
@@ -67,6 +71,25 @@ public class IssueService {
     issueRepository.updateTitle(title, id);
   }
 
+  @Transactional
+  public void updateMilestoneId(IssueMilestoneUpdateRequest issueMilestoneUpdateRequest){
+    Long id = issueMilestoneUpdateRequest.issue_id();
+    Long milestoneId = issueMilestoneUpdateRequest.milestone_id();
+    if(milestoneId != null) {
+      issueRepository.updateMilestoneId(milestoneId, id);
+    } else {
+      issueRepository.deleteMilestoneId(id);
+    }
+  }
+
+  @Transactional
+  public void deleteIssue(Long id) {
+    labelService.deleteLabelRef(id);
+    userService.deleteAssigneeRef(id);
+    commentService.deleteIssue(id);
+    issueRepository.deleteIssue(id);
+  }
+
   public IssueListResponse getAllIssue() {
     List<IssueShowResponse> closeIssues = generateIssueShowDto(issueRepository.findByIsOpen(false));
     List<IssueShowResponse> openIssues = generateIssueShowDto(issueRepository.findByIsOpen(true));
@@ -80,13 +103,14 @@ public class IssueService {
     Issue issue = getIssue(issueId);
     List<Label> label = getLabels(issue);
 
-    List<User> assignee = getAssignees(issue);
+    List<UserResponse> assignees = getAssignees(issue);
+
 
     MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-    User reporter = userService.getUser(issue.getReporter());
+    UserResponse reporter = userService.getUser(issue.getReporter());
 
-    return new IssueDetailResponse(issue, assignee, label, milestone, reporter, commentResponse);
+    return new IssueDetailResponse(issue, assignees, label, milestone, reporter, commentResponse);
   }
 
   public boolean isIssueExistBy(Long milestoneId) {
@@ -100,10 +124,9 @@ public class IssueService {
 
       MilestoneWithIssueCountResponse milestone = getMilestoneWithIssueCountResponse(issue);
 
-      User reporter = userService.getUser(issue.getReporter());
+      UserResponse reporter = userService.getUser(issue.getReporter());
 
-      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone,
-          reporter);
+      IssueShowResponse issueShowResponse = new IssueShowResponse(issue, label, milestone, reporter);
       result.add(issueShowResponse);
     }
     return result;
@@ -141,7 +164,7 @@ public class IssueService {
   @Transactional
   public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
     openStatusChangeRequest.id().stream()
-        .map(i -> issueRepository.findById(i).orElseThrow())
+        .map(this::getIssue)
         .forEach(i -> {
           i.setIs_open(status);
           issueRepository.save(i);
@@ -150,7 +173,7 @@ public class IssueService {
 
   private Issue getIssue(Long issueId) {
     return issueRepository.findById(issueId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이슈입니다."));
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 이슈입니다."));
   }
 
   private MilestoneWithIssueCountResponse getMilestoneWithIssueCountResponse(Issue issue) {
@@ -167,7 +190,7 @@ public class IssueService {
         .collect(Collectors.toList());
   }
 
-  private List<User> getAssignees(Issue issue) {
+  private List<UserResponse> getAssignees(Issue issue) {
     return issue.getAssignees().isEmpty() ?
         null : userService.findByIssueId(issue.getId());
   }
