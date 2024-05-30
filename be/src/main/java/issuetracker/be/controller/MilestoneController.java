@@ -4,7 +4,6 @@ import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
-import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.service.MilestoneService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -51,13 +50,13 @@ public class MilestoneController {
     milestoneService.delete(milestoneId);
   }
 
-  @PatchMapping("/milestone/open")
-  public void openIssues(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
-    milestoneService.changeIssueStatus(openStatusChangeRequest, true);
+  @PatchMapping("/milestone/open/{id}")
+  public void openIssues(@PathVariable Long id) {
+    milestoneService.changeMilestoneStatus(id, true);
   }
 
-  @PatchMapping("/milestone/close")
-  public void closeIssue(@RequestBody OpenStatusChangeRequest openStatusChangeRequest) {
-    milestoneService.changeIssueStatus(openStatusChangeRequest, false);
+  @PatchMapping("/milestone/close/{id}")
+  public void closeIssue(@RequestBody @PathVariable Long id) {
+    milestoneService.changeMilestoneStatus(id, false);
   }
 }
