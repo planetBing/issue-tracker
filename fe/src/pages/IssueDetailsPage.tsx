@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { styled } from "styled-components";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
@@ -30,7 +30,13 @@ export default function IssueDetailsPage() {
   const [isTitleEditMode, setIsTitleEditMode] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const navigte = useNavigate();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
 
   if (!issueDetails) return null;
   const {
@@ -112,7 +118,7 @@ export default function IssueDetailsPage() {
 
   const handleDeleteIssue = async () => {
     await deleteData(`/issue/${id.toString()}`);
-    navigte("/");
+    navigate("/");
   };
 
   const handleTitleEdit = async () => {
