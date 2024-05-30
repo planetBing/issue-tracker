@@ -3,6 +3,7 @@ package issuetracker.be.service;
 import issuetracker.be.domain.Milestone;
 import issuetracker.be.dto.MilestoneSaveRequest;
 import issuetracker.be.dto.MilestoneUpdateRequest;
+import issuetracker.be.dto.OpenStatusChangeRequest;
 import issuetracker.be.exception.MilestoneHasAssociatedIssuesException;
 import issuetracker.be.dto.MilestoneWithIssueCountResponse;
 import issuetracker.be.repository.MilestoneRepository;
@@ -81,5 +82,20 @@ public class MilestoneService {
       throw new NoSuchElementException("존재하지 않는 마일스톤입니다.");
     }
     return milestoneRepository.save(milestoneUpdateRequest.toEntity());
+  }
+
+  @Transactional
+  public void changeIssueStatus(OpenStatusChangeRequest openStatusChangeRequest, boolean status) {
+    openStatusChangeRequest.id().stream()
+        .map(this::getMilestone)
+        .forEach(i -> {i.set_open(status);
+//          i.setIs_open(status);
+          milestoneRepository.save(i);
+        });
+  }
+
+  private Milestone getMilestone(Long issueId) {
+    return milestoneRepository.findById(issueId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 이슈입니다."));
   }
 }

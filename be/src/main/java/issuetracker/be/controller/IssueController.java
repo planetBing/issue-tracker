@@ -79,8 +79,8 @@ public class IssueController {
     issueService.deleteIssue(issueId);
   }
 
-  @PatchMapping("/issue/milestoneId")
-  public void issueTitleUpdate(@RequestBody IssueMilestoneUpdateRequest issueMilestoneUpdateRequest) {
+  @PatchMapping("/issue/milestone")
+  public void issueMilestoneUpdate(@RequestBody IssueMilestoneUpdateRequest issueMilestoneUpdateRequest) {
     issueService.updateMilestoneId(issueMilestoneUpdateRequest);
   }
 }
