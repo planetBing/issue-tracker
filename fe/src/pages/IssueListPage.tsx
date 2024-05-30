@@ -1,5 +1,6 @@
 import queryString from "query-string";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import PageHeader from "../components/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
@@ -54,6 +55,14 @@ export default function IssueListPage() {
     patchData: updateIssueStatus,
   } = useApi<IssueData>(`/issue/filter?${paramString}`);
   const [selectedIssue, setSelectedIssue] = useState<string[]>([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
 
   if (!issueList) {
     return null;
