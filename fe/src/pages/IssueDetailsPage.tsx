@@ -75,11 +75,11 @@ export default function IssueDetailsPage() {
       const newSelectedLabel = selectedAssignee.filter(
         (name) => name !== value
       );
-      const bodyValue = { id: id, name: newSelectedLabel };
+      const bodyValue = { issue_id: id, name: newSelectedLabel };
       await patchData("/issue/assignee", bodyValue);
     } else {
       const newSelectedAssignee = [...selectedAssignee, value];
-      const bodyValue = { id: id, name: newSelectedAssignee };
+      const bodyValue = { issue_id: id, name: newSelectedAssignee };
       await patchData("/issue/assignee", bodyValue);
     }
     refetchIssueDetails();
@@ -106,7 +106,7 @@ export default function IssueDetailsPage() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = { issue_id: id, milestone_id: Number(e.target.value) };
-    await patchData(`/issue/milestoneId`, value);
+    await patchData(`/issue/milestone`, value);
     refetchIssueDetails();
   };
 
