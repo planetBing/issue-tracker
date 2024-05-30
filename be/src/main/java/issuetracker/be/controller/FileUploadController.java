@@ -34,13 +34,10 @@ public class FileUploadController {
     try {
       String fileName = file.getOriginalFilename();
       String fileKey = "img/" + fileName;
-      // 저장할 위치
-      String fileUrl = "https://" + bucket + ".s3.amazonaws.com/" + fileKey;
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(file.getContentType());
       metadata.setContentLength(file.getSize());
-      PutObjectResult putObjectResult = amazonS3Client.putObject(bucket, fileKey,
-          file.getInputStream(), metadata);
+      amazonS3Client.putObject(bucket, fileKey, file.getInputStream(), metadata);
       return amazonS3Client.getUrl(bucket, fileKey);
     } catch (IOException e) {
       e.printStackTrace();
