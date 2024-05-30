@@ -87,10 +87,8 @@ export default function IssueCreationPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      console.log("Issue created successfully");
-      console.log(issueCreationData);
-      navigate("/");
+      const data = await response.json();
+      navigate(`/issue/${data}`);
     } catch (error) {
       console.error("Error:", error);
     }
