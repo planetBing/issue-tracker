@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import UserInfo from "../components/UserInfo";
-import * as CommonS from "../styles/common";
-import { Comment } from "../Model/types";
-import smileIcon from "../assets/smile.svg";
-import greyEditIcon from "../assets/greyEdit.svg";
+import UserInfo from "../general/UserInfo";
+import * as CommonS from "../../styles/common";
+import { Comment } from "../../model/types";
+import smileIcon from "../../assets/smile.svg";
+import greyEditIcon from "../../assets/greyEdit.svg";
 import { marked } from "marked";
 
 interface WrittenCommentProps {

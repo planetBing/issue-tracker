@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import PageHeader from "../components/PageHeader";
-import SideBar from "../components/SideBar";
+import PageHeader from "../components/general/PageHeader";
+import SideBar from "../components/general/SideBar";
 import * as CommonS from "../styles/common";
 import { Link } from "react-router-dom";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
-import CommentWriteArea from "../components/CommentWriteArea";
+import CommentWriteArea from "../components/comment/CommentWriteArea";
 
 const SERVER = process.env.REACT_APP_SERVER;
 

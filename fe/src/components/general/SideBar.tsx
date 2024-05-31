@@ -1,12 +1,12 @@
 import { useReducer } from "react";
 import { styled } from "styled-components";
-import UserPopup from "./popup/UserPopup";
-import LabelPopup from "./popup/LabelPopup";
-import MilestonePopup from "./popup/MilestonePopup";
-import { Label, Milestone, User } from "../Model/types";
-import LabelComponent from "./Label";
-import useApi from "../hooks/api/useApi";
-import MilestoneProgressBar from "./MilestoneProgressBar";
+import UserPopup from "../popup/UserPopup";
+import LabelPopup from "../popup/LabelPopup";
+import MilestonePopup from "../popup/MilestonePopup";
+import { Label, Milestone, User } from "../../model/types";
+import LabelComponent from "../label/Label";
+import useApi from "../../hooks/api/useApi";
+import MilestoneProgressBar from "../milestone/MilestoneProgressBar";
 
 interface SideBarProps {
   handleInputLabel: (e: React.ChangeEvent<HTMLInputElement>) => void;

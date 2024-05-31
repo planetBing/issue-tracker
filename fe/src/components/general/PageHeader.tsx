@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import * as CommonS from "../styles/common";
+import * as CommonS from "../../styles/common";
 import { useNavigate } from "react-router-dom";
 
 interface PageHeaderProps {

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { styled } from "styled-components";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../components/general/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import * as S from "../styles/tableItems";
 import useApi from "../hooks/api/useApi";
-import LabelMilestoneTap from "../components/LabelMilestoneTap";
-import { Label, LabelForm } from "../Model/types";
-import LabelComponent from "../components/Label";
+import LabelMilestoneTap from "../components/general/LabelMilestoneTap";
+import { Label, LabelForm } from "../model/types";
+import LabelComponent from "../components/label/Label";
 import greyEditIcon from "../assets/greyEdit.svg";
 import trashIcon from "../assets/trash.svg";
-import LabelFormBox from "../components/LabelForm";
+import LabelFormBox from "../components/label/LabelForm";
 
 const initialLabelForm = {
   name: "",

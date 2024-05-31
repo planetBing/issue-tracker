@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
-import IconRefresh from "../assets/IconsRefresh.svg";
-import * as CommonS from "../styles/common";
-import { LabelForm } from "../Model/types";
+import IconRefresh from "../../assets/IconsRefresh.svg";
+import * as CommonS from "../../styles/common";
+import { LabelForm } from "../../model/types";
 
 interface LabelFormProps {
   labelObj: LabelForm;

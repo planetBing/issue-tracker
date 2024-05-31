@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { styled } from "styled-components";
-import paperclipSvg from "../assets/paperclip.svg";
+import paperclipSvg from "../../assets/paperclip.svg";
 import axios from "axios";
 
 interface CommentAreaProps {
