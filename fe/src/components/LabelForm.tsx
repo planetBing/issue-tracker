@@ -40,6 +40,7 @@ export default function LabelFormBox({
             <input
               name="name"
               placeholder="레이블의 이름을 입력하세요"
+              value={labelObj.name ? labelObj.name : ""}
               onChange={inputHandler.handleInputLabel}
             />
           </InputContainer>
@@ -50,6 +51,7 @@ export default function LabelFormBox({
             <input
               name="description"
               placeholder="레이블에 대한 설명을 입력하세요"
+              value={labelObj.description ? labelObj.description : ""}
               onChange={inputHandler.handleInputLabel}
             />
           </InputContainer>

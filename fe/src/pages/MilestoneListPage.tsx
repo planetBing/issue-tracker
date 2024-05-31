@@ -27,6 +27,7 @@ export default function MilestoneListPage() {
     refetch: refetchMilestoneList,
     deleteData: deleteMilestone,
     putData: updateMilestone,
+    patchData,
   } = useApi<Milestone[]>("/milestone");
   const [isOpenMode, setIsOpenMode] = useState<boolean>(true);
   const [isCreationMode, setIsCreationMode] = useState<boolean>(false);
@@ -89,6 +90,12 @@ export default function MilestoneListPage() {
     setMilestoneForm(editMilestoneForm);
   };
 
+  const openOrCloseMilestone = async (is_open: boolean, id: number) => {
+    const patchPath = is_open ? "/milestone/close" : "/milestone/open";
+    await patchData(`${patchPath}/${id}`);
+    refetchMilestoneList();
+  };
+
   return (
     <>
       <PageHeader loggedInUserImageSrc={currentUser?.image_path} />
@@ -145,6 +152,7 @@ export default function MilestoneListPage() {
                 milestoneObj={milestoneObj}
                 handleDeleteMilestone={handleDeleteMilestone}
                 handleEditMode={handleEditMode}
+                openOrCloseMilestone={openOrCloseMilestone}
               />
             );
           })}
@@ -157,6 +165,7 @@ export default function MilestoneListPage() {
                 milestoneObj={milestoneObj}
                 handleDeleteMilestone={handleDeleteMilestone}
                 handleEditMode={handleEditMode}
+                openOrCloseMilestone={openOrCloseMilestone}
               />
             );
           })}

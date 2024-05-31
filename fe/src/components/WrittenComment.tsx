@@ -15,7 +15,7 @@ export default function WrittenComment({
   commentObj,
   issueReporter,
 }: WrittenCommentProps) {
-  const { id, reporter: commentReporter, contents, create_at } = commentObj;
+  const { id, reporter: commentReporter, contents, created_at } = commentObj;
   const convertedHtml = marked.parse(contents) as string;
 
   return (
@@ -26,7 +26,7 @@ export default function WrittenComment({
             image_path={commentReporter.image_path}
             name={commentReporter.name}
           />
-          <span>{create_at}</span>
+          <span>{created_at}</span>
         </UserInfoAndTimeStamp>
         <CommentButtonBox>
           {commentReporter.name === issueReporter && (

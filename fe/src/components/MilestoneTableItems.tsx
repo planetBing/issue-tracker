@@ -19,14 +19,16 @@ interface MilestoneTableItemsProps {
     description: string | null,
     end_date: string
   ) => void;
+  openOrCloseMilestone: (is_open: boolean, id: number) => void;
 }
 
 export default function MilestoneTableItems({
   milestoneObj,
   handleDeleteMilestone,
   handleEditMode,
+  openOrCloseMilestone,
 }: MilestoneTableItemsProps) {
-  const { id, name, end_date, description, close_issue, open_issue } =
+  const { id, name, end_date, description, close_issue, open_issue, is_open } =
     milestoneObj;
   const progressNum = calculateMilestoneProgress(open_issue, close_issue);
   return (
@@ -46,10 +48,21 @@ export default function MilestoneTableItems({
       </TableLeftSide>
       <TableRightSide>
         <ButtonArea>
-          <S.LabelEditButton>
-            <img src={archiveIcon} alt="archive icon" />
-            닫기
-          </S.LabelEditButton>
+          {is_open ? (
+            <S.LabelEditButton
+              onClick={() => openOrCloseMilestone(is_open, id)}
+            >
+              <img src={archiveIcon} alt="archive icon" />
+              닫기
+            </S.LabelEditButton>
+          ) : (
+            <S.LabelEditButton
+              onClick={() => openOrCloseMilestone(is_open, id)}
+            >
+              <img src={archiveIcon} alt="archive icon" />
+              열기
+            </S.LabelEditButton>
+          )}
           <S.LabelEditButton
             onClick={() => handleEditMode(id, name, description, end_date)}
           >

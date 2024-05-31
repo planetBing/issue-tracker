@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { styled } from "styled-components";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
@@ -30,7 +30,13 @@ export default function IssueDetailsPage() {
   const [isTitleEditMode, setIsTitleEditMode] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const navigte = useNavigate();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
 
   if (!issueDetails) return null;
   const {
@@ -112,7 +118,7 @@ export default function IssueDetailsPage() {
 
   const handleDeleteIssue = async () => {
     await deleteData(`/issue/${id.toString()}`);
-    navigte("/");
+    navigate("/");
   };
 
   const handleTitleEdit = async () => {
@@ -170,7 +176,7 @@ export default function IssueDetailsPage() {
             )}
           </IssueTitleBox>
           <StatesInfoBox>
-            <InfoTag>
+            <InfoTag $color={is_open.toString()}>
               <CommonS.Center>
                 <img src={alertIcon} alt="alert icon" />
                 <span>{is_open ? "열린 이슈" : "닫힌 이슈"}</span>
@@ -200,7 +206,10 @@ export default function IssueDetailsPage() {
               height="160px"
             />
             <CommentDoneButtonContainer>
-              <CommentDoneButton onClick={() => handleSubmitComment()}>
+              <CommentDoneButton
+                onClick={() => handleSubmitComment()}
+                disabled={!commentText.trim()}
+              >
                 + 코멘트 작성
               </CommentDoneButton>
             </CommentDoneButtonContainer>
@@ -287,13 +296,14 @@ const StatesInfoBox = styled.div`
   align-items: center;
 `;
 
-const InfoTag = styled(CommonS.Center)`
+const InfoTag = styled(CommonS.Center)<{ $color: string }>`
   width: 101px;
   height: 32px;
   padding: 0 16px;
   font-size: 12px;
   color: rgba(254, 254, 254, 1);
-  background-color: rgba(0, 122, 255, 1);
+  background-color: ${({ $color }) =>
+    $color === "true" ? "rgba(0, 122, 255, 1)" : "grey"};
   border-radius: 30px;
 
   & img {
@@ -331,6 +341,10 @@ const CommentDoneButton = styled.button`
   padding: 0 16px;
   border: none;
   border-radius: 12px;
+  &:disabled {
+    opacity: 32%;
+    cursor: not-allowed;
+  }
   & img {
     margin-right: 8px;
   }
