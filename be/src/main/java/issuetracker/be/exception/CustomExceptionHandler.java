@@ -22,7 +22,6 @@ public class CustomExceptionHandler {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ExceptionResponse handleGlobalException(Exception e) {
-    log.error("{} : {}", e.getClass().getName(), e.getMessage());
     return new ExceptionResponse("예상하지 못한 오류입니다. 다시 시도해 주세요.");
   }
 }
