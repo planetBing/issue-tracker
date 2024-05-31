@@ -82,4 +82,16 @@ public class MilestoneService {
     }
     return milestoneRepository.save(milestoneUpdateRequest.toEntity());
   }
+
+  @Transactional
+  public void changeMilestoneStatus(Long id, boolean status) {
+    Milestone milestone = getMilestone(id);
+    milestone.set_open(status);
+    milestoneRepository.save(milestone);
+  }
+
+  private Milestone getMilestone(Long issueId) {
+    return milestoneRepository.findById(issueId)
+        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 이슈입니다."));
+  }
 }
