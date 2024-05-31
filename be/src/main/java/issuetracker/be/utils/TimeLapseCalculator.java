@@ -19,10 +19,9 @@ public class TimeLapseCalculator {
   private static final String NONE = "";
 
   public static String between(LocalDateTime start, LocalDateTime end) {
-    log.debug("시작시간: " + start.toString());
-    log.debug("종료시간: " + end.toString());
-    if (start.isAfter(end.plusSeconds(1L))) {
-      throw new IllegalArgumentException("잘못된 날짜를 입력했습니다.");
+
+    if (start.isAfter(end)) {
+      return "0초 전";
     }
 
     LocalTime startTime = start.toLocalTime();
