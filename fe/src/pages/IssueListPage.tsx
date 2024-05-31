@@ -7,7 +7,7 @@ import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
-import { IssueData, FilteringState } from "../model/types";
+import { IssueData, FilteringState } from "../type/types";
 import { Link } from "react-router-dom";
 import IssueTableHeader from "../components/issue/IssueTableHeader";
 import TableItems from "../components/issue/IssueTableItems";

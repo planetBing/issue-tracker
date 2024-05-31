@@ -1,6 +1,6 @@
 import * as S from "./popupStyle";
 import { useCurrentUser } from "../../contexts/CurrentUserProvider";
-import { FilteringState } from "../../model/types";
+import { FilteringState } from "../../type/types";
 
 interface GeneralPopupProps {
   filteringState: FilteringState;

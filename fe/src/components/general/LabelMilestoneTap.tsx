@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import labelIcon from "../../assets/label.svg";
 import milestoneIcon from "../../assets/milestone.svg";
 import useApi from "../../hooks/api/useApi";
-import { Label, Milestone } from "../../model/types";
+import { Label, Milestone } from "../../type/types";
 import { Link } from "react-router-dom";
 
 export default function LabelMilestoneTap() {

@@ -1,5 +1,5 @@
 import * as S from "./popupStyle";
-import { Milestone } from "../../model/types";
+import { Milestone } from "../../type/types";
 
 interface MilestonePopupProps {
   milestoneList: Milestone[];

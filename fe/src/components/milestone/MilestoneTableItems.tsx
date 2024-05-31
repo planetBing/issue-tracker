@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import * as S from "../../styles/tableItems";
 import * as CommonS from "../../styles/common";
-import { Milestone } from "../../model/types";
+import { Milestone } from "../../type/types";
 import { calculateMilestoneProgress } from "../../utils/utils";
 import milestoneIcon from "../../assets/milestone.svg";
 import calendarIcon from "../../assets/IconCalendar.svg";

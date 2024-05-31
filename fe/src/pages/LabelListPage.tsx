@@ -6,7 +6,7 @@ import * as CommonS from "../styles/common";
 import * as S from "../styles/tableItems";
 import useApi from "../hooks/api/useApi";
 import LabelMilestoneTap from "../components/general/LabelMilestoneTap";
-import { Label, LabelForm } from "../model/types";
+import { Label, LabelForm } from "../type/types";
 import LabelComponent from "../components/label/Label";
 import greyEditIcon from "../assets/greyEdit.svg";
 import trashIcon from "../assets/trash.svg";

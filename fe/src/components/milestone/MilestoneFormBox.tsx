@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import * as CommonS from "../../styles/common";
-import { MilestoneForm } from "../../model/types";
+import { MilestoneForm } from "../../type/types";
 
 interface MilestoneFormProps {
   milestoneForm: MilestoneForm;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import UserInfo from "../general/UserInfo";
 import * as CommonS from "../../styles/common";
-import { Comment } from "../../model/types";
+import { Comment } from "../../type/types";
 import smileIcon from "../../assets/smile.svg";
 import greyEditIcon from "../../assets/greyEdit.svg";
 import { marked } from "marked";

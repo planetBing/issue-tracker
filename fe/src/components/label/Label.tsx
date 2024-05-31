@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { Label } from "../../model/types";
+import { Label } from "../../type/types";
 
 interface LabelProps {
   labelInfo?: Label;
