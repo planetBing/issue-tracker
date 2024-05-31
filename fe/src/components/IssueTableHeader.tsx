@@ -223,6 +223,7 @@ const TableFilterBtn = styled(CommonS.SpaceBetween)`
   color: rgba(78, 75, 102, 1);
   font-size: 16px;
   font-weight: 500;
+  cursor: pointer;
 `;
 
 const TableContent = styled(CommonS.SpaceBetween)`

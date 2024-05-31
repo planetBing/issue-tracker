@@ -55,7 +55,7 @@ const Loading = styled.div`
   position: fixed;
   display: block;
   opacity: 0.8;
-  background: white;
+  background: rgb(247, 247, 252);
   z-index: 99;
   text-align: center;
 
