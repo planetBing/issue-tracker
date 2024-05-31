@@ -3,14 +3,14 @@ import * as CommonS from "../../styles/common";
 import alertIcon from "../../assets/alertCircle.svg";
 import archiveIcon from "../../assets/archive.svg";
 import dropdownIcon from "../../assets/dropdownIcon.svg";
-import { IssueData } from "../../model/types";
+import { IssueData } from "../../type/types";
 import { PopupType, PopupState } from "../../hooks/usePopup";
 import MilestonePopup from "../popup/MilestonePopup";
 import UserPopup from "../popup/UserPopup";
 import LabelPopup from "../popup/LabelPopup";
 import IssueStatusPopup from "../popup/IssueStatusPopup";
 import useApi from "../../hooks/api/useApi";
-import { User, Milestone, Label, FilteringState } from "../../model/types";
+import { User, Milestone, Label, FilteringState } from "../../type/types";
 
 interface IssueTableHeaderProps {
   filteringState: FilteringState;

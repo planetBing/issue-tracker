@@ -9,7 +9,7 @@ import alertIcon from "../assets/alertCircle.svg";
 import trashIcon from "../assets/trash.svg";
 import { useParams } from "react-router-dom";
 import useApi from "../hooks/api/useApi";
-import { IssueDetails } from "../model/types";
+import { IssueDetails } from "../type/types";
 import { useNavigate } from "react-router-dom";
 
 import PageHeader from "../components/general/PageHeader";

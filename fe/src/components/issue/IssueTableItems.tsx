@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import { Issue } from "../../model/types";
+import { Issue } from "../../type/types";
 import LabelComponent from "../label/Label";
 import alertIcon from "../../assets/alertCircle.svg";
 import milestoneIcon from "../../assets/milestone.svg";

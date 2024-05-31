@@ -6,7 +6,7 @@ import * as CommonS from "../styles/common";
 import * as S from "../styles/tableItems";
 import LabelMilestoneTap from "../components/general/LabelMilestoneTap";
 import MilestoneFormBox from "../components/milestone/MilestoneFormBox";
-import { Milestone, MilestoneForm } from "../model/types";
+import { Milestone, MilestoneForm } from "../type/types";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
 
