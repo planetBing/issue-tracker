@@ -1,17 +1,17 @@
 import { styled } from "styled-components";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../components/general/PageHeader";
 import useApi from "../hooks/api/useApi";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import * as S from "../styles/tableItems";
-import LabelMilestoneTap from "../components/LabelMilestoneTap";
-import MilestoneFormBox from "../components/MilestoneFormBox";
-import { Milestone, MilestoneForm } from "../Model/types";
+import LabelMilestoneTap from "../components/general/LabelMilestoneTap";
+import MilestoneFormBox from "../components/milestone/MilestoneFormBox";
+import { Milestone, MilestoneForm } from "../model/types";
 import alertIcon from "../assets/alertCircle.svg";
 import archiveIcon from "../assets/archive.svg";
 
 import { useState } from "react";
-import MilestoneTableItems from "../components/MilestoneTableItems";
+import MilestoneTableItems from "../components/milestone/MilestoneTableItems";
 
 const initialMilestoneForm = {
   name: "",

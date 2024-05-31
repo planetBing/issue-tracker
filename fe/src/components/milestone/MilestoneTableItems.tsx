@@ -1,13 +1,13 @@
 import { styled } from "styled-components";
-import * as S from "../styles/tableItems";
-import * as CommonS from "../styles/common";
-import { Milestone } from "../Model/types";
-import { calculateMilestoneProgress } from "../utils/utils";
-import milestoneIcon from "../assets/milestone.svg";
-import calendarIcon from "../assets/IconCalendar.svg";
-import trashIcon from "../assets/trash.svg";
-import editIcon from "../assets/greyEdit.svg";
-import archiveIcon from "../assets/archive.svg";
+import * as S from "../../styles/tableItems";
+import * as CommonS from "../../styles/common";
+import { Milestone } from "../../model/types";
+import { calculateMilestoneProgress } from "../../utils/utils";
+import milestoneIcon from "../../assets/milestone.svg";
+import calendarIcon from "../../assets/IconCalendar.svg";
+import trashIcon from "../../assets/trash.svg";
+import editIcon from "../../assets/greyEdit.svg";
+import archiveIcon from "../../assets/archive.svg";
 import MilestoneProgressBar from "./MilestoneProgressBar";
 
 interface MilestoneTableItemsProps {

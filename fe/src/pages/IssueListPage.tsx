@@ -2,21 +2,21 @@ import queryString from "query-string";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../components/general/PageHeader";
 import { useCurrentUser } from "../contexts/CurrentUserProvider";
 import * as CommonS from "../styles/common";
 import dropdownIcon from "../assets/dropdownIcon.svg";
 import searchIcon from "../assets/search.svg";
-import { IssueData, FilteringState } from "../Model/types";
+import { IssueData, FilteringState } from "../model/types";
 import { Link } from "react-router-dom";
-import IssueTableHeader from "../components/IssueTableHeader";
-import TableItems from "../components/IssueTableItems";
+import IssueTableHeader from "../components/issue/IssueTableHeader";
+import TableItems from "../components/issue/IssueTableItems";
 import usePopup from "../hooks/usePopup";
 import { PopupType } from "../hooks/usePopup";
 import FilterPopup from "../components/popup/FilterPopup";
 import Overlay from "../components/popup/Overlay";
 import useApi from "../hooks/api/useApi";
-import LabelMilestoneTap from "../components/LabelMilestoneTap";
+import LabelMilestoneTap from "../components/general/LabelMilestoneTap";
 
 const initialFilteringState = {
   isOpen: true,

@@ -1,6 +1,6 @@
 import * as S from "./popupStyle";
 import { styled } from "styled-components";
-import { Label } from "../../Model/types";
+import { Label } from "../../model/types";
 
 interface LabelPopupProps {
   labelList: Label[];

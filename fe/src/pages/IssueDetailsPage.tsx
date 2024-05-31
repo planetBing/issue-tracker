@@ -9,13 +9,13 @@ import alertIcon from "../assets/alertCircle.svg";
 import trashIcon from "../assets/trash.svg";
 import { useParams } from "react-router-dom";
 import useApi from "../hooks/api/useApi";
-import { IssueDetails } from "../Model/types";
+import { IssueDetails } from "../model/types";
 import { useNavigate } from "react-router-dom";
 
-import PageHeader from "../components/PageHeader";
-import WrittenComment from "../components/WrittenComment";
-import CommentWriteArea from "../components/CommentWriteArea";
-import SideBar from "../components/SideBar";
+import PageHeader from "../components/general/PageHeader";
+import WrittenComment from "../components/comment/WrittenComment";
+import CommentWriteArea from "../components/comment/CommentWriteArea";
+import SideBar from "../components/general/SideBar";
 
 export default function IssueDetailsPage() {
   const { currentUser } = useCurrentUser();

@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { calculateMilestoneProgress } from "../utils/utils";
+import { calculateMilestoneProgress } from "../../utils/utils";
 
 interface MilestoneProgressBarProps {
   openIssuesNum: number;

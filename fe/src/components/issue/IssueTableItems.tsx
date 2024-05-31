@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import { Issue } from "../Model/types";
-import LabelComponent from "./Label";
-import alertIcon from "../assets/alertCircle.svg";
-import milestoneIcon from "../assets/milestone.svg";
-import * as CommonS from "../styles/common";
+import { Issue } from "../../model/types";
+import LabelComponent from "../label/Label";
+import alertIcon from "../../assets/alertCircle.svg";
+import milestoneIcon from "../../assets/milestone.svg";
+import * as CommonS from "../../styles/common";
 
 interface TableItemsProps {
   items: Issue[];

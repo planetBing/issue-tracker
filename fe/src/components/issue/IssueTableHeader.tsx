@@ -1,16 +1,16 @@
 import { styled } from "styled-components";
-import * as CommonS from "../styles/common";
-import alertIcon from "../assets/alertCircle.svg";
-import archiveIcon from "../assets/archive.svg";
-import dropdownIcon from "../assets/dropdownIcon.svg";
-import { IssueData } from "../Model/types";
-import { PopupType, PopupState } from "../hooks/usePopup";
-import MilestonePopup from "./popup/MilestonePopup";
-import UserPopup from "./popup/UserPopup";
-import LabelPopup from "./popup/LabelPopup";
-import IssueStatusPopup from "./popup/IssueStatusPopup";
-import useApi from "../hooks/api/useApi";
-import { User, Milestone, Label, FilteringState } from "../Model/types";
+import * as CommonS from "../../styles/common";
+import alertIcon from "../../assets/alertCircle.svg";
+import archiveIcon from "../../assets/archive.svg";
+import dropdownIcon from "../../assets/dropdownIcon.svg";
+import { IssueData } from "../../model/types";
+import { PopupType, PopupState } from "../../hooks/usePopup";
+import MilestonePopup from "../popup/MilestonePopup";
+import UserPopup from "../popup/UserPopup";
+import LabelPopup from "../popup/LabelPopup";
+import IssueStatusPopup from "../popup/IssueStatusPopup";
+import useApi from "../../hooks/api/useApi";
+import { User, Milestone, Label, FilteringState } from "../../model/types";
 
 interface IssueTableHeaderProps {
   filteringState: FilteringState;

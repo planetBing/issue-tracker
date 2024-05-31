@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { User } from "../../Model/types";
+import { User } from "../../model/types";
 import * as S from "./popupStyle";
 
 interface UserPopupProps {
