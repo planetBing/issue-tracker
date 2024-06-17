@@ -74,7 +74,7 @@
 - 서로의 개발 진행 상황을 자주 확인해야 함을 느꼈습니다.
   - 각자의 작업에 몰입하여 상대방에게 작업 결과를 공유하는 것을 잊는 경우가 있습니다.
   - 일례로, API 완성 후 전달 과정에서 전달이 누락되는 경우가 있었습니다.
-  - 문제를 해결하기 위해, 정해진 시간에 모든 팀원이 참석하는 데일리를 진행하였고 이 시간을 활용해 작업 진행상황 등을 공유하였습니다.
+  - 문제를 해결하기 위해, 정해진 시간에 모든 팀원이 참석하는 데일리를 진행하였고 이 시간을 활용해 작업 진행상황 등을 공유하고 노션에 기록했습니다.
 
 </div>
 </details>
@@ -108,22 +108,40 @@
    <summary>스크린샷</summary>
    <div markdown="1">
 
-### <strong>이슈 필터링, 선택한 이슈 열고 닫는 기능</strong>
+### <strong>메인 페이지</strong>
+
+![621DE310-5667-47EF-9009-C336DEAD4417](https://github.com/planetBing/fe-eventloop/assets/150240792/67472c75-bf22-4a66-a632-3ba7c9817204)
+
+- 이슈 필터링, 선택한 이슈 열고 닫는 기능
 
 <br>
 
-### <strong>새로운 이슈 작성 기능</strong>
+### <strong>이슈 작성 페이지</strong>
+
+![C29CF262-13B9-4B5D-8492-8F7A98F5EC98](https://github.com/planetBing/fe-eventloop/assets/150240792/8664caf5-3c8b-4f5d-acb1-537ef58f3dea)
 
 <br>
 
-### <strong>이슈 상세 페이지(이슈 수정과 코멘트 추가)</strong>
+### <strong>이슈 상세 페이지</strong>
+
+<img width="1710" alt="스크린샷 2024-06-17 오후 5 24 50" src="https://github.com/planetBing/fe-eventloop/assets/150240792/cde826f0-c363-424c-804a-56df00640055">
+
+- 이슈 수정과 코멘트 추가
 
 <br>
 
-### <strong>label 생성, 편집, 삭제 기능</strong>
+### <strong>label 페이지</strong>
+
+![813B41E7-67D0-4422-B10B-A841F872758D](https://github.com/planetBing/fe-eventloop/assets/150240792/60df03b6-99e0-4d72-a3dd-82dc5d1b2fb3)
+
+- label 추가, 편집, 삭제 기능
 
 <br>
 
-### <strong>milestone 생성, 편집, 삭제, 열고/닫기 기능</strong>
+### <strong>milestone </strong>
+
+![이슈트래커 마일스톤](https://github.com/planetBing/fe-eventloop/assets/150240792/50174d70-a4fb-41f3-9419-34c9fecc4879)
+
+- 마일스톤 생성, 편집, 삭제, 열고/닫기 기능
 
 <br>
