@@ -124,7 +124,7 @@
 
 ### <strong>이슈 상세 페이지</strong>
 
-<img width="1710" alt="스크린샷 2024-06-17 오후 5 24 50" src="https://github.com/planetBing/fe-eventloop/assets/150240792/cde826f0-c363-424c-804a-56df00640055">
+![이슈 상세 저용량~~~](https://github.com/codesquad-members-2024/fe-24-last/assets/150240792/236d54cb-afa7-4127-bc21-84fdf467acce)
 
 - 이슈 수정과 코멘트 추가
 
